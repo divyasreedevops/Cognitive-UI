@@ -26,6 +26,8 @@ import { LoginComponent } from './login/login.component';
 
 import { LayoutModule } from '@angular/cdk/layout';
 import { MapViewerComponent } from './map-viewer/map-viewer.component';
+import { HeaderComponent } from './shared/header/header.component';
+
 
 @NgModule({
     declarations: [
@@ -35,6 +37,7 @@ import { MapViewerComponent } from './map-viewer/map-viewer.component';
         LoginComponent,
         FooterComponent,
         MapViewerComponent,
+        HeaderComponent
     ],
   
     imports: [
