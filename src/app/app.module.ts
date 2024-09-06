@@ -29,6 +29,8 @@ import { MapViewerComponent } from './map-viewer/map-viewer.component';
 import { HeaderComponent } from './shared/header/header.component';
 
 import { CardComponent } from './card/card.component';
+import { SubheaderComponent } from "./shared/subheader/subheader.component";
+import { WxmComponent } from './shared/wxm/wxm.component';
 
 @NgModule({
     declarations: [
@@ -39,29 +41,30 @@ import { CardComponent } from './card/card.component';
         FooterComponent,
         MapViewerComponent,
         HeaderComponent,
-        CardComponent
+        CardComponent,
+        SubheaderComponent,
+        WxmComponent
     ],
   
     imports: [
-        BrowserModule,
-        AppRoutingModule,
-        MatSelectModule,
-        MatFormFieldModule,
-        MatInputModule,
-        FormsModule,
-        ReactiveFormsModule,
-        BrowserAnimationsModule,
-        MatAutocompleteModule,
-        MatButtonModule,
-        MatIconModule,
-        MatToolbarModule,
-        MatSidenavModule,
-        MatListModule,
-        MatMenuModule,
-        LayoutModule,
-        MatSidenavModule
-
-    ],
+    BrowserModule,
+    AppRoutingModule,
+    MatSelectModule,
+    MatFormFieldModule,
+    MatInputModule,
+    FormsModule,
+    ReactiveFormsModule,
+    BrowserAnimationsModule,
+    MatAutocompleteModule,
+    MatButtonModule,
+    MatIconModule,
+    MatToolbarModule,
+    MatSidenavModule,
+    MatListModule,
+    MatMenuModule,
+    LayoutModule,
+    MatSidenavModule
+],
     bootstrap: [AppComponent],
     providers: [AuthGuard, provideHttpClient(withInterceptorsFromDi())]
 })

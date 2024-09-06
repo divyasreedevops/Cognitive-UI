@@ -1,8 +1,18 @@
 <div class="header">
     <div class="logo">
-        <img src="https://www.cognitivenavigation.com/wp-content/uploads/2024/05/file.png" class="custom-logo" alt="Cognitive Navigation" decoding="async">
+        <img src="https://www.cognitivenavigation.com/wp-content/uploads/2024/05/file.png" class="custom-logo"
+            alt="Cognitive Navigation" decoding="async">
         <span>Cognitive Navigation</span>
+        <!-- <nav>
+            <app-subheader [isActive]="activeButton === 'adm'" (click)="setActive('adm')"></app-subheader>
+            <app-wxm [isActive]="activeButton === 'wxm'" (click)="setActive('wxm')"></app-wxm>
+        </nav> -->
+
     </div>
+    <nav>
+        <app-subheader [isActive]="activeButton === 'adm'" (click)="setActive('adm')"></app-subheader>
+        <app-wxm [isActive]="activeButton === 'wxm'" (click)="setActive('wxm')"></app-wxm>
+    </nav>
     <div class="title">AIRLINE OPS MANAGER</div>
     <div class="icons">
         <mat-icon class="matclas">search</mat-icon>

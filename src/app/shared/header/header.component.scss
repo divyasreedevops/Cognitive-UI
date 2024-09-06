@@ -45,3 +45,15 @@
         cursor: pointer;
     }
 }
+
+nav {
+    display: flex;
+    justify-content: flex-start;
+    background-color: #f8f9fa; /* Adjust as per your design */
+    margin-left: -200px;
+    background: transparent;
+    gap: 10px;
+    width: 30%;
+    height: 90%;
+    padding-top: 10px;
+  }
