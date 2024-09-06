@@ -5,6 +5,7 @@ import { MapComponent } from './map/map.component';
 import { AuthGuard } from './guards/auth.guard';
 import { LoginComponent } from './login/login.component';
 import { MapViewerComponent } from './map-viewer/map-viewer.component';
+import { HeaderComponent } from './shared/header/header.component';
 import { CardComponent } from './card/card.component';
 
 const routes: Routes = [
@@ -14,9 +15,8 @@ const routes: Routes = [
   },
   { path: 'login', component: LoginComponent },
   { path: 'mapview', component: MapViewerComponent, canActivate: [AuthGuard] },
+  { path: 'header', component: HeaderComponent },
   { path: 'cards', component:CardComponent}
-
-
 ];
 
 @NgModule({

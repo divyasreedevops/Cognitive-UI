@@ -1,0 +1,59 @@
+.header {
+    position: sticky;
+    top: 0;
+    z-index: 100; /* Ensure the header stays on top of other content */
+    background: rgba(255, 255, 255, 0.8); /* Semi-transparent white background */
+    backdrop-filter: blur(10px); /* Optional: Blurs content behind the header */
+    width: 100%;
+    height: 70px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 20px;
+    // box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Adds a light shadow for depth */
+    background: linear-gradient(360deg, hsl(180.55deg 100% 69% / 0%) 10%, hsl(182.39deg 100% 50% / 17%) 100%);
+  }
+  
+  .logo {
+    display: flex;
+    align-items: center;
+
+     img{ 
+        height: 50px;
+        width: 50px;
+     }
+  }
+  
+  .logo img {
+    // height: 40px;
+    margin-right: 10px;
+  }
+  
+  .logo span {
+    font-weight: bold;
+    width: 40%;
+  }
+  
+  .title {
+    font-size: 24px;
+    font-weight: bold;
+  }
+  
+  .icons {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  .icons img {
+    height: 30px;
+    margin-left: 15px;
+    cursor: pointer;
+  }
+  
+  .matclas{
+    height: 35px !important;
+    width: 35px !important;
+    font-size: 30px;
+  }
+
