@@ -1,5 +1,5 @@
 .header {
-    position: sticky;
+    position: relative;
     top: 0;
     z-index: 100;
     background: transparent; /* Completely transparent background */
@@ -12,6 +12,7 @@
     padding: 0 20px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Adds a light shadow for depth */
     // box-shadow: none;
+    overflow: hidden;
 }
 
 .logo {
@@ -56,4 +57,19 @@ nav {
     width: 30%;
     height: 90%;
     padding-top: 10px;
+  }
+  .header-content {
+    overflow: hidden;
+  }
+
+  .arrowIcon{
+    border-radius: 50%;
+    background-color: white;
+  }
+
+  .devArrowIcon{
+    display: flex;
+    justify-content: center;
+    gap: 1px;
+    z-index: 10;
   }

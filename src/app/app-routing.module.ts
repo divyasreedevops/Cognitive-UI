@@ -7,6 +7,7 @@ import { LoginComponent } from './login/login.component';
 import { MapViewerComponent } from './map-viewer/map-viewer.component';
 import { HeaderComponent } from './shared/header/header.component';
 import { CardComponent } from './card/card.component';
+import { MultimapComponent } from './shared/multimap/multimap.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '', pathMatch: 'full' },
@@ -16,7 +17,8 @@ const routes: Routes = [
   { path: 'login', component: LoginComponent },
   { path: 'mapview', component: MapViewerComponent, canActivate: [AuthGuard] },
   { path: 'header', component: HeaderComponent },
-  { path: 'cards', component:CardComponent}
+  { path: 'cards', component:CardComponent},
+  {path: 'multimaps', component:MultimapComponent}
 ];
 
 @NgModule({
