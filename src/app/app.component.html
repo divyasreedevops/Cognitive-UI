@@ -1,1 +1,13 @@
-<router-outlet></router-outlet>
+<div class="main-container">
+    <!-- <app-header [name]="headerName" [icon]="headerIcon"></app-header> -->
+    <app-header [name]="headerName" [icon]="headerIcon" [activeButton]="activeButton" (activeChange)="setActive($event)">
+    </app-header>
+
+    <!-- <div class="subheader-container">
+        <app-subheader></app-subheader> 
+    </div> -->
+
+    <div class="body-content">
+        <router-outlet></router-outlet> <!-- Where your body content changes -->
+    </div>
+</div>
