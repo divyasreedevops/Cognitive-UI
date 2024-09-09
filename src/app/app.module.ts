@@ -31,6 +31,7 @@ import { HeaderComponent } from './shared/header/header.component';
 import { CardComponent } from './card/card.component';
 import { SubheaderComponent } from "./shared/subheader/subheader.component";
 import { WxmComponent } from './shared/wxm/wxm.component';
+import { SidebarComponent } from './shared/sidebar/sidebar.component';
 
 @NgModule({
     declarations: [
@@ -43,7 +44,8 @@ import { WxmComponent } from './shared/wxm/wxm.component';
         HeaderComponent,
         CardComponent,
         SubheaderComponent,
-        WxmComponent
+        WxmComponent,
+        SidebarComponent
     ],
   
     imports: [

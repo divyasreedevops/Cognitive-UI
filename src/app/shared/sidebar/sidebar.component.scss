@@ -1,0 +1,81 @@
+.side-container {
+    width: 16vw;
+    height: 100vh;
+    z-index: 1;
+    background: linear-gradient(267deg, rgb(134 183 202 / 58%) 1%, rgb(38 210 200 / 19%) 21%);
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    padding: 6rem 1rem 1rem 1rem;
+    position: absolute;
+    transition: width 0.5s ease-in-out;
+  
+    &.collapsed {
+      width: 5vw;
+    }
+  
+    .sub-option {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background-color: white;
+      padding: 10px;
+      font-size: 1rem;
+      font-weight: 501;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: opacity 0.9s ease-in-out;
+  
+      span {
+        text-align: center;
+        width: 100%;
+         transition: width 0.9s ease-in-out;
+        
+        
+      }
+
+      mat-icon{
+        width: 50px;
+      }
+    }
+  
+    .sub-option:hover {
+      background-color: #0056b3;
+      color: white;
+    }
+  
+    .active {
+      background: linear-gradient(to right, #4acbd3, #0056b3);
+      color: white;
+    }
+  
+    .tab-toggel {
+      display: flex;
+      justify-content: flex-end;
+      cursor: pointer;
+  
+      mat-icon {
+        background-color: #0056b3;
+        color: white;
+        width: 17px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 30px;
+        border-radius: 3px;
+      }
+    }
+  
+    &.collapsed .sub-option span {
+    //   opacity: 0;
+    display: none;
+    opacity: 0;
+   
+    }
+  
+    &.collapsed .tab-toggel mat-icon {
+    //   transform: rotate(180deg);
+      transition: transform 0.5s ease-in-out;
+    }
+  }
+  
