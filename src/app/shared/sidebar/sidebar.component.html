@@ -1,0 +1,20 @@
+<div class="side-container" [ngClass]="{'collapsed': isCollapsed}">
+
+    <div class="tab-toggel" (click)="toggleSidebar()">
+        <mat-icon *ngIf="!isCollapsed">chevron_left</mat-icon>
+        <mat-icon *ngIf="isCollapsed">chevron_right</mat-icon>
+    </div>
+
+    <div class="sub-option" [ngClass]="{'active': selectedTab==='PANS-OPS'}"  (click)="selectedTab='PANS-OPS'">
+        <mat-icon class="maticon">dataset</mat-icon>
+        <span>PANS-OPS</span>
+    </div>
+    <div class="sub-option" [ngClass]="{'active': selectedTab==='ENR'}"  (click)="selectedTab='ENR'">
+        <mat-icon class="maticon">dataset</mat-icon>
+        <span>ENR COMPATIBILITY</span>
+    </div>
+    <div class="sub-option" [ngClass]="{'active': selectedTab==='AIRPORT'}"  (click)="selectedTab='AIRPORT'">
+        <mat-icon class="maticon">dataset</mat-icon>
+        <span>AIRPORT COMPATIBILITY</span>
+    </div>
+</div>
