@@ -10,4 +10,5 @@ export class CardComponent {
   @Input() icon: string | undefined; // Changed type to string for the class
   @Input() title: string | undefined;
   @Input() description: string | undefined;
+  @Input() router: string | undefined;
 }

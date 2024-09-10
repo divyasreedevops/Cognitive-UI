@@ -17,7 +17,7 @@ const routes: Routes = [
   { path: 'login', component: LoginComponent },
   { path: 'mapview', component: MapViewerComponent, canActivate: [AuthGuard] },
   { path: 'header', component: HeaderComponent },
-  { path: 'opsmanager', component:OpsManagerComponent}
+  { path: 'opsmanager', component:OpsManagerComponent},
   {path: 'multimaps', component:MultimapComponent}
 ];
 
