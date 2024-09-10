@@ -27,8 +27,13 @@ import { LoginComponent } from './login/login.component';
 import { LayoutModule } from '@angular/cdk/layout';
 import { MapViewerComponent } from './map-viewer/map-viewer.component';
 import { HeaderComponent } from './shared/header/header.component';
-import { OpsManagerComponent } from './airlineopsmanager/opsmanager.component';
+
 import { CardComponent } from './airlineopsmanager/card/card.component';
+import { OpsManagerComponent } from './airlineopsmanager/opsmanager.component';
+import { SubheaderComponent } from "./shared/subheader/subheader.component";
+import { WxmComponent } from './shared/wxm/wxm.component';
+import { SidebarComponent } from './shared/sidebar/sidebar.component';
+import { MultimapComponent } from './shared/multimap/multimap.component';
 
 @NgModule({
     declarations: [
@@ -40,29 +45,33 @@ import { CardComponent } from './airlineopsmanager/card/card.component';
         MapViewerComponent,
         HeaderComponent,
         CardComponent,
-        OpsManagerComponent
+        OpsManagerComponent,
+        SubheaderComponent,
+        WxmComponent,
+        SidebarComponent,
+        WxmComponent,
+        MultimapComponent
     ],
   
     imports: [
-        BrowserModule,
-        AppRoutingModule,
-        MatSelectModule,
-        MatFormFieldModule,
-        MatInputModule,
-        FormsModule,
-        ReactiveFormsModule,
-        BrowserAnimationsModule,
-        MatAutocompleteModule,
-        MatButtonModule,
-        MatIconModule,
-        MatToolbarModule,
-        MatSidenavModule,
-        MatListModule,
-        MatMenuModule,
-        LayoutModule,
-        MatSidenavModule
-
-    ],
+    BrowserModule,
+    AppRoutingModule,
+    MatSelectModule,
+    MatFormFieldModule,
+    MatInputModule,
+    FormsModule,
+    ReactiveFormsModule,
+    BrowserAnimationsModule,
+    MatAutocompleteModule,
+    MatButtonModule,
+    MatIconModule,
+    MatToolbarModule,
+    MatSidenavModule,
+    MatListModule,
+    MatMenuModule,
+    LayoutModule,
+    MatSidenavModule
+],
     bootstrap: [AppComponent],
     providers: [AuthGuard, provideHttpClient(withInterceptorsFromDi())]
 })

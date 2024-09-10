@@ -7,4 +7,11 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   title = 'Demo';
+  headerName = 'Cognitive Navigation';
+  headerIcon = 'assets/images/logo.png';
+  activeButton: string = ''; // Track which button is active
+
+  setActive(button: string) {
+    this.activeButton = button;
+  }
 }
