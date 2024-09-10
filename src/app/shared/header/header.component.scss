@@ -65,11 +65,12 @@ nav {
   .arrowIcon{
     border-radius: 50%;
     background-color: white;
+    margin-top: 10px;
   }
 
   .devArrowIcon{
     display: flex;
     justify-content: center;
-    gap: 1px;
+    gap: 5px;
     z-index: 10;
   }
