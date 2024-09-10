@@ -8,6 +8,7 @@ import { MapViewerComponent } from './map-viewer/map-viewer.component';
 import { HeaderComponent } from './shared/header/header.component';
 import { OpsManagerComponent } from './airlineopsmanager/opsmanager.component';
 import { MultimapComponent } from './shared/multimap/multimap.component';
+import { VideoClipComponent } from './airlineopsmanager/videoclip/clip.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '', pathMatch: 'full' },
@@ -18,7 +19,8 @@ const routes: Routes = [
   { path: 'mapview', component: MapViewerComponent, canActivate: [AuthGuard] },
   { path: 'header', component: HeaderComponent },
   { path: 'opsmanager', component:OpsManagerComponent},
-  {path: 'multimaps', component:MultimapComponent}
+  {path: 'multimaps', component:MultimapComponent},
+  { path: 'videoclip', component: VideoClipComponent}
 ];
 
 @NgModule({
