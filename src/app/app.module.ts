@@ -28,7 +28,8 @@ import { LayoutModule } from '@angular/cdk/layout';
 import { MapViewerComponent } from './map-viewer/map-viewer.component';
 import { HeaderComponent } from './shared/header/header.component';
 
-import { CardComponent } from './card/card.component';
+import { CardComponent } from './airlineopsmanager/card/card.component';
+import { OpsManagerComponent } from './airlineopsmanager/opsmanager.component';
 import { SubheaderComponent } from "./shared/subheader/subheader.component";
 import { WxmComponent } from './shared/wxm/wxm.component';
 import { SidebarComponent } from './shared/sidebar/sidebar.component';
@@ -44,6 +45,7 @@ import { MultimapComponent } from './shared/multimap/multimap.component';
         MapViewerComponent,
         HeaderComponent,
         CardComponent,
+        OpsManagerComponent,
         SubheaderComponent,
         WxmComponent,
         SidebarComponent,
