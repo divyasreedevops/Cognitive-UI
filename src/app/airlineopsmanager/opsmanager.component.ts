@@ -12,7 +12,7 @@ export class OpsManagerComponent {
           title: 'ADM',
           description: 'Aeronautical Data Management module comprises of comprehensive aeronautical data solutions, streamline operations, improve accuracy, and empower your airline.',
           icon: '../../assets/icons/6.png',
-          router: 'opsmanager',
+          router: '/videoclip',
         },
         {
           title: 'WxM',

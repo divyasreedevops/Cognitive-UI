@@ -34,6 +34,7 @@ import { SubheaderComponent } from "./shared/subheader/subheader.component";
 import { WxmComponent } from './shared/wxm/wxm.component';
 import { SidebarComponent } from './shared/sidebar/sidebar.component';
 import { MultimapComponent } from './shared/multimap/multimap.component';
+import { VideoClipComponent } from './airlineopsmanager/videoclip/clip.component';
 
 @NgModule({
     declarations: [
@@ -50,7 +51,8 @@ import { MultimapComponent } from './shared/multimap/multimap.component';
         WxmComponent,
         SidebarComponent,
         WxmComponent,
-        MultimapComponent
+        MultimapComponent,
+        VideoClipComponent
     ],
   
     imports: [
