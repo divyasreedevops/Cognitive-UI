@@ -32,6 +32,7 @@ import { CardComponent } from './card/card.component';
 import { SubheaderComponent } from "./shared/subheader/subheader.component";
 import { WxmComponent } from './shared/wxm/wxm.component';
 import { SidebarComponent } from './shared/sidebar/sidebar.component';
+import { MultimapComponent } from './shared/multimap/multimap.component';
 
 @NgModule({
     declarations: [
@@ -45,7 +46,9 @@ import { SidebarComponent } from './shared/sidebar/sidebar.component';
         CardComponent,
         SubheaderComponent,
         WxmComponent,
-        SidebarComponent
+        SidebarComponent,
+        WxmComponent,
+        MultimapComponent
     ],
   
     imports: [
