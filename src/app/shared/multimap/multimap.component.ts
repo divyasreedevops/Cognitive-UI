@@ -43,6 +43,7 @@
 import { Component, AfterViewInit } from '@angular/core';
 import * as L from 'leaflet';
 import { Location } from '@angular/common';
+import { SharedService } from 'src/app/Service/shared.service';
 
 @Component({
   selector: 'app-multimap',
@@ -51,7 +52,9 @@ import { Location } from '@angular/common';
 })
 export class MultimapComponent implements AfterViewInit {
   private maps: { [key: string]: L.Map } = {}; // Track maps by ID
-  constructor(private location: Location) {}
+  constructor(private location: Location,
+    private sharedService: SharedService
+  ) {}
 
   ngAfterViewInit(): void {
     this.initMaps();
@@ -108,6 +111,8 @@ export class MultimapComponent implements AfterViewInit {
     setTimeout(() => {
       map.invalidateSize();
     }, 100); 
+
+    this.sharedService.updateSidebarContent({status:1});
   }
 
   goBack() {
