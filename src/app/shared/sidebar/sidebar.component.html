@@ -1,10 +1,14 @@
 <div class="side-container" [ngClass]="{'collapsed': isCollapsed}">
-
-    <div class="tab-toggel" (click)="toggleSidebar()">
-        <mat-icon *ngIf="!isCollapsed">chevron_left</mat-icon>
-        <mat-icon *ngIf="isCollapsed">chevron_right</mat-icon>
+    <div class="tab-toggel" [ngClass]="{'displayEnd': !isMultiMapView || isCollapsed , 'displayBetween': isMultiMapView && !isCollapsed }">
+        <div class="arrow-hold" *ngIf="!isCollapsed && isMultiMapView">
+            <mat-icon (click)="navigateToMultiMap()">west</mat-icon>
+            <mat-icon>east</mat-icon>
+        </div>
+        <mat-icon (click)="toggleSidebar()" class="tgbtn" *ngIf="!isCollapsed">chevron_left</mat-icon>
+        <mat-icon (click)="toggleSidebar()" class="tgbtn"*ngIf="isCollapsed">chevron_right</mat-icon>
     </div>
 
+    <ng-container *ngIf="!isMultiMapView">
     <div class="sub-option" [ngClass]="{'active': selectedTab==='PANS-OPS'}"  (click)="selectedTab='PANS-OPS'">
         <mat-icon class="maticon">dataset</mat-icon>
         <span>PANS-OPS</span>
@@ -17,4 +21,49 @@
         <mat-icon class="maticon">dataset</mat-icon>
         <span>AIRPORT COMPATIBILITY</span>
     </div>
+</ng-container>
+
+<ng-container *ngIf="isMultiMapView && !isCollapsed">
+   
+    <ng-container *ngFor="let opt of selectFormat">
+    <div class="select">
+        <label for="">{{opt.label}}</label>
+        <select name="" id="">
+            <ng-container *ngFor="let item of opt.options">
+                <option>{{item}}</option>
+            </ng-container>
+        </select>
+    </div>
+</ng-container>
+
+<div class="toggle-outer">
+    <div class="tog">
+    <label for="">AIXM</label>
+    <div class="toggle-container">
+        <label class="toggle-label">
+          <input type="checkbox" >
+          <span class="toggle-switch"></span>
+        </label>
+      </div>
+    </div>
+
+    <div class="tog">
+        <label for="">ARINC 424</label>
+        <div class="toggle-container">
+            <label class="toggle-label">
+              <input type="checkbox" >
+              <span class="toggle-switch"></span>
+            </label>
+          </div>
+        </div>
+</div>
+
+<div class="button-outer">
+
+    <button type="button">Export PDF</button>
+    <button type="button">Export GeoJSON</button>
+    <button type="button">Export CSV</button>
+</div>
+
+</ng-container>
 </div>
