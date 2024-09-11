@@ -31,7 +31,7 @@ export class LoginComponent implements OnInit {
       const password = this.LogInForm.get('password')?.value;
      console.log(this.authService.login(email, password),"this.authService.login(email, password)")
       if (this.authService.login(email, password)) {
-        this.router.navigate(['mapview']);
+        this.router.navigate(['opsmanager']);
       } else {
         // Handle authentication error (show error message, etc.)
       }
