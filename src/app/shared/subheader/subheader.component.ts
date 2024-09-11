@@ -7,4 +7,6 @@ import { Component, Input} from '@angular/core';
 })
 export class SubheaderComponent {
   @Input() isActive: boolean = false;
+  @Input() icon: string = '';
+  @Input() name: string = '';
 }

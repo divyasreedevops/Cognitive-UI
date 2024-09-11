@@ -2,17 +2,30 @@
     position: relative;
     top: 0;
     z-index: 100;
-    background: transparent; /* Completely transparent background */
-    backdrop-filter: blur(1px); /* Optional: Adds blur to the content behind the header */
+    background: transparent;
+    backdrop-filter: blur(1px);
     width: 100%;
     height: 70px;
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 0 20px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Adds a light shadow for depth */
-    // box-shadow: none;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     overflow: hidden;
+
+    @media (max-width: 768px) { /* Tablet and below */
+        flex-direction: column;
+        height: auto;
+        padding: 10px;
+    }
+
+    @media (max-width: 480px) { /* Mobile */
+        padding: 5px;
+        .logo img {
+            height: 40px;
+            width: 40px;
+        }
+    }
 }
 
 .logo {
@@ -27,13 +40,18 @@
     span {
         font-weight: bold;
         margin-left: 10px;
-        width: 50px;
+        // white-space: nowrap;
     }
-}
 
-.title {
-    font-size: 24px;
-    font-weight: bold;
+    @media (max-width: 768px) {
+        img {
+            height: 40px;
+            width: 40px;
+        }
+        span {
+            font-size: 14px;
+        }
+    }
 }
 
 .icons {
@@ -45,32 +63,63 @@
         font-size: 24px;
         cursor: pointer;
     }
+
+    @media (max-width: 768px) {
+        justify-content: center;
+        margin-top: 10px;
+    }
+
+    @media (max-width: 480px) {
+        .matclas {
+            font-size: 20px;
+        }
+    }
 }
 
 nav {
     display: flex;
     justify-content: flex-start;
-    background-color: #f8f9fa; /* Adjust as per your design */
-    margin-left: -200px;
-    background: transparent;
     gap: 10px;
-    width: 30%;
     height: 90%;
-    padding-top: 10px;
-  }
-  .header-content {
-    overflow: hidden;
-  }
+    width: auto;
+    overflow-x: auto; /* Enable horizontal scrolling */
+    white-space: nowrap; /* Prevent buttons from wrapping to the next line */
+    scrollbar-width: thin; /* For modern browsers */
+    -ms-overflow-style: none;  /* Hide scrollbar for IE and Edge */
+    
+    scrollbar-width: none; /* For Firefox */
+    -ms-overflow-style: none;  /* For Internet Explorer and Edge */
+    margin-top: 19px;
+    margin-right: 25px;
+    margin-left: 20px;
 
-  .arrowIcon{
-    border-radius: 50%;
-    background-color: white;
-    margin-top: 10px;
-  }
+    &::-webkit-scrollbar {
+        display: none;
+    }
 
-  .devArrowIcon{
+    @media (max-width: 768px) {
+        justify-content: center;
+        width: 100%;
+    }
+
+    @media (max-width: 480px) {
+        width: 100%;
+    }
+}
+
+.devArrowIcon {
     display: flex;
     justify-content: center;
     gap: 5px;
     z-index: 10;
-  }
+
+    @media (max-width: 768px) {
+        margin-top: 10px;
+    }
+}
+
+.arrowIcon {
+    border-radius: 50%;
+    background-color: white;
+    margin-top: 10px;
+}

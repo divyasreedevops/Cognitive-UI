@@ -5,10 +5,12 @@
         <span>Cognitive Navigation</span>
     </div>
     <nav>
-        <app-subheader [isActive]="activeButton === 'adm'" (click)="setActive('adm')"></app-subheader>
-        <app-wxm [isActive]="activeButton === 'wxm'" (click)="setActive('wxm')"></app-wxm>
+        <ng-container *ngFor="let item of navInfo.navBtn">
+        <app-subheader [isActive]="activeButton === item.icon_name" (click)="setActive(item.icon_name)" [icon]="item.icon_url" [name]="item.icon_name"></app-subheader>
+        <!-- <app-wxm [isActive]="activeButton === 'wxm'" (click)="setActive('wxm')"></app-wxm> -->
+    </ng-container>
     </nav>
-    <div class="title">AIRLINE OPS MANAGER</div>
+    <!-- <div class="title">AIRLINE OPS MANAGER</div> -->
     <div class="icons">
         <mat-icon class="matclas">search</mat-icon>
         <mat-icon class="matclas">notifications</mat-icon>

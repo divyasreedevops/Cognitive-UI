@@ -11,9 +11,9 @@ import { MultimapComponent } from './shared/multimap/multimap.component';
 import { VideoClipComponent } from './airlineopsmanager/videoclip/clip.component';
 
 const routes: Routes = [
-  { path: '', redirectTo: '', pathMatch: 'full' },
+  { path: '', redirectTo: 'login', pathMatch: 'full' },
   {
-    path: '', component: MapComponent, canActivate: [AuthGuard]
+    path: '', component: LoginComponent, canActivate: [AuthGuard]
   },
   { path: 'login', component: LoginComponent },
   { path: 'mapview', component: MapViewerComponent, canActivate: [AuthGuard] },

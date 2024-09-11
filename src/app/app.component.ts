@@ -22,4 +22,9 @@ export class AppComponent {
     const hiddenRoutes = ['/login', '/opsmanager']; // Add your paths here
     return hiddenRoutes.includes(this.router.url); // Check if the current URL is one of the hidden routes
   }
+
+  isLoginPage(): boolean {
+    const hiddenRoutes = ['/login']; // Add your paths here
+    return hiddenRoutes.includes(this.router.url); // Check if the current URL is one of the hidden routes
+  }
 }
