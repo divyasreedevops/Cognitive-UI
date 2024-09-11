@@ -7,18 +7,20 @@ import { Router } from '@angular/router';
   styleUrls: ['./clip.component.css']
 })
 export class VideoClipComponent implements OnInit {
-  @ViewChild('videoPlayer') videoPlayer!: ElementRef<HTMLVideoElement>;
 
   constructor(private router: Router) {}
-
+timeoutId:any;
   ngOnInit(): void {
-    // Redirect after 3 seconds
-    setTimeout(() => {
-      this.router.navigate(['/multimaps']); // Replace '/another-route' with your desired route
+    this.timeoutId = setTimeout(() => {
+      this.router.navigate(['/multimaps']); 
     }, 3000);
   }
 
-  onLoadedMetadata(video: HTMLVideoElement): void {
-    video.play();
+
+  ngOnDestroy(): void {
+    // Clear the timeout when the component is destroyed
+    if (this.timeoutId) {
+      clearTimeout(this.timeoutId);
+    }
   }
 }
