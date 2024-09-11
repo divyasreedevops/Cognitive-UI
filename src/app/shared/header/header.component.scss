@@ -31,6 +31,7 @@
 .logo {
     display: flex;
     align-items: center;
+    width: min-content;
 
     img {
         height: 50px;
@@ -122,4 +123,9 @@ nav {
     border-radius: 50%;
     background-color: white;
     margin-top: 10px;
+}
+
+.title{
+    font-size: 1.5rem;
+    font-weight: 501;
 }
