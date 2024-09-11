@@ -19,7 +19,7 @@ export class AppComponent {
 
   // Check if the current route is login
   isLoginRoute(): boolean {
-    const hiddenRoutes = ['/login', '/opsmanager', '/videoclip']; // Add your paths here
+    const hiddenRoutes = ['/login', '/opsmanager']; // Add your paths here
     return hiddenRoutes.includes(this.router.url); // Check if the current URL is one of the hidden routes
   }
 }
