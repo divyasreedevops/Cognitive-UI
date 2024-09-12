@@ -4,8 +4,8 @@
             <mat-icon>arrow_back</mat-icon>
         </button>
     </div> -->
-    <div class="map" id="map1"></div>
-    <div class="map" id="map2"></div>
-    <div class="map" id="map3"></div>
-    <div class="map" id="map4"></div>
+    <div class="map" id="map1" [class.selected]="'map1' === selectedMapId"></div>
+    <div class="map" id="map2" [class.selected]="'map2' === selectedMapId"></div>
+    <div class="map" id="map3" [class.selected]="'map3' === selectedMapId"></div>
+    <div class="map" id="map4" [class.selected]="'map4' === selectedMapId"></div>
 </div>

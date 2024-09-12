@@ -44,6 +44,7 @@ import { Component, AfterViewInit } from '@angular/core';
 import * as L from 'leaflet';
 import { Location } from '@angular/common';
 import { SharedService } from 'src/app/Service/shared.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-multimap',
@@ -52,8 +53,10 @@ import { SharedService } from 'src/app/Service/shared.service';
 })
 export class MultimapComponent implements AfterViewInit {
   private maps: { [key: string]: L.Map } = {}; // Track maps by ID
+  selectedMapId: string ='map1';
   constructor(private location: Location,
-    private sharedService: SharedService
+    private sharedService: SharedService,
+    private router: Router
   ) {}
 
   ngAfterViewInit(): void {
@@ -88,7 +91,8 @@ export class MultimapComponent implements AfterViewInit {
       }).addTo(map);
       this.maps[mapId] = map;
       map.getContainer().addEventListener('click', () => {
-        this.toggleFullScreen(map.getContainer(), map);
+        // this.toggleFullScreen(map.getContainer(), map);
+        this.selectMap(mapId);
       });
     });
   }
@@ -100,7 +104,23 @@ export class MultimapComponent implements AfterViewInit {
       map.invalidateSize();
     }, 100); 
 
-    this.sharedService.updateSidebarContent({status:1});
+    // this.sharedService.updateSidebarContent({status:1});
+  }
+
+  ngOnInit(){
+    this.sharedService.sidebarContent$.subscribe(() => {
+      this.navigateToFullScreen(this.selectedMapId);
+    });
+  }
+
+  navigateToFullScreen(mapId: string) {
+    this.router.navigate(['/pansop', mapId]);
+  }
+ 
+  selectMap(mapId: string) {
+    this.selectedMapId = mapId;
+    // Optionally, you can add logic here to zoom or center the selected map
+    this.maps[mapId].invalidateSize();
   }
 
   goBack() {
