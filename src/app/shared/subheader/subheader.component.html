@@ -1,7 +1,8 @@
 <div class="adm-container">
     <!-- <button class="adm-button" [ngClass]="{'active': isActive}" (click)="toggleActive()"> -->
     <button class="adm-button" [ngClass]="{'active': isActive}">
-        <mat-icon>flight</mat-icon>
-        <span>ADM</span>
+        <img class="imgIconSize" [src]="icon" alt="">
+        <!-- <mat-icon>flight</mat-icon>-->
+        <span>{{name}}</span> 
     </button>
 </div>

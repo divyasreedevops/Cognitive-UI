@@ -32,6 +32,46 @@ export class HeaderComponent {
   @Input() activeButton: string = ''; // Receive the active button from parent
   @Output() activeChange = new EventEmitter<string>(); // Emit active button change
 
+  private navElement: HTMLElement | null = null;
+  navInfo: any = {
+    isTabActive:false,
+    navBtn:[
+      {
+        icon_url:'assets/icons/6.png',
+        icon_name:'ADM',
+      },
+      {
+        icon_url:'assets/icons/7.png',
+        icon_name:'WxM',
+      },
+      {
+        icon_url:'assets/icons/4.png',
+        icon_name:'APM',
+      },
+      {
+        icon_url:'assets/icons/5.png',
+        icon_name:'Airworthiness',
+      },
+      {
+        icon_url:'assets/icons/1.png',
+        icon_name:'FPM',
+      },
+      {
+        icon_url:'assets/icons/2.png',
+        icon_name:'NOTAM Management',
+      },
+      {
+        icon_url:'assets/icons/8.png',
+        icon_name:'Aircraft Tracking',
+      },
+      {
+        icon_url:'assets/icons/triangle.png',
+        icon_name:'Dashboard & Reports',
+      }
+    ],
+    navTitle:'AIRLINE OPS MANAGER'
+  };
+
   // Method to emit the button clicked event
   setActive(button: string) {
     this.activeChange.emit(button);
@@ -39,5 +79,8 @@ export class HeaderComponent {
   toggleNavbar() {
     this.isHeaderOpen = !this.isHeaderOpen;
   }
+
+
+ 
 }
 // keyboard_arrow_down
