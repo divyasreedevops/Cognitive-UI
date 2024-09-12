@@ -1,13 +1,19 @@
-.splash-container {
-  position: fixed;
-  top: 0;
-  left: 0;
+/* Container that covers the full screen */
+.full-screen-image-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr); /* Two columns */
+  grid-template-rows: repeat(2, 1fr);
+  height: 100vh; /* 100% of the viewport height */
+  width: 100vw;  /* 100% of the viewport width */
+  /* padding: 10px; */
+  box-sizing: border-box;
+  /* overflow: hidden; */
+}
+
+.full-screen-image-grid img {
   width: 100%;
   height: 100%;
-  background-image: url('/assets/images/background.jpg');
-  background-size: cover;
-  background-position: center;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  object-fit: cover; /* Ensures the image fills the grid space */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Optional: adds shadow */
+  overflow: hidden;
 }
