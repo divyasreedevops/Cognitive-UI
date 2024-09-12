@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, NavigationEnd, Event } from '@angular/router';
+import { filter } from 'rxjs/operators';
 
 @Component({
   selector: 'app-root',
@@ -11,7 +12,16 @@ export class AppComponent {
   // headerName = 'Cognitive Navigation';
   // headerIcon = 'assets/images/logo.png';
   activeButton: string = ''; // Track which button is active
-  constructor(public router: Router) {}
+  currentRoute: string = '';
+  navInfo:any='';
+  constructor(public router: Router) {
+    this.router.events
+      .pipe(filter((event: Event): event is NavigationEnd => event instanceof NavigationEnd)) // Narrow the type
+      .subscribe(event => {
+        this.currentRoute = event.urlAfterRedirects; // Set the current route
+        this.updateHeaderContent();
+      });
+  }
 
   setActive(button: string) {
     this.activeButton = button;
@@ -26,5 +36,56 @@ export class AppComponent {
   isLoginPage(): boolean {
     const hiddenRoutes = ['/login']; // Add your paths here
     return hiddenRoutes.includes(this.router.url); // Check if the current URL is one of the hidden routes
+  }
+
+  updateHeaderContent() {
+    console.log(this.currentRoute);
+    
+    if(this.currentRoute === '/opsmanager'){
+      this.navInfo={
+        isTabActive:false,
+        navBtn:[],
+        navTitle:'AIRLINE OPS MANAGER'
+      };
+    }else if(this.currentRoute === '/videoclip' || this.currentRoute === '/multimaps'){
+      this.navInfo={
+        isTabActive:true,
+        navBtn:[
+          {
+            icon_url:'assets/icons/6.png',
+            icon_name:'ADM',
+          },
+          {
+            icon_url:'assets/icons/7.png',
+            icon_name:'WxM',
+          },
+          {
+            icon_url:'assets/icons/4.png',
+            icon_name:'APM',
+          },
+          {
+            icon_url:'assets/icons/5.png',
+            icon_name:'Airworthiness',
+          },
+          {
+            icon_url:'assets/icons/1.png',
+            icon_name:'FPM',
+          },
+          {
+            icon_url:'assets/icons/2.png',
+            icon_name:'NOTAM Management',
+          },
+          {
+            icon_url:'assets/icons/8.png',
+            icon_name:'Aircraft Tracking',
+          },
+          {
+            icon_url:'assets/icons/triangle.png',
+            icon_name:'Dashboard & Reports',
+          }
+        ],
+        navTitle:''
+      };
+    }
   }
 }
