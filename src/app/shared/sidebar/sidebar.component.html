@@ -9,7 +9,7 @@
     </div>
 
     <ng-container *ngIf="!isMultiMapView">
-    <div class="sub-option" [ngClass]="{'active': selectedTab==='PANS-OPS'}"  (click)="selectedTab='PANS-OPS'">
+    <div class="sub-option" [ngClass]="{'active': selectedTab==='PANS-OPS'}"  (click)="navigateToFullMap()">
         <mat-icon class="maticon">dataset</mat-icon>
         <span>PANS-OPS</span>
     </div>

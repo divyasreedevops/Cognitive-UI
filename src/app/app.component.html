@@ -1,8 +1,8 @@
 <div class="main-container">
     <!-- <app-header [name]="headerName" [icon]="headerIcon"></app-header> -->
-    <app-header *ngIf="!isLoginPage()" [activeButton]="activeButton" (activeChange)="setActive($event)" [navInfo]="navInfo">
+    <app-header *ngIf="!isHeaderHide()" [activeButton]="activeButton" (activeChange)="setActive($event)" [navInfo]="navInfo">
     </app-header>
-    <app-sidebar *ngIf="!isLoginRoute()"></app-sidebar>
+    <app-sidebar *ngIf="!isSidebarHide()"></app-sidebar>
     <!-- <div class="subheader-container">
         <app-subheader></app-subheader> 
     </div> -->

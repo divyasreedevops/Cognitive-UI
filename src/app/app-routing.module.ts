@@ -9,6 +9,7 @@ import { HeaderComponent } from './shared/header/header.component';
 import { OpsManagerComponent } from './airlineopsmanager/opsmanager.component';
 import { MultimapComponent } from './shared/multimap/multimap.component';
 import { VideoClipComponent } from './airlineopsmanager/videoclip/clip.component';
+import { PansOpsComponent } from './shared/pans-ops/pans-ops.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
@@ -22,7 +23,8 @@ const routes: Routes = [
   { path: 'header', component: HeaderComponent },
   { path: 'opsmanager', component:OpsManagerComponent},
   {path: 'multimaps', component:MultimapComponent},
-  { path: 'videoclip', component: VideoClipComponent}
+  { path: 'videoclip', component: VideoClipComponent},
+  { path: 'pansop/:id', component: PansOpsComponent}
 ];
 
 @NgModule({

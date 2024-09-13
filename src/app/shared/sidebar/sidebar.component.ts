@@ -49,9 +49,9 @@ export class SidebarComponent {
 
   ngOnInit(){
     this.isMultiMapView = false;
-    this.sharedService.sidebarContent$.subscribe(() => {
-      this.isMultiMapView = true;
-    });
+    // this.sharedService.sidebarContent$.subscribe(() => {
+    //   this.isMultiMapView = true;
+    // });
   }
 
   toggleSidebar() {
@@ -60,5 +60,12 @@ export class SidebarComponent {
 
   navigateToMultiMap(){
     this.router.navigate(['/multimaps']);
+    this.isMultiMapView=false;
+  }
+ 
+  navigateToFullMap(){
+    this.selectedTab='PANS-OPS';
+    this.sharedService.updateSidebarContent({status:1});
+    this.isMultiMapView=true;
   }
 }
