@@ -1,69 +1,109 @@
-<div class="side-container" [ngClass]="{'collapsed': isCollapsed}">
-    <div class="tab-toggel" [ngClass]="{'displayEnd': !isMultiMapView || isCollapsed , 'displayBetween': isMultiMapView && !isCollapsed }">
-        <div class="arrow-hold" *ngIf="!isCollapsed && isMultiMapView">
-            <mat-icon (click)="navigateToMultiMap()">west</mat-icon>
-            <mat-icon>east</mat-icon>
+<div class="outer-hold">
+    <div class="side-container" [ngClass]="{'collapsed': isCollapsed}">
+        <div class="tab-toggel" [ngClass]="{'displayEnd': !isMultiMapView || isCollapsed , 'displayBetween': isMultiMapView && !isCollapsed }">
+            <div class="arrow-hold" *ngIf="!isCollapsed && isMultiMapView">
+                <mat-icon (click)="navigateToMultiMap()">west</mat-icon>
+                <mat-icon>east</mat-icon>
+            </div>
+            <mat-icon (click)="toggleSidebar()" class="tgbtn" *ngIf="!isCollapsed">chevron_left</mat-icon>
+            <mat-icon (click)="toggleSidebar()" class="tgbtn"*ngIf="isCollapsed">chevron_right</mat-icon>
         </div>
-        <mat-icon (click)="toggleSidebar()" class="tgbtn" *ngIf="!isCollapsed">chevron_left</mat-icon>
-        <mat-icon (click)="toggleSidebar()" class="tgbtn"*ngIf="isCollapsed">chevron_right</mat-icon>
-    </div>
-
-    <ng-container *ngIf="!isMultiMapView">
-    <div class="sub-option" [ngClass]="{'active': selectedTab==='PANS-OPS'}"  (click)="selectedTab='PANS-OPS'">
-        <mat-icon class="maticon">dataset</mat-icon>
-        <span>PANS-OPS</span>
-    </div>
-    <div class="sub-option" [ngClass]="{'active': selectedTab==='ENR'}"  (click)="selectedTab='ENR'">
-        <mat-icon class="maticon">dataset</mat-icon>
-        <span>ENR COMPATIBILITY</span>
-    </div>
-    <div class="sub-option" [ngClass]="{'active': selectedTab==='AIRPORT'}"  (click)="selectedTab='AIRPORT'">
-        <mat-icon class="maticon">dataset</mat-icon>
-        <span>AIRPORT COMPATIBILITY</span>
-    </div>
-</ng-container>
-
-<ng-container *ngIf="isMultiMapView && !isCollapsed">
-   
-    <ng-container *ngFor="let opt of selectFormat">
-    <div class="select">
-        <label for="">{{opt.label}}</label>
-        <select name="" id="">
-            <ng-container *ngFor="let item of opt.options">
-                <option>{{item}}</option>
-            </ng-container>
-        </select>
-    </div>
-</ng-container>
-
-<div class="toggle-outer">
-    <div class="tog">
-    <label for="">AIXM</label>
-    <div class="toggle-container">
-        <label class="toggle-label">
-          <input type="checkbox" >
-          <span class="toggle-switch"></span>
-        </label>
-      </div>
-    </div>
-
-    <div class="tog">
-        <label for="">ARINC 424</label>
+    
+        <ng-container *ngIf="!isMultiMapView">
+        <div class="sub-option" [ngClass]="{'active': selectedTab==='PANS-OPS'}"  (click)="navigateToFullMap()">
+            <mat-icon class="maticon">dataset</mat-icon>
+            <span>PANS-OPS</span>
+        </div>
+        <div class="sub-option" [ngClass]="{'active': selectedTab==='ENR'}"  (click)="selectedTab='ENR'">
+            <mat-icon class="maticon">dataset</mat-icon>
+            <span>ENR COMPATIBILITY</span>
+        </div>
+        <div class="sub-option" [ngClass]="{'active': selectedTab==='AIRPORT'}"  (click)="selectedTab='AIRPORT'">
+            <mat-icon class="maticon">dataset</mat-icon>
+            <span>AIRPORT COMPATIBILITY</span>
+        </div>
+    </ng-container>
+    
+    <ng-container *ngIf="isMultiMapView && !isCollapsed">
+       
+        <ng-container *ngFor="let opt of selectFormat">
+        <div class="select">
+            <label for="">{{opt.label}}</label>
+            <select name="" id="">
+                <ng-container *ngFor="let item of opt.options">
+                    <option>{{item}}</option>
+                </ng-container>
+            </select>
+        </div>
+    </ng-container>
+    
+    <div class="toggle-outer">
+        <div class="tog">
+        <label for="">AIXM</label>
         <div class="toggle-container">
             <label class="toggle-label">
-              <input type="checkbox" >
+              <input type="checkbox" (change)="onToggleChange($event)">
               <span class="toggle-switch"></span>
             </label>
           </div>
         </div>
-</div>
-
-<div class="button-outer">
-
-    <button type="button">Export PDF</button>
-    <button type="button">Export GeoJSON</button>
-    <button type="button">Export CSV</button>
-</div>
-
-</ng-container>
-</div>
+    
+        <div class="tog">
+            <label for="">ARINC 424</label>
+            <div class="toggle-container">
+                <label class="toggle-label">
+                  <input type="checkbox" >
+                  <span class="toggle-switch"></span>
+                </label>
+              </div>
+            </div>
+    </div>
+    
+    <div class="button-outer">
+    
+        <button type="button">Export PDF</button>
+        <button type="button">Export GeoJSON</button>
+        <button type="button">Export CSV</button>
+    </div>
+    
+    </ng-container>
+    </div>
+    
+    <div class="tab" *ngIf="isAIXM">
+    
+        <div class="table-container">
+    
+            <ng-container *ngFor="let item of cropData; let j=index">
+    
+                <div class="title-hold">
+            <h4>{{ item.title }}</h4>
+            <mat-icon (click)="toggleExpand()" *ngIf="j===0">open_in_full</mat-icon>
+        </div>
+            <table>
+              <thead>
+                <tr>
+                  <th *ngFor="let column of item.columns">{{ column }}</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let row of item.rows">
+                  <td>{{ row.waypointIdentifier }}</td>
+                  <td>{{ row.pathDescriptor }}</td>
+                  <td>{{ row.flyOver }}</td>
+                  <td>{{ row.courseAngle }}</td>
+                  <td>{{ row.turnDirection }}</td>
+                  <td>{{ row.upperLimitAltitude }}</td>
+                  <td>{{ row.lowerLimitAltitude }}</td>
+                  <td>{{ row.speedLimit }}</td>
+                  <td>{{ row.tmDst }}</td>
+                  <td>{{ row.va }}</td>
+                  <td>{{ row.navigationSpecification }}</td>
+                </tr>
+              </tbody>
+            </table>
+            </ng-container>
+          </div>
+          
+              
+    </div>
+    </div>
