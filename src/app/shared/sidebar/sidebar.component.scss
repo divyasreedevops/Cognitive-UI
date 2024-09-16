@@ -1,200 +1,272 @@
 .side-container {
-    width: 16vw;
-    height: 100vh;
-    z-index: 1;
-  //  background: linear-gradient(267deg, rgb(134 183 202 / 58%) 1%, rgb(38 210 200 / 19%) 21%);
-  background: linear-gradient(267deg, rgb(58 82 91 / 71%) 1%, rgb(31 194 174 / 46%) 21%);
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-    padding: 6rem 1rem 1rem 1rem;
-    position: absolute;
-    transition: width 0.5s ease-in-out;
-    overflow-y: auto;
-  
-    &.collapsed {
-      width: 5vw;
-    }
-  
-    .sub-option {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      background-color: white;
-      padding: 10px;
-      font-size: 1rem;
-      font-weight: 501;
-      border-radius: 5px;
-      cursor: pointer;
-      transition: opacity 0.9s ease-in-out;
-  
-      span {
-        text-align: center;
-        width: 100%;
-         transition: width 0.9s ease-in-out;
-        
-        
-      }
+  width: 16vw;
+  height: 100vh;
+  z-index: 1;
+//  background: linear-gradient(267deg, rgb(134 183 202 / 58%) 1%, rgb(38 210 200 / 19%) 21%);
+background: linear-gradient(267deg, rgb(58 82 91 / 71%) 1%, rgb(31 194 174 / 46%) 21%);
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  padding: 6rem 1rem 1rem 1rem;
+  // position: absolute;
+  transition: width 0.5s ease-in-out;
+  overflow-y: auto;
 
-      mat-icon{
-        width: 50px;
-      }
+  &.collapsed {
+    width: 5vw;
+  }
+
+  .sub-option {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: white;
+    padding: 10px;
+    font-size: 1rem;
+    font-weight: 501;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: opacity 0.9s ease-in-out;
+
+    span {
+      text-align: center;
+      width: 100%;
+       transition: width 0.9s ease-in-out;
+      
+      
     }
-  
-    .sub-option:hover {
-      background-color: #0056b3;
-      color: white;
-    }
-  
-    .active {
-      background: linear-gradient(to right, #4acbd3, #0056b3);
-      color: white;
-    }
-  
-    .tab-toggel {
-      display: flex;
-    //   justify-content: flex-end;
-      cursor: pointer;
-  
-      .tgbtn {
-        background-color: #0056b3;
-        color: white;
-        width: 17px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        height: 30px;
-        border-radius: 3px;
-      }
-    }
-  
-    &.collapsed .sub-option span {
-    //   opacity: 0;
-    display: none;
-    opacity: 0;
-   
-    }
-  
-    &.collapsed .tab-toggel mat-icon {
-    //   transform: rotate(180deg);
-      transition: transform 0.5s ease-in-out;
+
+    mat-icon{
+      width: 50px;
     }
   }
-  
+
+  .sub-option:hover {
+    background-color: #0056b3;
+    color: white;
+  }
+
+  .active {
+    background: linear-gradient(to right, #4acbd3, #0056b3);
+    color: white;
+  }
+
+  .tab-toggel {
+    display: flex;
+  //   justify-content: flex-end;
+    cursor: pointer;
+
+    .tgbtn {
+      background-color: #0056b3;
+      color: white;
+      width: 17px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 30px;
+      border-radius: 3px;
+    }
+  }
+
+  &.collapsed .sub-option span {
+  //   opacity: 0;
+  display: none;
+  opacity: 0;
+ 
+  }
+
+  &.collapsed .tab-toggel mat-icon {
+  //   transform: rotate(180deg);
+    transition: transform 0.5s ease-in-out;
+  }
+}
+
 
 //   for multiMap View
 
 .select{
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
 
-    label{
-        font-size: 0.8rem;
-        font-weight: 501;
-        padding-left: 4px;
-        color: #05182a;
-    }
+  label{
+      font-size: 0.8rem;
+      font-weight: 501;
+      padding-left: 4px;
+      color: #05182a;
+  }
 
-    select{
-        height: 2.1rem;
-        font-size: .9rem;
-        border-radius: 6px;
-        border: 1px solid white;
-        padding: 0px 18px 0px 13px;
-    
-    }
+  select{
+      height: 2.1rem;
+      font-size: .9rem;
+      border-radius: 6px;
+      border: 1px solid white;
+      padding: 0px 18px 0px 13px;
+  
+  }
 }
 
 
 .toggle-container {
-    display: inline-block;
-    position: relative;
-  }
-  .toggle-label {
-    display: flex;
-    align-items: center;
-    cursor: pointer;
-  }
-  .toggle-switch {
-    position: relative;
-    display: inline-block;
-    width: 40px;
-    height: 20px;
-    background-color: white;
-    border-radius: 10px;
-    transition: background-color 0.3s;
-  }
-  .toggle-switch::before {
-    content: '';
-    position: absolute;
-    width: 16px;
-    height: 16px;
-    border-radius: 50%;
-    top: 2px;
-    left: 2px;
-    background-color: black;
-    transition: transform 0.3s;
-  }
-  input[type="checkbox"] {
-    display: none;
-  }
-  input[type="checkbox"]:checked + .toggle-switch {
-    background-color: #2196F3;
-  }
-  input[type="checkbox"]:checked + .toggle-switch::before {
-    transform: translateX(20px);
-  }
-  .toggle-text {
-    margin-left: 10px;
-    font-size: 14px;
-  }
+  display: inline-block;
+  position: relative;
+}
+.toggle-label {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+.toggle-switch {
+  position: relative;
+  display: inline-block;
+  width: 40px;
+  height: 20px;
+  background-color: white;
+  border-radius: 10px;
+  transition: background-color 0.3s;
+}
+.toggle-switch::before {
+  content: '';
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  top: 2px;
+  left: 2px;
+  background-color: black;
+  transition: transform 0.3s;
+}
+input[type="checkbox"] {
+  display: none;
+}
+input[type="checkbox"]:checked + .toggle-switch {
+  background-color: #2196F3;
+}
+input[type="checkbox"]:checked + .toggle-switch::before {
+  transform: translateX(20px);
+}
+.toggle-text {
+  margin-left: 10px;
+  font-size: 14px;
+}
 
-  .toggle-outer{
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    justify-content: center;
-    align-items: flex-end;
-    padding-right: 22px;
+.toggle-outer{
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  justify-content: center;
+  align-items: flex-end;
+  padding-right: 22px;
 
-    .tog{
-        display: flex;
-        gap: 11px;
-      }
+  .tog{
+      display: flex;
+      gap: 11px;
+    }
 
-      label{
-        font-weight: 501;
-        color: #042447;
-      }
-  }
-
-.button-outer{
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-
-    button{
-        width: 100%;
-        height: 2rem;
-        outline: 0;
-        border: 0;
-        border-radius: 6px;
-        background-color: #0056b3;
-        color: white;
+    label{
+      font-weight: 501;
+      color: #042447;
     }
 }
 
+.button-outer{
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+
+  button{
+      width: 100%;
+      height: 2rem;
+      outline: 0;
+      border: 0;
+      border-radius: 6px;
+      background-color: #0056b3;
+      color: white;
+  }
+}
+
 .arrow-hold{
-    display: flex;
-    align-items: center;
-    gap: 5px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
 }
 
 .displayEnd{
-   justify-content: flex-end;
+ justify-content: flex-end;
 }
 
 .displayBetween{
-    justify-content: space-between;
- }
+  justify-content: space-between;
+}
+
+.outer-hold {
+position: absolute; // Make the container absolute
+top: 0;
+left: 0;
+right: 0;
+bottom: 0;
+display: flex; // Ensures full height for both side-container and tab
+}
+
+.tab {
+flex-grow: 1; 
+height: 100vh; 
+// padding: 1rem; 
+// background-color: #f5f5f5; 
+// display: flex;
+// align-items: center; 
+// justify-content: center; 
+z-index: 1;
+position: relative;
+}
+
+
+.table-container {
+margin: 12px 12px 0px 12px;
+// border: 1px solid #000;
+padding: 10px;
+border-radius: 5px;
+position: absolute;
+bottom: 0;
+background-color: white;
+width: -webkit-fill-available;
+display: flex;
+flex-direction: column;
+overflow-y: auto;
+max-height: 40rem;
+}
+
+h4 {
+font-weight: bold;
+margin-bottom: 10px;
+}
+
+table {
+width: 100%;
+border-collapse: collapse;
+}
+
+thead th,
+tbody td {
+border: 1px solid #000;
+padding: 8px;
+text-align: center;
+}
+
+thead th {
+background-color: #f2f2f2;
+}
+
+tbody tr:nth-child(even) {
+background-color: #f9f9f9;
+}
+
+.title-hold{
+display: flex;
+align-items: center;
+justify-content: space-between;
+
+mat-icon{
+  cursor: pointer;
+}
+}
