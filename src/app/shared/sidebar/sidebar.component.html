@@ -26,7 +26,7 @@
     
     <ng-container *ngIf="isMultiMapView && !isCollapsed">
        
-        <ng-container *ngFor="let opt of selectFormat">
+        <!-- <ng-container *ngFor="let opt of selectFormat">
         <div class="select">
             <label for="">{{opt.label}}</label>
             <select name="" id="">
@@ -35,7 +35,21 @@
                 </ng-container>
             </select>
         </div>
-    </ng-container>
+    </ng-container> -->
+
+    <form [formGroup]="Airform" autocomplete="on" novalidate>
+      <ng-container *ngFor="let opt of selectFormat">
+        <div class="select">
+          <label for="">{{ opt.label }}</label>
+          <select [formControlName]="getFormControlName(opt.label)" (change)="onValueChange($event, opt.label)">
+            <ng-container *ngFor="let item of opt.options">
+              <option [value]="item">{{ item }}</option>
+            </ng-container>
+          </select>
+        </div>
+      </ng-container>
+    </form>
+    
     
     <div class="toggle-outer">
         <div class="tog">

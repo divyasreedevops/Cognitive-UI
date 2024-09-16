@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { SharedService } from 'src/app/Service/shared.service';
 import { Router } from '@angular/router';
+import { FormBuilder, FormGroup } from '@angular/forms';
 @Component({
   selector: 'app-sidebar',
   templateUrl: './sidebar.component.html',
@@ -14,7 +15,7 @@ export class SidebarComponent {
   selectFormat=[
     {
       label:'Airports',
-      options: ['Airport 1', 'Airport 2', 'Airport 3']
+      options: ['VOBL/Bengaluru (KIA)', 'Airport 2', 'Airport 3']
     },
     {
       label:'Runways',
@@ -39,19 +40,76 @@ export class SidebarComponent {
   // procedures = ['Procedure 1', 'Procedure 2', 'Procedure 3'];
   // procedureNames = ['Procedure Name 1', 'Procedure Name 2', 'Procedure Name 3'];
   // chartViews = ['Chart View 1', 'Chart View 2', 'Chart View 3'];
-
+  Airform !: FormGroup;
   constructor(
     private sharedService: SharedService,
-    private router: Router
+    private router: Router,
+    private formbuilder: FormBuilder
   ){
 
   }
 
   ngOnInit(){
     this.isMultiMapView = false;
+
+    this.Airform = this.formbuilder.group({
+      selectedAirport: [[]],
+      selectedRunway: [[]],
+      selectedTypeofProcedure: [[]],
+      selectedProcedureName: [[]],
+    });
     // this.sharedService.sidebarContent$.subscribe(() => {
     //   this.isMultiMapView = true;
     // });
+
+    // this.Airform.valueChanges.subscribe(values => {
+    //   // Update form values in the shared service
+    //   this.sharedService.updateFormValues(values);
+    // });
+
+   
+
+    // Listen for value changes on the entire form
+    this.Airform.valueChanges.subscribe((values) => {
+      console.log(values);
+      this.onFormValuesChange(values);
+    });
+  }
+
+
+  onFormValuesChange(values: any): void {
+    console.log('Form values changed:', values);
+    this.sharedService.updateFormValues(values);
+    // Add your logic here
+  }
+
+  // Triggered on select change, optional for individual selects
+  onValueChange(event: Event, label: string): void {
+    const formValues = this.Airform.value;
+
+  // Log the changed value and the entire form values
+  console.log(`${label} changed to:`, (event.target as HTMLSelectElement).value);
+  console.log('Current form values:', formValues);
+
+  // Send the entire form object to the shared service
+  this.sharedService.updateFormValues(formValues);
+    // Add individual select logic here if needed
+  }
+
+
+  getFormControlName(label: string): string {
+    switch (label) {
+      case 'Airports':
+        return 'selectedAirport';
+      case 'Runways':
+        return 'selectedRunway';
+      case 'Type of Procedures':
+        return 'selectedTypeofProcedure';
+      case 'Procedure Names':
+        return 'selectedProcedureName';
+      default:
+        return '';
+    }
   }
 
   toggleSidebar() {

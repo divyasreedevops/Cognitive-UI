@@ -114,7 +114,7 @@ export class MultimapComponent implements AfterViewInit {
   }
 
   navigateToFullScreen(mapId: string) {
-    this.router.navigate(['/pansop', mapId]);
+    this.router.navigate(['/map', mapId]);
   }
  
   selectMap(mapId: string) {
