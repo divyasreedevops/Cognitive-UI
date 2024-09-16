@@ -128,6 +128,7 @@ export class MapComponent implements OnInit {
       selectedTypeofProcedure: [[]],
       selectedProcedureName: [[]],
     });
+    this.selectedProcedureName=[];
     this.route.params.subscribe(params => {
       this.mapId = params['id'];
     });
@@ -136,7 +137,6 @@ export class MapComponent implements OnInit {
 
     this.sharedService.formValues$.subscribe(formData => {
       if (formData) {
-        console.log('Form data received in parent component:', formData);
         // Update the form values
         this.Airform.setValue(formData);
       }
@@ -1111,6 +1111,14 @@ export class MapComponent implements OnInit {
         this.optionsProcedureName = filteredOptions;
       }
     });
+
+    this.Airform.get('selectedProcedureName')?.valueChanges.subscribe((selectedProcedureName: string) => {
+      if(selectedProcedureName.length!==0){
+        const procedurename = selectedProcedureName;
+        this.selectedProcedureName.push(selectedProcedureName);
+         this.updateLayers();
+      }
+    })
   }
 
   loadFIR(event: Event) {
