@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Subject } from 'rxjs';
+import { BehaviorSubject, Subject } from 'rxjs';
 @Injectable({
   providedIn: 'root'
 })
@@ -12,5 +12,12 @@ export class SharedService {
 
   updateSidebarContent(content: any) {
     this.sidebarContentSource.next(content);
+  }
+
+  private formValuesSubject = new BehaviorSubject<any>(null);
+  formValues$ = this.formValuesSubject.asObservable();
+
+  updateFormValues(values: any) {
+    this.formValuesSubject.next(values);
   }
 }
