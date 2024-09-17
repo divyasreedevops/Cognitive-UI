@@ -8,7 +8,7 @@ import { AuthService } from '../Service/auth.service';
 import { Router } from '@angular/router';
 import { StreamServiceService } from '../Service/stream-service.service';
 import { Flight, Plane } from '../target';
-import { Subscription } from 'rxjs';
+import { retry, Subscription } from 'rxjs';
 import * as GeoJSON from 'geojson';
 declare module 'leaflet' {
   interface MarkerOptions {
@@ -90,14 +90,14 @@ export class MapComponent implements OnInit {
     turnDirection:'R'
     },
     {
-    waypointIdentifies:'BL404',
-    pathDesignator: 'TF',
-    angle:'254.09',
-    altitude:3400,
-    angleReduired:false,
-    distance:"12.80",
-    turnDirection:'R'
-    },
+      waypointIdentifies:'BL404',
+      pathDesignator: 'TF',
+      angle:'254.09',
+      altitude:3400,
+      angleReduired:false,
+      distance:"7.50",
+      turnDirection:'R'
+      },
     {
     waypointIdentifies:'OMUKA',
     pathDesignator: 'TF',
@@ -512,20 +512,20 @@ const newLon = referenceLon + deltaLon;
      const waypoints=[
       {
           waypoint:'BL402',
-          coordinates:[ 74.11138889, 28.18888889, 0.0 ]
+          coordinates:[ 77.91941944444444,13.205077777777777 ]
       },
       {
           waypoint:'BL403',
-          coordinates:[ 90.28303333, 32.4016944, 0.0 ]
+          coordinates:[  77.9148888888889, 13.078027777777777 ]
       }, {
           waypoint:'BL404',
-          coordinates:[ 130.31888889, 89.81833333, 0.0 ]
+          coordinates:[ 77.70667777777778 ,13.012808333333334]
       }, {
           waypoint:'OMUKA',
-          coordinates:[ 100.44081944, 33.23155, 0.0 ]
+          coordinates:[  77.64480833333334,12.542319444444445] 
       }, {
           waypoint:'AKTIM',
-          coordinates:[ 102.66602778, 28.34755556, 0.0 ]
+          coordinates:[  77.58271111111111,12.061094444444445 ]
       },
   ];
  const selectyedWayPoint= waypoints.find((ele)=>ele.waypoint===wayPoint);
@@ -533,13 +533,106 @@ const newLon = referenceLon + deltaLon;
 
   }
 
+  getDistance=(altitude:any,runwayLength:any=0)=>{
+    const distance =((altitude/200)*1852)+parseInt(runwayLength);
+    console.log(distance,"distance")
+    return distance;
+  }
+  vinc=(latitude1:any, longitude1:any, alpha1To2:any, s:any, reverse_output = false)=> {
+    console.log(s,"distance11")
+    if (s === 0) {
+        return [latitude1, longitude1];
+    }
+
+    const f = 1.0 / 298.257223563; // WGS84
+    const a = 6378137.0; // metres
+    const piD4 = Math.atan(1.0);
+    const two_pi = piD4 * 8.0;
+    alpha1To2=parseInt(alpha1To2)-90;
+    console.log(alpha1To2,"alpha1To2alpha1To2")
+    latitude1 = latitude1 * piD4 / 45.0;
+    longitude1 = longitude1 * piD4 / 45.0;
+    alpha1To2 = alpha1To2 * piD4 / 45.0;
+
+    if (alpha1To2 < 0.0) {
+        alpha1To2 += two_pi;
+    }
+    if (alpha1To2 > two_pi) {
+        alpha1To2 -= two_pi;
+    }
+
+    const b = a * (1.0 - f);
+    const TanU1 = (1 - f) * Math.tan(latitude1);
+    const U1 = Math.atan(TanU1);
+    const sigma1 = Math.atan2(TanU1, Math.cos(alpha1To2));
+    const Sinalpha = Math.cos(U1) * Math.sin(alpha1To2);
+    const cosalpha_sq = 1.0 - Sinalpha * Sinalpha;
+    const u2 = cosalpha_sq * (a * a - b * b) / (b * b);
+    const A = 1.0 + (u2 / 16384) * (4096 + u2 * (-768 + u2 * (320 - 175 * u2)));
+    const B = (u2 / 1024) * (256 + u2 * (-128 + u2 * (74 - 47 * u2)));
+
+    let sigma = s / (b * A);
+    let last_sigma = 2.0 * sigma + 2.0;
+    let two_sigma_m = 0;
+
+    while (Math.abs((last_sigma - sigma) / sigma) > 1.0e-9) {
+        two_sigma_m = 2 * sigma1 + sigma;
+        const delta_sigma = B * Math.sin(sigma) * (
+            Math.cos(two_sigma_m) + (B / 4) * (
+                Math.cos(sigma) * (
+                    -1 + 2 * Math.pow(Math.cos(two_sigma_m), 2) - (B / 6) * Math.cos(two_sigma_m) * (-3 + 4 * Math.pow(Math.sin(sigma), 2)) * (-3 + 4 * Math.pow(Math.cos(two_sigma_m), 2))
+                )
+            )
+        );
+        last_sigma = sigma;
+        sigma = (s / (b * A)) + delta_sigma;
+    }
+
+    const latitude2 = Math.atan2(
+        (Math.sin(U1) * Math.cos(sigma) + Math.cos(U1) * Math.sin(sigma) * Math.cos(alpha1To2)),
+        ((1 - f) * Math.sqrt(Math.pow(Sinalpha, 2) + Math.pow(Math.sin(U1) * Math.sin(sigma) - Math.cos(U1) * Math.cos(sigma) * Math.cos(alpha1To2), 2)))
+    );
+
+    const lambda = Math.atan2(
+        (Math.sin(sigma) * Math.sin(alpha1To2)),
+        (Math.cos(U1) * Math.cos(sigma) - Math.sin(U1) * Math.sin(sigma) * Math.cos(alpha1To2))
+    );
+
+    const C = (f / 16) * cosalpha_sq * (4 + f * (4 - 3 * cosalpha_sq));
+    const omega = lambda - (1 - C) * f * Sinalpha * (
+        sigma + C * Math.sin(sigma) * (
+            Math.cos(two_sigma_m) + C * Math.cos(sigma) * (-1 + 2 * Math.pow(Math.cos(two_sigma_m), 2))
+        )
+    );
+
+    let longitude2 = longitude1 + omega;
+    let alpha21 = Math.atan2(Sinalpha, -Math.sin(U1) * Math.sin(sigma) + Math.cos(U1) * Math.cos(sigma) * Math.cos(alpha1To2));
+
+    alpha21 += two_pi / 2.0;
+    if (alpha21 < 0.0) {
+        alpha21 += two_pi;
+    }
+    if (alpha21 > two_pi) {
+        alpha21 -= two_pi;
+    }
+
+    const latitude2_deg = latitude2 * 45.0 / piD4;
+    const longitude2_deg = longitude2 * 45.0 / piD4;
+    const alpha21_deg = alpha21 * 45.0 / piD4;
+   console.log(latitude2_deg,longitude2_deg,"longitude2_deg")
+    if (reverse_output) {
+        return [longitude2_deg, latitude2_deg];
+    } else {
+        return [latitude2_deg, longitude2_deg];
+    }
+}
 
   createGeoJsonPointObject=(procedures:any)=>{
 
     var  featureCollection: GeoJSON.FeatureCollection<GeoJSON.Point>= {
       "type": "FeatureCollection",
       "features": [
-        { "type": "Feature", "properties": { "Name": "IF",  "Speed": "", "Altitude": "" }, "geometry": { "type": "Point", "coordinates":[88.58495556, 27.226025,0] } }
+        { "type": "Feature", "properties": { "Name": "IF",  "Speed": "", "Altitude": "" }, "geometry": { "type": "Point", "coordinates":[ 77.68603,13.20716] } }
       ]
       }
 
@@ -550,7 +643,9 @@ const newLon = referenceLon + deltaLon;
         console.log(ele.waypointIdentifies)
           if(ele.waypointIdentifies==='-')
           {
-            coordinates  =  this.calculateCoordinated(  88.58495556, 27.226025,ele.angle)
+            const distance=this.getDistance( parseInt(ele.altitude) ,4120)
+            coordinates  =  this.vinc(  77.68603,13.20716,ele.angle,distance,false)
+            console.log(coordinates,"coordinatescoordinates")
             featureCollection.features.push(
                { "type": "Feature", "properties": { "Name":  ele.waypointIdentifies,  "Speed": "", "Altitude": ele.altitude }, "geometry": { "type": "Point", "coordinates":coordinates } }
             );
@@ -565,7 +660,17 @@ const newLon = referenceLon + deltaLon;
     return featureCollection;
   }
 
+
+
+
+
+
   updateLayers(): void {
+
+
+
+
+
     // Clear existing layers
     this.airportLayerGroup.clearLayers();
 
