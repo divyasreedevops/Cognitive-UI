@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { Router, NavigationEnd, Event } from '@angular/router';
 import { filter } from 'rxjs/operators';
+import { SharedService } from './Service/shared.service';
 
 @Component({
   selector: 'app-root',
@@ -14,7 +15,7 @@ export class AppComponent {
   activeButton: string = ''; // Track which button is active
   currentRoute: string = '';
   navInfo:any='';
-  constructor(public router: Router) {
+  constructor(public router: Router,private sharedService: SharedService) {
     this.router.events
       .pipe(filter((event: Event): event is NavigationEnd => event instanceof NavigationEnd)) // Narrow the type
       .subscribe(event => {
@@ -23,6 +24,20 @@ export class AppComponent {
       });
   }
 
+  ngOnInit(){
+
+    const storedNav = localStorage.getItem('activeNav');
+    if (storedNav) {
+      this.activeButton = storedNav;
+    }
+
+    this.sharedService.navbar$.subscribe((selectedNav:any) => {
+   
+      this.activeButton = selectedNav;
+      localStorage.setItem('activeNav', selectedNav);
+    
+  });
+  }
   setActive(button: string) {
     this.activeButton = button;
   }
@@ -39,7 +54,6 @@ export class AppComponent {
   }
 
   updateHeaderContent() {
-    console.log(this.currentRoute);
     
     if(this.currentRoute === '/opsmanager'){
       this.navInfo={
@@ -48,6 +62,9 @@ export class AppComponent {
         navTitle:'AIRLINE OPS MANAGER'
       };
     }else if(this.currentRoute === '/videoclip' || this.currentRoute === '/multimaps'){
+      
+      
+
       this.navInfo={
         isTabActive:true,
         navBtn:[

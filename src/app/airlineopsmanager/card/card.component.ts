@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 
 @Component({
   selector: 'app-card',
@@ -11,4 +11,9 @@ export class CardComponent {
   @Input() title: string | undefined;
   @Input() description: string | undefined;
   @Input() router: string | undefined;
+  @Output() cardSelected = new EventEmitter<string>();
+
+  onCardClick() {
+    this.cardSelected.emit(this.title);
+  }
 }

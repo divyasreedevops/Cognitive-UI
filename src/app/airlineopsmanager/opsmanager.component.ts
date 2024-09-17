@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
+import { SharedService } from '../Service/shared.service';
 
 @Component({
   selector: 'app-opsmanager',
@@ -7,6 +8,9 @@ import { Component } from '@angular/core';
   styleUrl: './opsmanager.component.css'
 })
 export class OpsManagerComponent {
+
+  constructor(private sharedService: SharedService){}
+
     cards = [
         {
           title: 'ADM',
@@ -57,4 +61,8 @@ export class OpsManagerComponent {
           router: 'opsmanager',
         }
       ];
+
+      onCardSelected(cardTitle: string) {
+        this.sharedService.updatenavbar(cardTitle);
+      }
 }
