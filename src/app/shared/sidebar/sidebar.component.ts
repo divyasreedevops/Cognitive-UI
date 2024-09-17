@@ -433,11 +433,27 @@ export class SidebarComponent {
     this.router.navigate(['/multimaps']);
     this.isMultiMapView=false;
     this.isAIXM = false;
+    this.selectedTab='';
   }
 
   navigateToFullMap(){
     this.selectedTab='PANS-OPS';
     this.sharedService.updateSidebarContent({status:1});
+    this.selectedAirport = [];
+    this.selectedRunway = [];
+    this.selectedTypeofProcedure = [];
+    this.selectedProcedureName = [];
+    this.optionsBengaluruKIARunway = [];
+    this.optionsVIJPJAIPURRunway = [];
+    this.optionsVEPYPAKYONGRunway = [];
+    this.optionsRWY_09TypeofProcedure = [];
+    this.optionsRWY_27TypeofProcedure = [];
+    this.optionsRWY_02TypeofProcedure = [];
+    this.optionsRWY_20TypeofProcedure = [];
+    this.optionsRWY_09LTypeofProcedure = [];
+    this.optionsRWY_27RTypeofProcedure = [];
+    this.optionsVEPYTypeofProcedure = [];
+    this.optionsProcedureName = [];
     this.isMultiMapView=true;
   }
 

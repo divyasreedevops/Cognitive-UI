@@ -6,6 +6,12 @@
 </div>
 <div class="cards-container">
 <div *ngFor="let item of cards">
-    <app-card [icon]="item.icon" [title]="item.title" [description]="item.description" [router]="item.router"></app-card>
+  <app-card 
+  [icon]="item.icon" 
+  [title]="item.title" 
+  [description]="item.description" 
+  [router]="item.router"
+  (cardSelected)="onCardSelected($event)">
+</app-card>
   </div>
 </div>

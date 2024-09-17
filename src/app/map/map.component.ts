@@ -135,6 +135,13 @@ export class MapComponent implements OnInit {
     this.initMap();
     this.watchAirportChanges();
 
+    this.selectedAirport = [];
+    this.selectedRunway = [];
+    this.selectedTypeofProcedure = [];
+    this.selectedProcedureName = [];
+
+    this.updateLayers();
+
     this.sharedService.formValues$.subscribe(formData => {
       if (formData) {
         // Update the form values
@@ -794,7 +801,6 @@ export class MapComponent implements OnInit {
 
 
   watchAirportChanges(): void {
-    console.log(this.Airform);
     this.Airform.get('selectedAirport')?.valueChanges.subscribe((selectedAirport: string[]) => {
       console.log('trigger');
       // Clear all runway and procedure options when the selected airport changes

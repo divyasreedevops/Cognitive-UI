@@ -20,4 +20,11 @@ export class SharedService {
   updateFormValues(values: any) {
     this.formValuesSubject.next(values);
   }
+
+  private navbar = new Subject<any>();
+  navbar$ = this.navbar.asObservable();
+
+  updatenavbar(content: any) {
+    this.navbar.next(content);
+  }
 }
