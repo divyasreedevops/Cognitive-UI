@@ -104,5 +104,12 @@ export class AppComponent {
         navTitle:''
       };
     }
+    else if(this.currentRoute === '/map/map1' || this.currentRoute === '/map/map2' || this.currentRoute === '/map/map3' || this.currentRoute === '/map/map4')  {
+      this.navInfo={
+        isTabActive:false,
+        navBtn:[],
+        navTitle:''
+      };
+    }
   }
 }

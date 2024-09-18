@@ -32,6 +32,9 @@ export class HeaderComponent {
   @Input() activeButton: string = ''; // Receive the active button from parent
   @Output() activeChange = new EventEmitter<string>(); // Emit active button change
   @Input() navInfo:any={};
+  selectedOption: string = 'AIRAC 2402';  // Default selected option
+  dropdownOptions: string[] = ['AIRAC 2402', 'AIRAC 2401', 'Compare'];
+  searchQuery = '';
  
 
   // Method to emit the button clicked event

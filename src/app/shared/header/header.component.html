@@ -4,20 +4,39 @@
             alt="Cognitive Navigation" decoding="async">
         <span>Cognitive Navigation</span>
     </div>
+
     <nav *ngIf="navInfo.isTabActive">
         <ng-container *ngFor="let item of navInfo.navBtn">
-        <app-subheader [isActive]="activeButton === item.icon_name" (click)="setActive(item.icon_name)" [icon]="item.icon_url" [name]="item.icon_name"></app-subheader>
-        <!-- <app-wxm [isActive]="activeButton === 'wxm'" (click)="setActive('wxm')"></app-wxm> -->
-    </ng-container>
+            <app-subheader [isActive]="activeButton === item.icon_name" (click)="setActive(item.icon_name)"
+                [icon]="item.icon_url" [name]="item.icon_name"></app-subheader>
+        </ng-container>
     </nav>
-    <div class="title">{{navInfo.navTitle}}</div>
-    <div class="icons">
-        <mat-icon class="matclas">search</mat-icon>
-        <mat-icon class="matclas">notifications</mat-icon>
-        <mat-icon class="matclas">manage_accounts</mat-icon>
+
+    <div class="title">{{ navInfo.navTitle }}</div>
+
+    <!-- Search box and dropdown -->
+    <div class="right-controls">
+
+        <div class="custom-dropdown">
+            <select [(ngModel)]="selectedOption" class="dropdown-select">
+                <option *ngFor="let option of dropdownOptions" [value]="option">{{ option }}</option>
+            </select>
+        </div>
+    
+        <!-- Search Box -->
+        <div class="search-box">
+            <input matInput placeholder="Search" [(ngModel)]="searchQuery" />
+        </div>
+
+        <!-- Icons -->
+        <div class="icons">
+            <mat-icon class="matclas">search</mat-icon>
+            <mat-icon class="matclas">notifications</mat-icon>
+            <mat-icon class="matclas">manage_accounts</mat-icon>
+        </div>
     </div>
 </div>
+
 <div class="devArrowIcon">
-    <mat-icon (click)="toggleNavbar()" class="arrowIcon">{{ isHeaderOpen ? 'keyboard_arrow_up' : 'keyboard_arrow_down'
-        }}</mat-icon>
+    <mat-icon (click)="toggleNavbar()" class="arrowIcon">{{ isHeaderOpen ? 'keyboard_arrow_up' : 'keyboard_arrow_down' }}</mat-icon>
 </div>

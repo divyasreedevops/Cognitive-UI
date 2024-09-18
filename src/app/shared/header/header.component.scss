@@ -129,3 +129,55 @@ nav {
     font-size: 1.5rem;
     font-weight: 501;
 }
+
+.header-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.custom-dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.dropdown-select {
+    background-color: #28a745;  /* Green background for dropdown */
+    color: white;
+    border: 2px solid black;
+    padding: 10px 20px;
+    font-size: 18px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.dropdown-select option {
+    padding: 10px;
+    color: black;
+    background-color: white;  /* Default background for options */
+}
+
+.dropdown-select option[value="AIRAC 2401"] {
+    background-color: orange;
+}
+
+.dropdown-select option[value="Compare"] {
+    background-color: blue;
+    color: white;
+}
+
+.search-box input {
+    padding: 10px;
+    font-size: 18px;
+    width: 200px;
+    border: 2px solid black;
+    border-radius: 5px;
+    background-color: #f5f5f5;
+    height: 46px;
+}
+
+.right-controls{
+    display: flex;
+    gap: 10px;
+    margin-right: 10px;
+}
