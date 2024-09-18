@@ -8,7 +8,7 @@ import { AuthService } from '../Service/auth.service';
 import { Router } from '@angular/router';
 import { StreamServiceService } from '../Service/stream-service.service';
 import { Flight, Plane } from '../target';
-import { retry, Subscription } from 'rxjs';
+import {  Subscription } from 'rxjs';
 import * as GeoJSON from 'geojson';
 declare module 'leaflet' {
   interface MarkerOptions {
@@ -636,8 +636,14 @@ const newLon = referenceLon + deltaLon;
       ]
       }
 
+      var lineJson:GeoJSON.FeatureCollection<GeoJSON.MultiLineString>  ={
+        "type": "FeatureCollection",
+        "features": [
+        { "type": "Feature", "properties": {  "Distance": "123.50", "Bearing": "87.52" }, "geometry": { "type": "MultiLineString", "coordinates": [ [ [ 74.11138889, 28.18888889 ], [ 76.44081944, 28.23155 ] ] ] } },
+         ]
+        }
+
     procedures.map((procedure:any)=>{
-      const procedurelength= procedure.procedure.length;
       procedure.procedure.map((ele:any,index:number)=>{
         var coordinates:number[];
         console.log(ele.waypointIdentifies)
@@ -649,15 +655,22 @@ const newLon = referenceLon + deltaLon;
             featureCollection.features.push(
                { "type": "Feature", "properties": { "Name":  ele.waypointIdentifies,  "Speed": "", "Altitude": ele.altitude }, "geometry": { "type": "Point", "coordinates":coordinates } }
             );
+            lineJson.features.splice(1,0);
+           lineJson.features.push({ "type": "Feature", "properties": {  "Distance": distance.toString(), "Bearing": parseInt(ele.angle)-90+"" }, "geometry": { "type": "MultiLineString", "coordinates": [ [ [ 77.68603,13.20716 ], coordinates ] ] } },)
+
           }else{
             featureCollection.features.push(
               { "type": "Feature", "properties": { "Name": ele.waypointIdentifies,  "Speed": "", "Altitude": ele.altitude }, "geometry": { "type": "Point", "coordinates":this.getWaypoints(ele.waypointIdentifies) } }
            );
+           const prevCoordinates=lineJson.features[lineJson.features.length-1].geometry.coordinates;
+           const angle= ele.angle !== "-" ?parseInt(ele.angle)-90+"": -90+"";
+           lineJson.features.push({ "type": "Feature", "properties": {  "Distance": "", "Bearing": angle }, "geometry": { "type": "MultiLineString", "coordinates": [ [ prevCoordinates[0][1], this.getWaypoints(ele.waypointIdentifies) ] ] } },)
+
           }
       })
     })
-
-    return featureCollection;
+   console.log(lineJson,"Linejson")
+    return {pointJson:featureCollection,lineJson:lineJson};
   }
 
 
@@ -706,7 +719,8 @@ const newLon = referenceLon + deltaLon;
           }
         });
 
-     const pjson: GeoJSON.FeatureCollection<GeoJSON.Point> =   this.createGeoJsonPointObject(this.procedures);
+     const pointLineJsons =   this.createGeoJsonPointObject(this.procedures);
+     console.log(  JSON.stringify(pointLineJsons.lineJson) )
         this.airportLayerGroup.addLayer(geoLayer);
 
         const stepIcon = L.icon({
@@ -717,7 +731,7 @@ const newLon = referenceLon + deltaLon;
         });
 
         const geoJsonLayer = L.geoJSON(
-          pjson, {
+          pointLineJsons.pointJson, {
           pointToLayer: (feature, latlng) => {
             const marker = L.marker(latlng, { icon: stepIcon });
 
@@ -754,121 +768,103 @@ const newLon = referenceLon + deltaLon;
         this.map.fitBounds(geoJsonLayer.getBounds());
 
         // Load Line_SID GeoJSON datat  
-        const lineResponse = await fetch(lineFileName);
-        const lineData = await lineResponse.json();
+        // const lineResponse = await fetch(lineFileName);
+        const lineData :GeoJSON.FeatureCollection<GeoJSON.MultiLineString>= pointLineJsons.lineJson;
+          const lineFeatures = lineData.features; // Assuming lineData is your GeoJSON data
 
-        const lineFeatures = lineData.features; // Assuming lineData is your GeoJSON data
-
-        // this.lineGeoJsonLayer = L.geoJSON(lineData, {
-        //   style: {
-        //     color: 'black', // Set line color
-        //     weight: 2 // Set line weight
-        //   },
-
-        //   onEachFeature: (feature, layer) => {
-
-        //     const currentIndex = lineFeatures.indexOf(feature); // Get the index of the current feature
-
-        //     if (feature.properties) {
-        //       const bearing = feature.properties.Bearing;
-        //       const distance = feature.properties.Distance;
-
-        //       // Check if either Bearing or Distance is available
-        //       if (bearing !== null || distance !== null) {
-        //         // Get the coordinates of the line
-        //         let coordinates: number[][] = [];
-        //         if (feature.geometry.type === 'MultiLineString') {
-        //           coordinates = feature.geometry.coordinates[0]; // For MultiLineString, choose the first line
-        //         } else if (feature.geometry.type === 'LineString') {
-        //           coordinates = feature.geometry.coordinates;
-        //         }
-
-        //         const start = coordinates[0];
-        //         const end = coordinates[1];
-
-        //         // Calculate the angle between start and end points in radians
-        //         let angle = Math.atan2(end[1] - start[1], end[0] - start[0]);
-
-        //         // Ensure angle is positive
-        //         if (angle < 0) {
-        //           angle += 2 * Math.PI;
-        //         }
-
-        //         // Calculate the center point of the line segment
-        //         const center = [(start[0] + end[0]) / 2, (start[1] + end[1]) / 2];
-
-        //         let rotationAngle; // Declare rotationAngle variable here
-
-        //         if (distance !== null) {
-        //           // Create a custom icon
-        //           const customIcon = L.icon({
-        //             iconUrl: 'assets/AKTIM_7A/penta.png',
-        //             iconSize: [44, 36],
-        //             iconAnchor: [20, 19]
-        //           });
-
-        //           // Calculate the rotation angle in degrees for the icon
-        //           let iconRotationAngle = parseFloat(bearing);
-
-        //           // If current bearing is null, use the next bearing value
-        //           if (isNaN(iconRotationAngle)) {
-        //             const nextIndex = currentIndex + 1;
-        //             if (nextIndex < lineFeatures.length) {
-        //               const nextFeature = lineFeatures[nextIndex];
-        //               if (nextFeature.properties && nextFeature.properties.Bearing) {
-        //                 iconRotationAngle = parseFloat(nextFeature.properties.Bearing);
-        //               }
-        //             }
-        //           }
-
-        //           // Create a marker with a custom icon at the center point and rotation
-        //           const marker = L.marker(L.latLng(center[1], center[0]), {
-        //             icon: customIcon,
-        //             rotationAngle: iconRotationAngle // Set rotation angle based on line direction or bearing
-        //           }).addTo(this.airportLayerGroup);
-
-        //           // Calculate the rotation angle for the distance text relative to the line direction
-        //           if (iconRotationAngle !== null) {
-        //             if (iconRotationAngle >= 0 && iconRotationAngle < 180) {
-        //               // Angle between 0 and 180 degrees
-        //               rotationAngle = iconRotationAngle - 90;
-        //             } else {
-        //               // Angle between 180 and 360 degrees
-        //               rotationAngle = iconRotationAngle + 90;
-        //             }
-        //           } else {
-        //             // Default rotation angle if iconRotationAngle is null
-        //             rotationAngle = angle * (180 / Math.PI) - 90;
-        //           }
-
-        //           // Bind tooltip with distance text to the marker, rotate dynamically based on the line direction
-        //           const distanceTooltip = `<div style="transform: rotate(${rotationAngle}deg); font-size: 8px;">${feature.properties.Distance}</div>`;
-        //           marker.bindTooltip(distanceTooltip, {
-        //             permanent: true,
-        //             direction: 'center',
-        //             className: 'labelstyle',
-        //             opacity: 1
-        //           });
-        //         }
-
-        //         if (bearing !== null) {
-        //           // Add bearing text outside the icon
-        //           const bearingMarker = L.marker(L.latLng(center[1], center[0]), {
-        //             rotationAngle: rotationAngle, // Set rotation angle
-        //             icon: L.divIcon({
-        //               className: 'bearing-label', // Custom CSS class for styling
-        //               html: `<div style="font-size: 8px;">${feature.properties.Bearing}</div>`, // HTML content for the bearing text
-        //               iconAnchor: [10, 20] // Adjust the icon anchor to shift the bearing text above by 20 pixels
-        //             })
-        //           }).addTo(this.airportLayerGroup);
-        //         }
-        //       }
-
-        //     }
-        //   }
-        // });
-
-        // this.airportLayerGroup.addLayer(this.lineGeoJsonLayer);
+          this.lineGeoJsonLayer = L.geoJSON(lineData, {
+              style: {
+                  color: 'black', // Set line color
+                  weight: 2 // Set line weight
+              },
+              onEachFeature: (feature: GeoJSON.Feature<GeoJSON.MultiLineString>, layer) => {
+                  const currentIndex = lineFeatures.indexOf(feature as GeoJSON.Feature<GeoJSON.MultiLineString>); // Type assertion here
+          
+                  if (feature.properties) {
+                      const bearing = feature.properties['Bearing'];
+                      const distance = feature.properties['Distance'];
+          
+                      if (bearing !== null || distance !== null) {
+                          let coordinates: number[][] = [];
+                          if (feature.geometry.type === 'MultiLineString') {
+                              coordinates = feature.geometry.coordinates[0]; // For MultiLineString, choose the first line
+                          } else if (feature.geometry.type === 'LineString') {
+                              coordinates = feature.geometry.coordinates[0];
+                          }
+          
+                          const start = coordinates[0];
+                          const end = coordinates[1];
+          
+                          // Calculate the angle between start and end points in radians
+                          let angle = Math.atan2(end[1] - start[1], end[0] - start[0]);
+          
+                          // Ensure angle is positive
+                          if (angle < 0) {
+                              angle += 2 * Math.PI;
+                          }
+          
+                          // Calculate the center point of the line segment
+                          const center = [(start[0] + end[0]) / 2, (start[1] + end[1]) / 2];
+          
+                          let rotationAngle;
+          
+                          if (distance !== null) {
+                              const customIcon = L.icon({
+                                  iconUrl: 'assets/AKTIM_7A/penta.png',
+                                  iconSize: [44, 36],
+                                  iconAnchor: [20, 19]
+                              });
+          
+                              let iconRotationAngle = parseFloat(bearing);
+          
+                              if (isNaN(iconRotationAngle)) {
+                                  const nextIndex = currentIndex + 1;
+                                  if (nextIndex < lineFeatures.length) {
+                                      const nextFeature = lineFeatures[nextIndex];
+                                      if (nextFeature.properties && nextFeature.properties['Bearing']) {
+                                          iconRotationAngle = parseFloat(nextFeature.properties['Bearing']);
+                                      }
+                                  }
+                              }
+          
+                              const marker = L.marker(L.latLng(center[1], center[0]), {
+                                  icon: customIcon,
+                                  rotationAngle: iconRotationAngle
+                              }).addTo(this.airportLayerGroup);
+          
+                              if (iconRotationAngle !== null) {
+                                  rotationAngle = iconRotationAngle >= 0 && iconRotationAngle < 180 
+                                                  ? iconRotationAngle - 90 
+                                                  : iconRotationAngle + 90;
+                              } else {
+                                  rotationAngle = angle * (180 / Math.PI) - 90;
+                              }
+          
+                              const distanceTooltip = `<div style="transform: rotate(${rotationAngle}deg); font-size: 8px;">${feature.properties['Distance']}</div>`;
+                              marker.bindTooltip(distanceTooltip, {
+                                  permanent: true,
+                                  direction: 'center',
+                                  className: 'labelstyle',
+                                  opacity: 1
+                              });
+                          }
+          
+                          if (bearing !== null) {
+                              const bearingMarker = L.marker(L.latLng(center[1], center[0]), {
+                                  rotationAngle: rotationAngle,
+                                  icon: L.divIcon({
+                                      className: 'bearing-label',
+                                      html: `<div style="font-size: 8px;">${feature.properties['Bearing']}</div>`,
+                                      iconAnchor: [10, 20]
+                                  })
+                              }).addTo(this.airportLayerGroup);
+                          }
+                      }
+                  }
+              }
+          });
+          
+          this.airportLayerGroup.addLayer(this.lineGeoJsonLayer);
 
 
       } catch (error) {
