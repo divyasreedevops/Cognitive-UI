@@ -16,7 +16,7 @@
 
     <!-- Search box and dropdown -->
     <div class="right-controls">
-
+        <ng-container *ngIf="!navInfo.isTabActive">
         <div class="custom-dropdown">
             <select [(ngModel)]="selectedOption" class="dropdown-select">
                 <option *ngFor="let option of dropdownOptions" [value]="option">{{ option }}</option>
@@ -27,7 +27,7 @@
         <div class="search-box">
             <input matInput placeholder="Search" [(ngModel)]="searchQuery" />
         </div>
-
+    </ng-container>
         <!-- Icons -->
         <div class="icons">
             <mat-icon class="matclas">search</mat-icon>
