@@ -18,7 +18,7 @@
     <div class="right-controls">
         <ng-container *ngIf="!navInfo.isTabActive">
         <div class="custom-dropdown">
-            <select [(ngModel)]="selectedOption" class="dropdown-select">
+            <select [(ngModel)]="selectedOption" class="dropdown-select" (change)="sendDropdownOption()">
                 <option *ngFor="let option of dropdownOptions" [value]="option">{{ option }}</option>
             </select>
         </div>

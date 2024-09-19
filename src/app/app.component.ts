@@ -20,6 +20,7 @@ export class AppComponent {
       .pipe(filter((event: Event): event is NavigationEnd => event instanceof NavigationEnd)) // Narrow the type
       .subscribe(event => {
         this.currentRoute = event.urlAfterRedirects; // Set the current route
+        localStorage.setItem('currentRoute' , this.currentRoute);
         this.updateHeaderContent();
       });
   }

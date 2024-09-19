@@ -92,17 +92,54 @@
           </div>
   
           <!--Select Procedure Name -->
-          <div class="select">
+          <div class="select" *ngIf="!isCompare">
               <label for="selectedProcedureName">Procedure Name</label>
               <select formControlName="selectedProcedureName" [(ngModel)]="selectedProcedureName"  id="selectedProcedureName" (change)="onValueChange($event)">
                   <option *ngFor="let option of optionsProcedureName" [value]="option.value">{{ option.label }}</option>
               </select>
+
+
               
           </div>
+        
+          
+          
+          
+          
   
       
   </form>
-  
+  <div class="select" *ngIf="isCompare">
+    <label for="selectedProcedureName">Procedure Name</label>
+    <div class="multihold">
+      <input type="text" name="selectedOptions" id="selectedOptions" class="multi-select-container" readonly [ngModel]="selectedOptionstoshow.join(', ')" (click)="toggleDropdown()">
+      
+      <div class="multisection" *ngIf="isDropdownVisible">
+        <!-- Part 1 Options -->
+         <div>
+        <div class="multipart" *ngFor="let item of multipart1; let i = index" (click)="toggleSelection(item, 'part1', i)">
+          <span>
+            <mat-icon>
+              {{ isSelected(item, 'part1', i) ? 'check_box' : 'check_box_outline_blank' }}
+            </mat-icon>
+            <span class="txt-green">{{ item }}</span>
+          </span>
+        </div>
+      </div>
+        <!-- Part 2 Options -->
+         <div>
+        <div class="multipart" *ngFor="let item of multipart2; let i = index" (click)="toggleSelection(item, 'part2', i)">
+          <span>
+            <mat-icon>
+              {{ isSelected(item, 'part2', i) ? 'check_box' : 'check_box_outline_blank' }}
+            </mat-icon>
+            <span class="txt-red">{{ item }}</span>
+          </span>
+        </div>
+      </div>
+      </div>
+    </div>
+  </div>
     
     
     <div class="toggle-outer">
@@ -137,7 +174,7 @@
     </ng-container>
     </div>
     
-    <div class="tab" *ngIf="isAIXM">
+    <div class="tab" *ngIf="isAIXM && !isCompare">
     
         <div class="table-container">
     
@@ -174,4 +211,76 @@
           
               
     </div>
-    </div>
+    
+    <div class="tab" *ngIf="isAIXM && isCompare">
+    
+      <div class="table-container">
+        <div class="grid-container">
+          <div class="grid-item">
+            <ng-container >
+    
+              <div class="title-hold">
+          <h4>{{ compareObj.title }}</h4>
+          <!-- <mat-icon (click)="toggleExpand()" *ngIf="j===0">open_in_full</mat-icon> -->
+      </div>
+          <table>
+            <thead>
+              <tr>
+                <th *ngFor="let column of compareObj.columns">{{ column }}</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let row of compareObj.rows">
+                <td [ngClass]="{'bg-red': row.waypointIdentifier.flag}">{{ row.waypointIdentifier.value }}</td>
+                <td [ngClass]="{'bg-red': row.pathDescriptor.flag}">{{ row.pathDescriptor.value }}</td>
+                <td [ngClass]="{'bg-red': row.flyOver.flag}">{{ row.flyOver.value }}</td>
+                <td [ngClass]="{'bg-red': row.courseAngle.flag}">{{ row.courseAngle.value }}</td>
+                <td [ngClass]="{'bg-red': row.turnDirection.flag}">{{ row.turnDirection.value }}</td>
+                <td [ngClass]="{'bg-red': row.upperLimitAltitude.flag}">{{ row.upperLimitAltitude.value }}</td>
+                <td [ngClass]="{'bg-red': row.lowerLimitAltitude.flag}">{{ row.lowerLimitAltitude.value }}</td>
+                <td [ngClass]="{'bg-red': row.speedLimit.flag}">{{ row.speedLimit.value }}</td>
+                <td [ngClass]="{'bg-red': row.tmDst.flag}">{{ row.tmDst.value }}</td>
+                <td [ngClass]="{'bg-red': row.va.flag}">{{ row.va.value }}</td>
+                <td [ngClass]="{'bg-red': row.navigationSpecification.flag}">{{ row.navigationSpecification.value }}</td>
+              </tr>
+            </tbody>
+          </table>
+          </ng-container>
+          </div>
+          <div class="grid-item">
+            <ng-container >
+    
+              <div class="title-hold">
+          <h4>{{ obj2.title }}</h4>
+          <!-- <mat-icon (click)="toggleExpand()" *ngIf="j===0">open_in_full</mat-icon> -->
+      </div>
+          <table>
+            <thead>
+              <tr>
+                <th *ngFor="let column of obj2.columns">{{ column }}</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let row of obj2.rows">
+                <td>{{ row.waypointIdentifier }}</td>
+                <td>{{ row.pathDescriptor }}</td>
+                <td>{{ row.flyOver }}</td>
+                <td>{{ row.courseAngle }}</td>
+                <td>{{ row.turnDirection }}</td>
+                <td>{{ row.upperLimitAltitude }}</td>
+                <td>{{ row.lowerLimitAltitude }}</td>
+                <td>{{ row.speedLimit }}</td>
+                <td>{{ row.tmDst }}</td>
+                <td>{{ row.va }}</td>
+                <td>{{ row.navigationSpecification }}</td>
+              </tr>
+            </tbody>
+          </table>
+          </ng-container>
+          </div>
+        </div>
+        
+
+      </div>    
+  </div>
+  </div>

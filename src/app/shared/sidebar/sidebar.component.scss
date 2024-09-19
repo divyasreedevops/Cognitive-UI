@@ -1,5 +1,6 @@
 .side-container {
-  width: 16vw;
+  // width: 16vw;
+  width: 19vw;
   height: 100vh;
   z-index: 2;
 //  background: linear-gradient(267deg, rgb(134 183 202 / 58%) 1%, rgb(38 210 200 / 19%) 21%);
@@ -104,6 +105,17 @@ background: linear-gradient(267deg, rgb(58 82 91 / 71%) 1%, rgb(31 194 174 / 46%
       padding: 0px 18px 0px 13px;
   
   }
+
+  .multi-select-container {
+    border-radius: 6px;
+    border: 1px solid white;
+    padding: 10px;
+    max-height: 150px;
+    overflow-y: auto; 
+    background-color: #f8f9fa; 
+    height: 2.1rem;
+    width: 100%;
+  }
 }
 
 
@@ -124,6 +136,7 @@ background: linear-gradient(267deg, rgb(58 82 91 / 71%) 1%, rgb(31 194 174 / 46%
   background-color: white;
   border-radius: 10px;
   transition: background-color 0.3s;
+  z-index: -1;
 }
 .toggle-switch::before {
   content: '';
@@ -269,4 +282,69 @@ justify-content: space-between;
 mat-icon{
   cursor: pointer;
 }
+}
+
+.grid-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr; /* Two columns with equal width */
+  gap: 10px; /* Space between the two divs */
+  max-width: 100%; /* Adjust as per your layout */
+}
+
+.grid-item {
+  padding: 20px; /* Some padding for spacing inside the div */
+  border: 1px solid #ddd; /* Border for visual separation */
+  overflow-x: auto;
+}
+
+
+.multihold{
+  position: relative;
+  .multisection{
+    position: absolute;
+    background-color: white;
+    width: 100%;
+    max-height: 233px;
+    // display: flex;
+    // flex-direction: column;
+    // gap: 5px;
+    // padding: 12px;
+    border-radius: 4px;
+    top: 36px;
+    overflow-y: auto;
+    display: grid;
+  grid-template-columns: 1fr 1fr;
+    span{
+      display: flex;
+      align-items: center;
+      // gap: 6px;
+      cursor: pointer;
+      padding: 4px;
+    }
+
+    span:hover{
+      background-color: lightgray;
+    }
+
+    .multipart{
+    display: flex;
+    flex-direction: column;
+    // gap: 5px;
+    padding: 2px;
+    }
+  }
+}
+
+.txt-red{
+  color: red;
+    font-weight: 501;
+}
+.txt-green{
+  color: green;
+    font-weight: 501;
+}
+
+.bg-red{
+  background-color: red;
+  color: white;
 }
