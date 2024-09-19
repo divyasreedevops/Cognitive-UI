@@ -2,7 +2,7 @@
     "type":"FeatureCollection",
     "features":[
         {"type":"Feature",
-    "properties":{"Distance":"123.50","Bearing":"87.52"},"geometry":{"type":"MultiLineString","coordinates":[[[74.11138889,28.18888889],[76.44081944,28.23155]]]}},
+    "properties":{"Distance":"123.50","Bearing":"2.34"},"geometry":{"type":"MultiLineString","coordinates":[[[74.11138889,28.18888889],[76.44081944,28.23155]]]}},
     {"type":"Feature","properties":{"Distance":"35604","Bearing":"2"},"geometry":{"type":"MultiLineString","coordinates":[[[77.68603,13.20716],[78.0047373471169,13.260695181106888]]]}},
     {"type":"Feature","properties":{"Distance":"","Bearing":"-90"},"geometry":{"type":"MultiLineString","coordinates":[[[78.0047373471169,13.260695181106888],[77.91941944444444,13.205077777777777]]]}},
     {"type":"Feature","properties":{"Distance":"","Bearing":"93"},"geometry":{"type":"MultiLineString","coordinates":[[[77.91941944444444,13.205077777777777],[77.9148888888889,13.078027777777777]]]}},

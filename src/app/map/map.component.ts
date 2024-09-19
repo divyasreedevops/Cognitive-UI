@@ -639,7 +639,7 @@ const newLon = referenceLon + deltaLon;
       var lineJson:GeoJSON.FeatureCollection<GeoJSON.MultiLineString>  ={
         "type": "FeatureCollection",
         "features": [
-        { "type": "Feature", "properties": {  "Distance": "123.50", "Bearing": "87.52" }, "geometry": { "type": "MultiLineString", "coordinates": [ [ [ 74.11138889, 28.18888889 ], [ 76.44081944, 28.23155 ] ] ] } },
+        { "type": "Feature", "properties": {  "Distance": "123.50", "Bearing": "87.52", }, "geometry": { "type": "MultiLineString", "coordinates": [ [ [ 74.11138889, 28.18888889 ], [ 76.44081944, 28.23155 ] ] ] } },
          ]
         }
 
@@ -656,31 +656,32 @@ const newLon = referenceLon + deltaLon;
                { "type": "Feature", "properties": { "Name":  ele.waypointIdentifies,  "Speed": "", "Altitude": ele.altitude }, "geometry": { "type": "Point", "coordinates":coordinates } }
             );
             lineJson.features.splice(1,0);
-           lineJson.features.push({ "type": "Feature", "properties": {  "Distance": distance.toString(), "Bearing": parseInt(ele.angle)-90+"" }, "geometry": { "type": "MultiLineString", "coordinates": [ [ [ 77.68603,13.20716 ], coordinates ] ] } },)
+           lineJson.features.push({ "type": "Feature", "properties": { "Name":  ele.waypointIdentifies, "Distance": distance.toString(), "Bearing": ele.angle }, "geometry": { "type": "MultiLineString", "coordinates": [ [ [ 77.68603,13.20716 ], coordinates ] ] } },)
 
           }else{
             featureCollection.features.push(
               { "type": "Feature", "properties": { "Name": ele.waypointIdentifies,  "Speed": "", "Altitude": ele.altitude }, "geometry": { "type": "Point", "coordinates":this.getWaypoints(ele.waypointIdentifies) } }
            );
            const prevCoordinates=lineJson.features[lineJson.features.length-1].geometry.coordinates;
-           const angle= ele.angle !== "-" ?parseInt(ele.angle)-90+"": -90+"";
-           lineJson.features.push({ "type": "Feature", "properties": {  "Distance": "", "Bearing": angle }, "geometry": { "type": "MultiLineString", "coordinates": [ [ prevCoordinates[0][1], this.getWaypoints(ele.waypointIdentifies) ] ] } },)
+         
+           lineJson.features.push({ "type": "Feature", "properties": { "Name": ele.waypointIdentifies, "Distance": "", "Bearing": ele.angle }, "geometry": { "type": "MultiLineString", "coordinates": [ [ prevCoordinates[0][1], this.getWaypoints(ele.waypointIdentifies) ] ] } },)
 
           }
       })
     })
-   console.log(lineJson,"Linejson")
+
+   
     return {pointJson:featureCollection,lineJson:lineJson};
   }
 
 
 
-
+  
 
 
   updateLayers(): void {
 
-
+  
 
 
 
@@ -770,6 +771,9 @@ const newLon = referenceLon + deltaLon;
         // Load Line_SID GeoJSON datat  
         // const lineResponse = await fetch(lineFileName);
         const lineData :GeoJSON.FeatureCollection<GeoJSON.MultiLineString>= pointLineJsons.lineJson;
+
+
+        console.log(JSON.stringify(lineData))
           const lineFeatures = lineData.features; // Assuming lineData is your GeoJSON data
 
           this.lineGeoJsonLayer = L.geoJSON(lineData, {
@@ -779,7 +783,58 @@ const newLon = referenceLon + deltaLon;
               },
               onEachFeature: (feature: GeoJSON.Feature<GeoJSON.MultiLineString>, layer) => {
                   const currentIndex = lineFeatures.indexOf(feature as GeoJSON.Feature<GeoJSON.MultiLineString>); // Type assertion here
-          
+                  layer.on('click', () => {
+                    if (feature.properties) {
+
+                      console.log(feature,"featurefeature")
+                        const bearing = feature.properties['Bearing'];
+                        const distance = feature.properties['Distance'];
+                        const name = feature.properties['Name'];
+
+                        const startPoint=feature.geometry['coordinates'][0][0]
+                        const endPoint=feature.geometry['coordinates'][0][1]
+                      
+                        // Create a tooltip content
+                        const tooltipContent = `
+                            <div>
+                                <strong>Bearing:</strong> ${bearing}<br />
+                                <strong>Name:</strong> ${name}<br />
+                                <strong>Distance:</strong> ${distance}<br/>
+                                <strong>StartPoint:</strong> ${startPoint}<br/>
+                                <strong>EndPoint:</strong> ${endPoint}<br/>
+                            </div>
+                        `;
+                
+                        // Cast the layer to Polyline to access getLatLngs
+                        const polyline = layer as L.Polyline;
+                        const latLngs = polyline.getLatLngs();
+                        console.log(JSON.stringify(latLngs),"latLngslatLngs")
+                
+                      // Function to flatten LatLng coordinates
+                      const flattenLatLngs = (latLngs: L.LatLng | L.LatLng[] | L.LatLng[][] | L.LatLng[][][]): L.LatLng[] => {
+                        if (Array.isArray(latLngs)) {
+                            return latLngs.flatMap(flattenLatLngs); // Recursively flatten
+                        }
+                        return [latLngs]; // Wrap a single LatLng in an array
+                    };
+                        // Flattening the LatLngs
+                   // Flatten the LatLngs to ensure we have a single array
+                     const flatLatLngs: L.LatLng[] = flattenLatLngs(latLngs);
+                
+                        // Calculate bounds from the line's coordinates
+                        const bounds = L.latLngBounds(flatLatLngs);
+                
+                        // Show the tooltip at the center of the bounds
+                        L.popup()
+                            .setLatLng(bounds.getCenter())
+                            .setContent(tooltipContent)
+                            .openOn(this.map);
+                    }
+                });
+                
+                
+                
+      
                   if (feature.properties) {
                       const bearing = feature.properties['Bearing'];
                       const distance = feature.properties['Distance'];
@@ -1017,6 +1072,7 @@ const newLon = referenceLon + deltaLon;
       this.optionsRWY_09LTypeofProcedure = [];
       this.selectedTypeofProcedure = [];
 
+     
 
       const customIcon = L.icon({
         iconUrl: 'assets/airport.png',
