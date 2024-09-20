@@ -129,9 +129,13 @@ export class MapComponent implements OnInit {
       selectedProcedureName: [[]],
     });
     this.selectedProcedureName=[];
-    this.route.params.subscribe(params => {
-      this.mapId = params['id'];
-    });
+    // this.route.params.subscribe(params => {
+    //   this.mapId = params['id'];
+    // });
+    const selectedMap = localStorage.getItem('selectedMap');
+    if(selectedMap){
+      this.mapId = selectedMap;
+    }
     this.initMap();
     this.watchAirportChanges();
 
@@ -144,7 +148,6 @@ export class MapComponent implements OnInit {
 
     this.sharedService.formValues$.subscribe(formData => {
       if (formData) {
-        // Update the form values
         this.Airform.setValue(formData);
       }
     });

@@ -12,7 +12,7 @@ export class VideoClipComponent implements OnInit {
 timeoutId:any;
   ngOnInit(): void {
     this.timeoutId = setTimeout(() => {
-      this.router.navigate(['/multimaps']); 
+      this.router.navigate(['/ADM']); 
     }, 3000);
   }
 

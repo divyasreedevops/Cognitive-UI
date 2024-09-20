@@ -59,15 +59,17 @@ export class AppComponent {
     if(this.currentRoute === '/opsmanager'){
       this.navInfo={
         isTabActive:false,
+        isFilterActive:false,
         navBtn:[],
         navTitle:'AIRLINE OPS MANAGER'
       };
-    }else if(this.currentRoute === '/videoclip' || this.currentRoute === '/multimaps'){
+    }else if(this.currentRoute === '/videoclip' || this.currentRoute === '/ADM'){
       
       
 
       this.navInfo={
         isTabActive:true,
+        isFilterActive:false,
         navBtn:[
           {
             icon_url:'assets/icons/6.png',
@@ -105,9 +107,10 @@ export class AppComponent {
         navTitle:''
       };
     }
-    else if(this.currentRoute === '/map/map1' || this.currentRoute === '/map/map2' || this.currentRoute === '/map/map3' || this.currentRoute === '/map/map4')  {
+    else if(this.currentRoute === '/ADM/PANS-OPS')  {
       this.navInfo={
         isTabActive:false,
+        isFilterActive:true,
         navBtn:[],
         navTitle:''
       };

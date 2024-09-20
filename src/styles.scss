@@ -135,3 +135,10 @@ body {
 .offcanvas-backdrop.show {
     opacity: 0;
 }
+
+.leaflet-touch .leaflet-control-layers, .leaflet-touch .leaflet-bar {
+ 
+    top: 4rem;
+    left: 5rem;
+    
+}

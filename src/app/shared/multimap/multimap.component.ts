@@ -54,6 +54,7 @@ import { Router } from '@angular/router';
 export class MultimapComponent implements AfterViewInit {
   private maps: { [key: string]: L.Map } = {}; // Track maps by ID
   selectedMapId: string ='map1';
+  isFullScreen:boolean=false;
   constructor(private location: Location,
     private sharedService: SharedService,
     private router: Router
@@ -67,6 +68,11 @@ export class MultimapComponent implements AfterViewInit {
     const mapIds = ['map1', 'map2', 'map3', 'map4'];
 
     mapIds.forEach(mapId => {
+
+      if (this.maps[mapId]) {
+        this.maps[mapId].remove(); 
+        delete this.maps[mapId];   
+      }
       const map = L.map(mapId).setView([20.5937, 78.9629], 5);
 
       let tileLayerUrl: string = '';
@@ -96,7 +102,6 @@ export class MultimapComponent implements AfterViewInit {
       });
     });
   }
-  
 
   toggleFullScreen(mapElement: HTMLElement, map: L.Map) {
     mapElement.classList.add('full-screen');
@@ -108,17 +113,28 @@ export class MultimapComponent implements AfterViewInit {
   }
 
   ngOnInit(){
+    this.router.events.subscribe(() => {
+      this.isFullScreen = this.router.url.includes('PANS-OPS');
+      if(this.router.url === '/ADM'){
+        setTimeout(() => {
+          this.initMaps();
+        }, 500);
+       
+      }
+    });
+    localStorage.setItem('selectedMap',this.selectedMapId);
     this.sharedService.sidebarContent$.subscribe(() => {
       this.navigateToFullScreen(this.selectedMapId);
     });
   }
 
   navigateToFullScreen(mapId: string) {
-    this.router.navigate(['/map', mapId]);
+    this.router.navigate(['ADM','PANS-OPS']);
   }
  
   selectMap(mapId: string) {
     this.selectedMapId = mapId;
+    localStorage.setItem('selectedMap',this.selectedMapId);
     // Optionally, you can add logic here to zoom or center the selected map
     this.maps[mapId].invalidateSize();
   }

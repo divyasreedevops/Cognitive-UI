@@ -2,6 +2,7 @@ import { Component, HostListener } from '@angular/core';
 import { SharedService } from 'src/app/Service/shared.service';
 import { Router } from '@angular/router';
 import { FormBuilder, FormGroup } from '@angular/forms';
+import { trigger, state, style, transition, animate } from '@angular/animations';
 
 interface RowItem {
   [key: string]: string;
@@ -25,7 +26,25 @@ interface ComparedComplexObject {
 @Component({
   selector: 'app-sidebar',
   templateUrl: './sidebar.component.html',
-  styleUrl: './sidebar.component.scss'
+  styleUrl: './sidebar.component.scss',
+  animations: [
+    trigger('slideInOut', [
+      state('in', style({
+        width: '5vw',
+        opacity: 1,
+      })),
+      state('out', style({
+        width: '19vw',
+        opacity: 1,
+      })),
+      transition('in => out', [
+        animate('300ms ease-in-out')
+      ]),
+      transition('out => in', [
+        animate('300ms ease-in-out')
+      ])
+    ])
+  ]
 })
 export class SidebarComponent {
   isCollapsed = false;
@@ -322,7 +341,7 @@ export class SidebarComponent {
   ngOnInit(){
     this.isMultiMapView = false;
     const route = localStorage.getItem('currentRoute');
-    if(route === '/map/map1' || route === '/map/map2' || route === '/map/map3' || route === '/map/map4'){
+    if(route === '/ADM/PANS-OPS'){
       this.isMultiMapView = true;
     }else{
       this.isMultiMapView = false;
@@ -332,7 +351,7 @@ export class SidebarComponent {
       selectedAirport: [[]],
       selectedRunway: [[]],
       selectedTypeofProcedure: [[]],
-      selectedProcedureName: [[]],
+      selectedProcedureName: [["PEXEG 7E","ADKAL 7E"]],
     });
     this.isCompare=false;
     this.sharedService.sidebar$.subscribe((option:any) => {
@@ -378,10 +397,7 @@ export class SidebarComponent {
   // Triggered on select change, optional for individual selects
   onValueChange(event: Event): void {
     const formValues = this.Airform.value;
-
-  // Send the entire form object to the shared service
-  this.sharedService.updateFormValues(formValues);
-    // Add individual select logic here if needed
+    this.sharedService.updateFormValues(formValues);
   }
 
 
@@ -697,7 +713,7 @@ export class SidebarComponent {
   }
 
   navigateToMultiMap(){
-    this.router.navigate(['/multimaps']);
+    this.router.navigate(['/ADM']);
     this.isMultiMapView=false;
     this.isAIXM = false;
     this.selectedTab='';
