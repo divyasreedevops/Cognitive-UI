@@ -136,6 +136,17 @@ export class MapComponent implements OnInit {
   }
 
 
+   toDMS(degrees: number): string {
+    const absDegrees = Math.abs(degrees);
+    const d = Math.floor(absDegrees);
+    const m = Math.floor((absDegrees - d) * 60);
+    const s = ((absDegrees - d - m / 60) * 3600).toFixed(2); // Keeping two decimal places
+  
+    const direction = degrees >= 0 ? (degrees === d ? 'N' : 'E') : (degrees === -d ? 'S' : 'W');
+  
+    return `${d}° ${m}' ${s}" ${direction}`;
+  }
+
 
 
   optionsAirport: { value: any; label: any; }[] = [
@@ -814,12 +825,14 @@ const newLon = referenceLon + deltaLon;
                 // Get the coordinates and waypoint name
                 const coordinates = layer.getLatLng();
                 const waypointName = feature.properties.Name || "Unknown Waypoint";
-        
+                const latitude=this.toDMS(coordinates.lat);
+                const longitude=this.toDMS(coordinates.lng);
+
                 // Create tooltip content for the click
                 const tooltipContent = `
                   <div>
                     <strong>Waypoint:</strong> ${waypointName}<br />
-                    <strong>Coordinates:</strong> ${coordinates.lat.toFixed(6)}, ${coordinates.lng.toFixed(6)}<br />
+                    <strong>Coordinates:</strong>  ${latitude} , ${longitude}<br />
                   </div>
                 `;
         
