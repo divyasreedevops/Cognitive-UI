@@ -672,10 +672,10 @@ const newLon = referenceLon + deltaLon;
                         // Safely get the last feature's name
           const lastFeature = featureCollection.features[featureCollection.features.length - 1];
           const startPoint = lastFeature && lastFeature.properties ? lastFeature.properties['Name']|| "" : "";
-            lineJson.features.push({ "type": "Feature", "properties": { "Name":  ele.pathDesignator,"StartPoint":startPoint,"EndPoint":  ele.waypointIdentifies, "Distance":null, "Bearing": ele.angle }, "geometry": { "type": "MultiLineString", "coordinates": [ [ prevCoordinates, this.getWaypoints(ele.waypointIdentifies) ] ] } },)
+            lineJson.features.push({ "type": "Feature", "properties": { "Name":  ele.pathDesignator,"StartPoint":startPoint,"EndPoint":  ele.waypointIdentifies, "Distance":ele.distance?ele.distance:null, "Bearing": ele.angle }, "geometry": { "type": "MultiLineString", "coordinates": [ [ prevCoordinates, this.getWaypoints(ele.waypointIdentifies) ] ] } },)
            }
             featureCollection.features.push(
-              { "type": "Feature", "properties": { "Name": ele.waypointIdentifies, "Distance":ele.distance, "Speed": "", "Altitude": ele.altitude }, "geometry": { "type": "Point", "coordinates":this.getWaypoints(ele.waypointIdentifies) } }
+              { "type": "Feature", "properties": { "Name": ele.waypointIdentifies, "Speed": "", "Altitude": ele.altitude }, "geometry": { "type": "Point", "coordinates":this.getWaypoints(ele.waypointIdentifies) } }
            );
           }
       })
