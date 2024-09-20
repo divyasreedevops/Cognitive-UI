@@ -1,7 +1,7 @@
 .side-container {
   width: 16vw;
   height: 100vh;
-  z-index: 1;
+  z-index: 2;
 //  background: linear-gradient(267deg, rgb(134 183 202 / 58%) 1%, rgb(38 210 200 / 19%) 21%);
 background: linear-gradient(267deg, rgb(58 82 91 / 71%) 1%, rgb(31 194 174 / 46%) 21%);
   display: flex;
@@ -216,7 +216,7 @@ height: 100vh;
 // display: flex;
 // align-items: center; 
 // justify-content: center; 
-z-index: 1;
+z-index: 2;
 position: relative;
 }
 

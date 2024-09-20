@@ -5,11 +5,13 @@ import { ChangeDetectorRef, OnDestroy } from '@angular/core';
 import * as L from 'leaflet';
 import 'leaflet-rotatedmarker';
 import { AuthService } from '../Service/auth.service';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { StreamServiceService } from '../Service/stream-service.service';
 import { Flight, Plane } from '../target';
 import {  Subscription } from 'rxjs';
 import * as GeoJSON from 'geojson';
+import { SharedService } from 'src/app/Service/shared.service';
+
 declare module 'leaflet' {
   interface MarkerOptions {
     rotationAngle?: number;
@@ -49,6 +51,7 @@ export class MapComponent implements OnInit {
   private FIR!: L.TileLayer.WMS;
   private India_FIR!: L.TileLayer.WMS;
   private subscription: Subscription | null = null;
+  private mapId: string = '';
   menuOpen: boolean = false;
   flightslive: Flight[] = [];
   flights: Plane[] = [];
@@ -178,7 +181,7 @@ export class MapComponent implements OnInit {
       }, 0);
     }
   }
-  constructor(changeDetectorRef: ChangeDetectorRef, private flightService: StreamServiceService, media: MediaMatcher, private formbuilder: FormBuilder, private authService: AuthService, private router: Router) {
+  constructor(changeDetectorRef: ChangeDetectorRef, private flightService: StreamServiceService, media: MediaMatcher, private formbuilder: FormBuilder, private authService: AuthService, private router: Router, private route: ActivatedRoute,private sharedService: SharedService) {
     this.mobileQuery = media.matchMedia('(max-width: 600px)');
     this._mobileQueryListener = () => changeDetectorRef.detectChanges();
     this.mobileQuery.addListener(this._mobileQueryListener);
@@ -191,10 +194,29 @@ export class MapComponent implements OnInit {
       selectedTypeofProcedure: [[]],
       selectedProcedureName: [[]],
     });
+    this.selectedProcedureName=[];
+    this.route.params.subscribe(params => {
+      this.mapId = params['id'];
+    });
     this.initMap();
     this.watchAirportChanges();
 
+    this.selectedAirport = [];
+    this.selectedRunway = [];
+    this.selectedTypeofProcedure = [];
+    this.selectedProcedureName = [];
+
+    this.updateLayers();
+
+    this.sharedService.formValues$.subscribe(formData => {
+      if (formData) {
+        // Update the form values
+        this.Airform.setValue(formData);
+      }
+    });
+
   }
+
 
   fetchFlightData(): void {
     this.flightService.getLiveFlights().subscribe(
@@ -478,7 +500,21 @@ export class MapComponent implements OnInit {
     const overlayMaps = {};
 
     L.control.layers(baseMaps, overlayMaps, { position: 'topleft' }).addTo(this.map);
-    navigation.addTo(this.map);
+    // navigation.addTo(this.map);
+    switch (this.mapId) {
+      case 'map1':
+        satellite.addTo(this.map);
+        break;
+      case 'map2':
+        streets.addTo(this.map);
+        break;
+      case 'map3':
+        darkMatter.addTo(this.map)
+        break;
+      case 'map4':
+        navigation.addTo(this.map)
+        break;
+    }
     L.control.scale({ position: 'bottomright', metric: false }).addTo(this.map);
     L.control.zoom({ position: 'bottomright' }).addTo(this.map);
 
@@ -1107,6 +1143,7 @@ const newLon = referenceLon + deltaLon;
 
   watchAirportChanges(): void {
     this.Airform.get('selectedAirport')?.valueChanges.subscribe((selectedAirport: string[]) => {
+      console.log('trigger');
       // Clear all runway and procedure options when the selected airport changes
       this.optionsBengaluruKIARunway = [];
       this.optionsVIJPJAIPURRunway = [];
@@ -1422,6 +1459,14 @@ const newLon = referenceLon + deltaLon;
         this.optionsProcedureName = filteredOptions;
       }
     });
+
+    this.Airform.get('selectedProcedureName')?.valueChanges.subscribe((selectedProcedureName: string) => {
+      if(selectedProcedureName.length!==0){
+        const procedurename = selectedProcedureName;
+        this.selectedProcedureName.push(selectedProcedureName);
+         this.updateLayers();
+      }
+    })
   }
 
   loadFIR(event: Event) {

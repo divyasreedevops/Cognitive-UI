@@ -116,110 +116,15 @@
         autosize>
         <mat-sidenav #snav [mode]="mobileQuery.matches ? 'over' : 'side'" opened="true"
             [fixedInViewport]="mobileQuery.matches" fixedTopGap="56">
-            <div class="container-fluid img-size mt-2">
+            <!-- <div class="container-fluid img-size mt-2">
                 <a class="navbar-brand mt-4" href="https://www.cognitivenavigation.com"
                     title="Cognitive navigation Pvt.Ltd">
                     <img src="https://www.cognitivenavigation.com/wp-content/uploads/2024/03/cropped-C_Name.png"
                         alt="Cognitive navigation Pvt.Ltd" title="Cognitive navigation Pvt.Ltd" width="10" height="40"
                         class="d-inline-block align-text-top">
                 </a>
-            </div>
-            <form [formGroup]="Airform" class="text-center mt-4" autocomplete="on" novalidate>
-                <div class="example-container">
-
-                    <!--Select Airport -->
-                    <div>
-                        <mat-form-field appearance="outline">
-                            <mat-label>Airport</mat-label>
-                            <mat-select formControlName="selectedAirport" [(ngModel)]="selectedAirport">
-                                <mat-option *ngFor="let option of optionsAirport" [value]="option.value">
-                                    {{ option.label }}
-                                </mat-option>
-                            </mat-select>
-                            <mat-icon matSuffix class="position"><img
-                                    src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAYAAAAeP4ixAAAACXBIWXMAAAsTAAALEwEAmpwYAAAB4UlEQVR4nO2WuUpDQRSGv6gExQVUiHHDTm3EzhcwhQj6BFYivoBgQPERLCxtVOy0EGsFRUJeQMWlcKm00UJFG9GRCxMYLtebuUtyF+aDA2Fy5tzzzzmzgCEdCGmJR4QgpJ2UCMkBO8Ai0ErCWysHXAJvwCYwToL3SB64VmKWgDmg2WVOB9AVx83eC9wocS17AdaBEcVvTFbuE3gGMrofKNuC65i1on7oA24d4v0CJ8CpMvYDbHkJ7lVE0ErlgSuXuJW9NOo1sNfEdP27Xf6bkStuF3EU5HSrlZAl4A7YAApAixRw7FKNab8i1MSyGr5ZD0KsTXpo6/nK71dg2ybiEWgMIuRcBipq+BalrzVHh07gXkn2AliQ1Rm0CVkjIAUZyDruhlz8BoAP6TvlIf6ynPMuL8cKPYqIb6CfENiXAfcC+jgxK+et2sa7FCEHhES11Z7UrJoTw8CTw2nUpgjxUuHILsQmYN7l4HgAGsIQUo8LMfPPmABWCIla3SM6fMlnS+KF7BIiUQqZICVCQsUIiRvCtFbMEKYiMUOYikRMOcBDsZ5WqiYk6gRFWC/s2D4xFIyQ1FRE+Ohbv70uNPaCESJMRYhXa9UTYYTYMBWJa2uJBJgrpRgkKDTszF2GwWDAxh9CvUCVxRLBQQAAAABJRU5ErkJggg=="></mat-icon>
-                            <mat-hint>Select Airport</mat-hint>
-                        </mat-form-field>
-                    </div>
-
-
-                    <!--Select Runway -->
-                    <div class="mt-3">
-                        <mat-form-field appearance="outline">
-                            <mat-label>Runway</mat-label>
-                            <mat-select formControlName="selectedRunway" [(ngModel)]="selectedRunway">
-                                <ng-container *ngIf="optionsBengaluruKIARunway && optionsBengaluruKIARunway.length > 0">
-                                    <mat-option *ngFor="let option of optionsBengaluruKIARunway" [value]="option.value">
-                                        {{ option.label }}
-                                    </mat-option>
-                                </ng-container>
-                                <ng-container *ngIf="optionsVIJPJAIPURRunway && optionsVIJPJAIPURRunway.length > 0">
-                                    <mat-option *ngFor="let option of optionsVIJPJAIPURRunway" [value]="option.value">
-                                        {{ option.label }}
-                                    </mat-option>
-                                </ng-container>
-                                <ng-container *ngIf="optionsVEPYPAKYONGRunway && optionsVEPYPAKYONGRunway.length > 0">
-                                    <mat-option *ngFor="let option of optionsVEPYPAKYONGRunway" [value]="option.value">
-                                        {{ option.label }}
-                                    </mat-option>
-                                </ng-container>
-                            </mat-select>
-                            <mat-icon matSuffix class="position">
-                                <img
-                                    src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAYAAAAeP4ixAAAACXBIWXMAAAsTAAALEwEAmpwYAAACA0lEQVR4nO2YTysFURjGfy4pO1mxYiFLWbBgQxILyso3sBGxUIrPoJCwUHZsLAiR76CUBRtX1/9YsVAoRkfvqdM0c407515z3fPU2505532fd545f94zFxwc/hSeWDHFBsIJwY3IN9zUCoNbIzHhJWnXSlRezwnBFcTETS13RMGNSDjc1IoJL0mLPVF5vVIXMgxcATfASAHzWiUcNOK0DRWjkBOJGQdG5fqkAHmtE75LTJWYJ21FJ8TzxdjgiA0nBLsvIzbciGD3ZcRGyY5IdxYh3XnMa42wFlg3/M+MvjOjfQOoS6KQcmAMeBK/F2AGqDR81PW09CmfZ2ACqIiR99fIRtgGHBk+u0ADUAZ0GH4d0lYPbBv+x0B7DnlzQhBhNbAMfEhfRg6KrcCsnHr9a+RS+pT4AeBC2hXHKlATIW8s+Am7gHvj/LQPzAHnASdeP4e2NDAP7AFv0vYI9BZSyKnRph9C2x2wkEWIevhbX4zJkSmkEL1gPeNNrgCdQCokxrxPie8S8ODj+sjCYV3Ionz1rQF9ITtP1IKodrweWSPX8vtTTM4o2cr+b4Q0GzEpMX3fkse81gjVfJ8EXn3bbNq4V31TP1T0PxeyFVAvwuzAYt7IiEqo/3BQ9gkcSgXvlwfXpwBt5ZbyRkZUwk0piKrKNwX0N8oRRRXEHYt5HRzIE74A2beFM/qxv+YAAAAASUVORK5CYII=">
-                            </mat-icon>
-                            <mat-hint>Select Runway</mat-hint>
-                        </mat-form-field>
-                    </div>
-
-
-                    <!--Select Type of Procedure -->
-                    <div class="mt-3">
-                        <mat-form-field appearance="outline">
-                            <mat-label>Type of Procedure</mat-label>
-                            <mat-select formControlName="selectedTypeofProcedure" multiple
-                                [(ngModel)]="selectedTypeofProcedure">
-                                <mat-option *ngFor="let option of optionsRWY_09LTypeofProcedure" [value]="option.value">
-                                    {{ option.label }}
-                                </mat-option>
-                            </mat-select>
-                            <mat-icon matSuffix class="position">
-                                <img
-                                    src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAYAAAAeP4ixAAAACXBIWXMAAAsTAAALEwEAmpwYAAACzUlEQVR4nO2aSWgUQRSGvzFxCRgUkwgjKAoieFCC5JAg5CRRRDy4gUpUEFzBUy4KAQlGFESUGBAVFUE8TkQQFBRD3CFiDnFB1GDAZYwOLiS4jrT8LUXTGbsTW6fa+aBh+r161KuZ7np/VQ0UKJAX7AY+AM+Aa8AhYBIWkgaynusxUIFlpJT8QaAGaNf9JaAIi6hT4k+BEcBEoFe2PVhEAnikxBfK5vwyn4DvwBIsokEDOWfYtsr2HpiJJZQBA8A3YJphP6HBPATGYQmnlbQzHbuUAJ2yn9VjmPfUKuHXwBjDPh3IyLcDS+hWwqs89sV68b8C87GAbRpIh4+vWb4+YOrfSui4On0D7A0RNx74qNhZHp9THC/K16n3J3IyHsnh1ocgHFVMq4+vHOiR35nRIueWOmszvsGgM84cxbwDSn38VZqqnTabiJgWY5Zx5cayEPE3fpPoevmd6l9NhKxTR2eADfr8ACgOGL9GMV052hxRm+dAkoiYbcjxIg3Cua8PGD/akPc1OdrcVpurwEgioBjo19zvyI+VPmuOoNepHP1MUQHNDvNKA1eAzcAobycdarRA8rxriJ0MaLYajHnAlz8wmKyubqmJX+yTo5H8pxxYAdwz1kYTXOdyH2me74wF7ijv/a5xsgwvsYtK5f3KNSRleIGdA+kzFavNj1ara9wlw07ynwq90+7L3qOy8ZMLMi6yefpNAG/lSFpSENuBLd6COEMNeiVR7g9DolQHkCiXQ+i4UKxWBylDqYYRjWsVczfAuiVS0XhAnTQBT/R5aYj4m4pxlLMf9fJ/BuYSIdfV0fkhLKwqjY250kH8/WqzkYjJxGWpe8z46Q/bvPkQm+2g/3qDrtYoTk6N8Nsy3Y5Fm9jNhq3EEHFtNmxilxnHCubzf9K2Y4WGOBz0JOJy9FYXl8PQVFyOp9Nx+cNAk+qE+xeOlihleYEC/Ht+AGO8f70m8/aPAAAAAElFTkSuQmCC">
-                            </mat-icon>
-                            <mat-hint>Select Type of Procedure</mat-hint>
-                        </mat-form-field>
-                    </div>
-
-                    <!--Select Procedure Name -->
-                    <div class="mt-3">
-                        <mat-form-field appearance="outline">
-                            <mat-label>Procedure Name</mat-label>
-                            <mat-select formControlName="selectedProcedureName" multiple
-                                [(ngModel)]="selectedProcedureName" (selectionChange)="updateLayers()">
-                                <mat-option *ngFor="let option of optionsProcedureName" [value]="option.value">
-                                    {{ option.label }}
-                                </mat-option>
-                            </mat-select>
-                            <mat-icon matSuffix class="position">
-                                <img
-                                    src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAYAAAAeP4ixAAAACXBIWXMAAAsTAAALEwEAmpwYAAAA6klEQVR4nO2aQQ6CQAxF/xIvhTdU8Ui6MN5EuMR3UxIWOiFMaQX/S7qgIXQ+7TSTdAAhfoYngEeC3x2aRfurOAC4AhgmAaaBGOAfAHQAmhohly9BIoXQ7FwjpLePtIml1drza8H6i8HuAG4f3l3Tz9p9s8rGy1gHJcQXKiOGSssZqrRm/Ak6WXpGuBchkVBCDGXEGaq0ArvWnC7GLbTfdCGRUEIMZcQZqrT+6dDIvQiJhBJiKCPOUKWVcGgssYn2my4kEkqIoYw4Q5VWYRgazdFjGFoaT0fbqUZIY2LGzGRYbzP2qgsDQmAZb15H1KBW7TMcAAAAAElFTkSuQmCC">
-                            </mat-icon>
-                            <mat-hint>Select Procedure Name</mat-hint>
-                        </mat-form-field>
-                    </div>
-                    <div class="d-grid gap-2 col-10 mx-auto mt-4">
-                        <button type="button" value="Export
-                    GeoJSON" class="btn btn-outline-primary rounded-5 py-2 px-4">Export GeoJSON</button>
-
-                        <button type="button" value="Export CSV"
-                            class="btn btn-outline-primary rounded-5 py-2 px-4">Export
-                            CSV</button>
-
-                    </div>
-                </div>
-
-            </form>
+            </div> -->
+           
 
         </mat-sidenav>
 

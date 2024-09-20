@@ -26,7 +26,7 @@
     
     <ng-container *ngIf="isMultiMapView && !isCollapsed">
        
-        <ng-container *ngFor="let opt of selectFormat">
+        <!-- <ng-container *ngFor="let opt of selectFormat">
         <div class="select">
             <label for="">{{opt.label}}</label>
             <select name="" id="">
@@ -35,7 +35,75 @@
                 </ng-container>
             </select>
         </div>
-    </ng-container>
+    </ng-container> -->
+
+    <!-- <form [formGroup]="Airform" autocomplete="on" novalidate>
+      <ng-container *ngFor="let opt of selectFormat">
+        <div class="select">
+          <label for="">{{ opt.label }}</label>
+          <select [formControlName]="getFormControlName(opt.label)" (change)="onValueChange($event, opt.label)">
+            <ng-container *ngFor="let item of opt.options">
+              <option [value]="item">{{ item }}</option>
+            </ng-container>
+          </select>
+        </div>
+      </ng-container>
+    </form> -->
+
+    <form [formGroup]="Airform" autocomplete="on" novalidate>
+      
+  
+          <!--Select Airport -->
+          <div class="select">
+              <label for="selectedAirport">Airport</label>
+              <select formControlName="selectedAirport" [(ngModel)]="selectedAirport" id="selectedAirport" (change)="onValueChange($event)">
+                  <option *ngFor="let option of optionsAirport" [value]="option.value">{{ option.label }}</option>
+              </select>
+          </div>
+  
+          <!--Select Runway -->
+          <div class="select">
+              <label for="selectedRunway">Runway</label>
+              <select formControlName="selectedRunway" [(ngModel)]="selectedRunway" id="selectedRunway" (change)="onValueChange($event)">
+                  <ng-container *ngIf="optionsBengaluruKIARunway && optionsBengaluruKIARunway.length > 0">
+                      <option *ngFor="let option of optionsBengaluruKIARunway" [value]="option.value">{{ option.label }}
+                      </option>
+                  </ng-container>
+                  <ng-container *ngIf="optionsVIJPJAIPURRunway && optionsVIJPJAIPURRunway.length > 0">
+                      <option *ngFor="let option of optionsVIJPJAIPURRunway" [value]="option.value">{{ option.label }}
+                      </option>
+                  </ng-container>
+                  <ng-container *ngIf="optionsVEPYPAKYONGRunway && optionsVEPYPAKYONGRunway.length > 0">
+                      <option *ngFor="let option of optionsVEPYPAKYONGRunway" [value]="option.value">{{ option.label }}
+                      </option>
+                  </ng-container>
+              </select>
+              
+          </div>
+  
+          <!--Select Type of Procedure -->
+          <div class="select">
+              <label for="selectedTypeofProcedure">Type of Procedure</label>
+              <select formControlName="selectedTypeofProcedure" [(ngModel)]="selectedTypeofProcedure" id="selectedTypeofProcedure" (change)="onValueChange($event)">
+                  <option *ngFor="let option of optionsRWY_09LTypeofProcedure" [value]="option.value">{{ option.label }}
+                  </option>
+              </select>
+             
+          </div>
+  
+          <!--Select Procedure Name -->
+          <div class="select">
+              <label for="selectedProcedureName">Procedure Name</label>
+              <select formControlName="selectedProcedureName" [(ngModel)]="selectedProcedureName"  id="selectedProcedureName" (change)="onValueChange($event)">
+                  <option *ngFor="let option of optionsProcedureName" [value]="option.value">{{ option.label }}</option>
+              </select>
+              
+          </div>
+  
+      
+  </form>
+  
+    
     
     <div class="toggle-outer">
         <div class="tog">
