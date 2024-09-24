@@ -27,4 +27,11 @@ export class SharedService {
   updatenavbar(content: any) {
     this.navbar.next(content);
   }
+
+  private updateSidebar = new Subject<any>();
+  sidebar$ = this.updateSidebar.asObservable();
+
+  updateSideBar(content: any) {
+    this.updateSidebar.next(content);
+  }
 }
