@@ -207,6 +207,8 @@ export class MapComponent implements OnInit {
       selectedProcedureName: [[]],
     });
 
+    // this.pansopsService.getAirports()
+
     /**
      * api call to fetch the airport details
      */
