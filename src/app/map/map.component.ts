@@ -11,7 +11,7 @@ import { Flight, Plane } from '../target';
 import {  Subscription } from 'rxjs';
 import * as GeoJSON from 'geojson';
 import { SharedService } from 'src/app/Service/shared.service';
-
+import {PansopsService} from "../service/Adm/Pansops/pansops.service";
 declare module 'leaflet' {
   interface MarkerOptions {
     rotationAngle?: number;
@@ -180,6 +180,7 @@ export class MapComponent implements OnInit {
   private _mobileQueryListener: () => void;
   isExpanded = false;
   searchQuery = '';
+  airPorts=[];
 
   toggleSearchBar() {
     this.isExpanded = !this.isExpanded;
@@ -192,7 +193,7 @@ export class MapComponent implements OnInit {
       }, 0);
     }
   }
-  constructor(changeDetectorRef: ChangeDetectorRef, private flightService: StreamServiceService, media: MediaMatcher, private formbuilder: FormBuilder, private authService: AuthService, private router: Router, private route: ActivatedRoute,private sharedService: SharedService) {
+  constructor(private pansopsService: PansopsService,changeDetectorRef: ChangeDetectorRef, private flightService: StreamServiceService, media: MediaMatcher, private formbuilder: FormBuilder, private authService: AuthService, private router: Router, private route: ActivatedRoute,private sharedService: SharedService) {
     this.mobileQuery = media.matchMedia('(max-width: 600px)');
     this._mobileQueryListener = () => changeDetectorRef.detectChanges();
     this.mobileQuery.addListener(this._mobileQueryListener);
@@ -205,6 +206,15 @@ export class MapComponent implements OnInit {
       selectedTypeofProcedure: [[]],
       selectedProcedureName: [[]],
     });
+
+    /**
+     * api call to fetch the airport details
+     */
+
+    this.pansopsService.getAirports().subscribe(response=>{
+       this.airPorts=response;
+    })
+    
     this.selectedProcedureName=[];
     this.route.params.subscribe(params => {
       this.mapId = params['id'];
