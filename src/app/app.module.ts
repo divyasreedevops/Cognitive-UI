@@ -37,6 +37,7 @@ import { SidebarComponent } from './shared/sidebar/sidebar.component';
 import { MultimapComponent } from './shared/multimap/multimap.component';
 import { VideoClipComponent } from './airlineopsmanager/videoclip/clip.component';
 import { SharedService } from './service/shared.service';
+import { AuthInterceptor } from './interceptor/auth.interceptor';
 
 @NgModule({
     declarations: [
@@ -77,6 +78,6 @@ import { SharedService } from './service/shared.service';
     MatSidenavModule
 ],
     bootstrap: [AppComponent],
-    providers: [AuthGuard,SharedService, provideHttpClient(withInterceptorsFromDi())]
+    providers: [AuthGuard,SharedService, AuthInterceptor,provideHttpClient(withInterceptorsFromDi())]
 })
 export class AppModule { }
