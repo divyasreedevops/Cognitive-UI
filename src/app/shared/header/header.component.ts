@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, Output} from '@angular/core';
 import { trigger, state, style, transition, animate } from '@angular/animations';
+import { SharedService } from 'src/app/service/shared.service';
 
 @Component({
   selector: 'app-header',
@@ -32,7 +33,13 @@ export class HeaderComponent {
   @Input() activeButton: string = ''; // Receive the active button from parent
   @Output() activeChange = new EventEmitter<string>(); // Emit active button change
   @Input() navInfo:any={};
+  selectedOption: string = 'AIRAC 2402';  // Default selected option
+  dropdownOptions: string[] = ['AIRAC 2402', 'AIRAC 2401', 'Compare'];
+  searchQuery = '';
  
+  constructor(private service : SharedService){
+
+  }
 
   // Method to emit the button clicked event
   setActive(button: string) {
@@ -42,7 +49,9 @@ export class HeaderComponent {
     this.isHeaderOpen = !this.isHeaderOpen;
   }
 
-
+  sendDropdownOption(){
+    this.service.updateSideBar(this.selectedOption);
+  }
  
 }
 // keyboard_arrow_down

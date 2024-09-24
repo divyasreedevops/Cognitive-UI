@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { Router, NavigationEnd, Event } from '@angular/router';
 import { filter } from 'rxjs/operators';
-import { SharedService } from './Service/shared.service';
+import { SharedService } from './service/shared.service';
 
 @Component({
   selector: 'app-root',
@@ -20,6 +20,7 @@ export class AppComponent {
       .pipe(filter((event: Event): event is NavigationEnd => event instanceof NavigationEnd)) // Narrow the type
       .subscribe(event => {
         this.currentRoute = event.urlAfterRedirects; // Set the current route
+        localStorage.setItem('currentRoute' , this.currentRoute);
         this.updateHeaderContent();
       });
   }
@@ -58,15 +59,17 @@ export class AppComponent {
     if(this.currentRoute === '/opsmanager'){
       this.navInfo={
         isTabActive:false,
+        isFilterActive:false,
         navBtn:[],
         navTitle:'AIRLINE OPS MANAGER'
       };
-    }else if(this.currentRoute === '/videoclip' || this.currentRoute === '/multimaps'){
+    }else if(this.currentRoute === '/videoclip' || this.currentRoute === '/ADM'){
       
       
 
       this.navInfo={
         isTabActive:true,
+        isFilterActive:false,
         navBtn:[
           {
             icon_url:'assets/icons/6.png',
@@ -101,6 +104,14 @@ export class AppComponent {
             icon_name:'Dashboard & Reports',
           }
         ],
+        navTitle:''
+      };
+    }
+    else if(this.currentRoute === '/ADM/PANS-OPS')  {
+      this.navInfo={
+        isTabActive:false,
+        isFilterActive:true,
+        navBtn:[],
         navTitle:''
       };
     }

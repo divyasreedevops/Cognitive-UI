@@ -17,12 +17,12 @@ const routes: Routes = [
     path: '', component: LoginComponent, canActivate: [AuthGuard]
   },
   { path: 'login', component: LoginComponent },
-  { path: 'map/:id', component: MapComponent },
+  // { path: 'PANS-OPS', component: MapComponent },
   { path: 'mapViewer', component: MapViewerComponent },
   { path: 'mapview', component: MapViewerComponent, canActivate: [AuthGuard] },
   { path: 'header', component: HeaderComponent },
   { path: 'opsmanager', component:OpsManagerComponent},
-  {path: 'multimaps', component:MultimapComponent},
+  {path: 'ADM', component:MultimapComponent , children: [{ path: 'PANS-OPS', component: MapComponent }]},
   { path: 'videoclip', component: VideoClipComponent},
   { path: 'pansop/:id', component: PansOpsComponent}
 ];

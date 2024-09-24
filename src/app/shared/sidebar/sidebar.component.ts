@@ -1,11 +1,50 @@
-import { Component } from '@angular/core';
-import { SharedService } from 'src/app/Service/shared.service';
+import { Component, HostListener } from '@angular/core';
+import { SharedService } from 'src/app/service/shared.service';
 import { Router } from '@angular/router';
 import { FormBuilder, FormGroup } from '@angular/forms';
+import { trigger, state, style, transition, animate } from '@angular/animations';
+
+interface RowItem {
+  [key: string]: string;
+}
+
+interface ComparedRowItem {
+  [key: string]: { value: string; flag: boolean };
+}
+
+interface ComplexObject {
+  title: string;
+  columns: string[];
+  rows: RowItem[];
+}
+
+interface ComparedComplexObject {
+  title: string;
+  columns: string[];
+  rows: ComparedRowItem[];
+}
 @Component({
   selector: 'app-sidebar',
   templateUrl: './sidebar.component.html',
-  styleUrl: './sidebar.component.scss'
+  styleUrl: './sidebar.component.scss',
+  animations: [
+    trigger('slideInOut', [
+      state('in', style({
+        width: '5vw',
+        opacity: 1,
+      })),
+      state('out', style({
+        width: '19vw',
+        opacity: 1,
+      })),
+      transition('in => out', [
+        animate('300ms ease-in-out')
+      ]),
+      transition('out => in', [
+        animate('300ms ease-in-out')
+      ])
+    ])
+  ]
 })
 export class SidebarComponent {
   isCollapsed = false;
@@ -62,6 +101,15 @@ export class SidebarComponent {
   selectedRunway: string[] = [];
   selectedTypeofProcedure: string[] = [];
   selectedProcedureName: string[] = [];
+  isCompare=false;
+
+  multipart1=['AKTIM 7A','GUNIM 7A','ANIRO 7A'];
+
+  multipart2=['AKTIM 7A','GUNIM 7A','ANIRO 7A'];
+
+  selectedOptions: string[] = [];
+  selectedOptionstoshow: string[] = [];
+  isDropdownVisible = false;
 
   constructor(
     private sharedService: SharedService,
@@ -70,19 +118,255 @@ export class SidebarComponent {
   ){
 
   }
+  obj1:any={
+    title: "AKTIM 7A",
+    columns: [
+      "Waypoint Identifier",
+      "Path Descriptor",
+      "Fly Over",
+      "Course Angle °M(°T)",
+      "Turn Direction",
+      "Upper Limit Altitude ft",
+      "Lower Limit Altitude ft",
+      "Speed Limit kt",
+      "TM DST NM",
+      "VA",
+      "Navigation specification"
+    ],
+    rows: [
+      {
+        waypointIdentifier: "-",
+        pathDescriptor: "VA",
+        flyOver: "-",
+        courseAngle: "272°",
+        turnDirection: "-",
+        upperLimitAltitude: "-",
+        lowerLimitAltitude: "-",
+        speedLimit: "-",
+        tmDst: "3.32",
+        va: "-",
+        navigationSpecification: "RNAV1"
+      },
+      {
+        waypointIdentifier: "DER27",
+        pathDescriptor: "DF",
+        flyOver: "-",
+        courseAngle: "-",
+        turnDirection: "-",
+        upperLimitAltitude: "-",
+        lowerLimitAltitude: "-",
+        speedLimit: "-",
+        tmDst: "3.32",
+        va: "-",
+        navigationSpecification: "RNAV1"
+      },
+      {
+        waypointIdentifier: "WYPT1",
+        pathDescriptor: "TF",
+        flyOver: "-",
+        courseAngle: "272°",
+        turnDirection: "-",
+        upperLimitAltitude: "-",
+        lowerLimitAltitude: "-",
+        speedLimit: "-",
+        tmDst: "7.59",
+        va: "-",
+        navigationSpecification: "RNAV1"
+      },
+      {
+        waypointIdentifier: "WYPT2",
+        pathDescriptor: "TF",
+        flyOver: "-",
+        courseAngle: "280°",
+        turnDirection: "R",
+        upperLimitAltitude: "-",
+        lowerLimitAltitude: "+6000.00",
+        speedLimit: "-",
+        tmDst: "2.57",
+        va: "-",
+        navigationSpecification: "RNAV1"
+      },
+      {
+        waypointIdentifier: "WYPT3",
+        pathDescriptor: "TF",
+        flyOver: "-",
+        courseAngle: "356°",
+        turnDirection: "L",
+        upperLimitAltitude: "-8000",
+        lowerLimitAltitude: "-",
+        speedLimit: "230",
+        tmDst: "3.48",
+        va: "-",
+        navigationSpecification: "RNAV1"
+      },
+      {
+        waypointIdentifier: "WYPT4",
+        pathDescriptor: "TF",
+        flyOver: "-",
+        courseAngle: "281°",
+        turnDirection: "L",
+        upperLimitAltitude: "-",
+        lowerLimitAltitude: "-",
+        speedLimit: "-",
+        tmDst: "1.56",
+        va: "-",
+        navigationSpecification: "RNAV1"
+      },
+      {
+        waypointIdentifier: "WYPT5",
+        pathDescriptor: "TF",
+        flyOver: "-",
+        courseAngle: "190°",
+        turnDirection: "-",
+        upperLimitAltitude: "-",
+        lowerLimitAltitude: "-FL110",
+        speedLimit: "-",
+        tmDst: "1.59",
+        va: "-",
+        navigationSpecification: "RNAV1"
+      }
+    ]
+  }
 
+  obj2:any={
+    title: "AKTIM 6A",
+    columns: [
+      "Waypoint Identifier",
+      "Path Descriptor",
+      "Fly Over",
+      "Course Angle °M(°T)",
+      "Turn Direction",
+      "Upper Limit Altitude ft",
+      "Lower Limit Altitude ft",
+      "Speed Limit kt",
+      "TM DST NM",
+      "VA",
+      "Navigation specification"
+    ],
+    rows: [
+      {
+        waypointIdentifier: "-",
+        pathDescriptor: "-",
+        flyOver: "-",
+        courseAngle: "27°",
+        turnDirection: "-",
+        upperLimitAltitude: "-",
+        lowerLimitAltitude: "-",
+        speedLimit: "-",
+        tmDst: "3.32",
+        va: "-",
+        navigationSpecification: "RNAV1"
+      },
+      {
+        waypointIdentifier: "DER27",
+        pathDescriptor: "DF",
+        flyOver: "-",
+        courseAngle: "-",
+        turnDirection: "-",
+        upperLimitAltitude: "-",
+        lowerLimitAltitude: "-",
+        speedLimit: "-",
+        tmDst: "3.32",
+        va: "-",
+        navigationSpecification: "RNAV1"
+      },
+      {
+        waypointIdentifier: "WYPT1",
+        pathDescriptor: "TF",
+        flyOver: "-",
+        courseAngle: "272°",
+        turnDirection: "-",
+        upperLimitAltitude: "-",
+        lowerLimitAltitude: "-",
+        speedLimit: "-",
+        tmDst: "7.59",
+        va: "-",
+        navigationSpecification: "RNAV1"
+      },
+      {
+        waypointIdentifier: "WYPT2",
+        pathDescriptor: "TF",
+        flyOver: "-",
+        courseAngle: "280°",
+        turnDirection: "R",
+        upperLimitAltitude: "-",
+        lowerLimitAltitude: "+6000.00",
+        speedLimit: "-",
+        tmDst: "2.57",
+        va: "-",
+        navigationSpecification: "RNAV1"
+      },
+      {
+        waypointIdentifier: "WYPT3",
+        pathDescriptor: "TF",
+        flyOver: "-",
+        courseAngle: "356°",
+        turnDirection: "L",
+        upperLimitAltitude: "-8000",
+        lowerLimitAltitude: "-",
+        speedLimit: "230",
+        tmDst: "3.48",
+        va: "-",
+        navigationSpecification: "RNAV1"
+      },
+      {
+        waypointIdentifier: "WYPT4",
+        pathDescriptor: "TF",
+        flyOver: "-",
+        courseAngle: "281°",
+        turnDirection: "L",
+        upperLimitAltitude: "-",
+        lowerLimitAltitude: "-",
+        speedLimit: "-",
+        tmDst: "1.56",
+        va: "-",
+        navigationSpecification: "RNAV1"
+      },
+      {
+        waypointIdentifier: "WYPT5",
+        pathDescriptor: "TF",
+        flyOver: "-",
+        courseAngle: "190°",
+        turnDirection: "-",
+        upperLimitAltitude: "-",
+        lowerLimitAltitude: "-FL110",
+        speedLimit: "-",
+        tmDst: "2.55",
+        va: "-",
+        navigationSpecification: "RNAV1"
+      }
+    ]
+  }
+  compareObj:any={};
   ngOnInit(){
     this.isMultiMapView = false;
+    const route = localStorage.getItem('currentRoute');
+    if(route === '/ADM/PANS-OPS'){
+      this.isMultiMapView = true;
+    }else{
+      this.isMultiMapView = false;
+    }
 
     this.Airform = this.formbuilder.group({
       selectedAirport: [[]],
       selectedRunway: [[]],
       selectedTypeofProcedure: [[]],
-      selectedProcedureName: [[]],
+      selectedProcedureName: [["PEXEG 7E","ADKAL 7E"]],
     });
-    // this.sharedService.sidebarContent$.subscribe(() => {
-    //   this.isMultiMapView = true;
-    // });
+    this.isCompare=false;
+    this.sharedService.sidebar$.subscribe((option:any) => {
+      switch(option){
+        case 'Compare':
+          this.isCompare=true;
+          break;
+        case 'AIRAC 2402':
+          this.isCompare=false;
+          break;
+        default:
+          this.isCompare=false;
+          break;   
+      }
+    });
 
     // this.Airform.valueChanges.subscribe(values => {
     //   // Update form values in the shared service
@@ -100,6 +384,8 @@ export class SidebarComponent {
     this.Airform.valueChanges.subscribe((values) => {
       this.onFormValuesChange(values);
     });
+
+    this.compareObj = this.compareComplexObjects(this.obj1, this.obj2);
   }
 
 
@@ -111,10 +397,7 @@ export class SidebarComponent {
   // Triggered on select change, optional for individual selects
   onValueChange(event: Event): void {
     const formValues = this.Airform.value;
-
-  // Send the entire form object to the shared service
-  this.sharedService.updateFormValues(formValues);
-    // Add individual select logic here if needed
+    this.sharedService.updateFormValues(formValues);
   }
 
 
@@ -430,7 +713,7 @@ export class SidebarComponent {
   }
 
   navigateToMultiMap(){
-    this.router.navigate(['/multimaps']);
+    this.router.navigate(['/ADM']);
     this.isMultiMapView=false;
     this.isAIXM = false;
     this.selectedTab='';
@@ -815,4 +1098,68 @@ onToggleChange(event: any) {
 
   }
 }
+
+toggleSelection(item: string, part: string, index: number): void {
+  const uniqueId = `${item}-${part}-${index}`; // Create unique identifier for the item
+
+  const selectedIndex = this.selectedOptions.indexOf(uniqueId);
+  if (selectedIndex === -1) {
+    // Item is not selected, so add it
+    this.selectedOptions.push(uniqueId);
+    this.selectedOptionstoshow.push(item);
+  } else {
+    // Item is already selected, so remove it
+    this.selectedOptions.splice(selectedIndex, 1);
+    this.selectedOptionstoshow.splice(selectedIndex,1);
+  }
+
+  console.log(this.selectedOptions);
+}
+
+// Function to check if an item is selected
+isSelected(item: string, part: string, index: number): boolean {
+  const uniqueId = `${item}-${part}-${index}`;
+  return this.selectedOptions.includes(uniqueId);
+}
+
+toggleDropdown(): void {
+  this.isDropdownVisible = !this.isDropdownVisible;
+}
+
+@HostListener('document:click', ['$event'])
+  handleOutsideClick(event: Event): void {
+    const target = event.target as HTMLElement;
+    const clickedInside = target.closest('.select');
+
+    if (!clickedInside) {
+      this.isDropdownVisible = false; // Hide the dropdown if clicked outside
+    }
+  }
+
+  compareComplexObjects(obj1: ComplexObject, obj2: ComplexObject): ComparedComplexObject {
+    const comparedRows = obj1.rows.map((row1, index) => {
+      const row2 = obj2.rows[index];
+      if (!row2) return this.transformRow(row1, row1);
+      return this.transformRow(row1, row2);
+    });
+
+    return {
+      title: obj1.title,
+      columns: obj1.columns,
+      rows: comparedRows
+    };
+  }
+
+  private transformRow(row1: RowItem, row2: RowItem): ComparedRowItem {
+    const newRow: ComparedRowItem = {};
+    for (const key in row1) {
+      if (row1.hasOwnProperty(key)) {
+        newRow[key] = {
+          value: row1[key],
+          flag: row1[key] !== row2[key]
+        };
+      }
+    }
+    return newRow;
+  }
 }

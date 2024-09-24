@@ -4,13 +4,13 @@ import { MediaMatcher } from '@angular/cdk/layout';
 import { ChangeDetectorRef, OnDestroy } from '@angular/core';
 import * as L from 'leaflet';
 import 'leaflet-rotatedmarker';
-import { AuthService } from '../Service/auth.service';
+import { AuthService } from '../service/auth.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { StreamServiceService } from '../Service/stream-service.service';
+import { StreamServiceService } from '../service/stream-service.service';
 import { Flight, Plane } from '../target';
 import {  Subscription } from 'rxjs';
 import * as GeoJSON from 'geojson';
-import { SharedService } from 'src/app/Service/shared.service';
+import { SharedService } from 'src/app/service/shared.service';
 import {PansopsService} from "../service/Adm/Pansops/pansops.service";
 declare module 'leaflet' {
   interface MarkerOptions {
@@ -216,9 +216,13 @@ export class MapComponent implements OnInit {
     })
     
     this.selectedProcedureName=[];
-    this.route.params.subscribe(params => {
-      this.mapId = params['id'];
-    });
+    // this.route.params.subscribe(params => {
+    //   this.mapId = params['id'];
+    // });
+    const selectedMap = localStorage.getItem('selectedMap');
+    if(selectedMap){
+      this.mapId = selectedMap;
+    }
     this.initMap();
     this.watchAirportChanges();
 
@@ -231,7 +235,6 @@ export class MapComponent implements OnInit {
 
     this.sharedService.formValues$.subscribe(formData => {
       if (formData) {
-        // Update the form values
         this.Airform.setValue(formData);
       }
     });
