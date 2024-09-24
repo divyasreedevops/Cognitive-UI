@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, Output} from '@angular/core';
 import { trigger, state, style, transition, animate } from '@angular/animations';
-import { SharedService } from 'src/app/Service/shared.service';
+import { SharedService } from 'src/app/service/shared.service';
 
 @Component({
   selector: 'app-header',

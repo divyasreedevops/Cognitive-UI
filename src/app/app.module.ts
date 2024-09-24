@@ -24,6 +24,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { FooterComponent } from './shared/footer/footer.component';
 import { LoginComponent } from './login/login.component';
 
+
 import { LayoutModule } from '@angular/cdk/layout';
 import { MapViewerComponent } from './map-viewer/map-viewer.component';
 import { HeaderComponent } from './shared/header/header.component';
@@ -35,6 +36,7 @@ import { WxmComponent } from './shared/wxm/wxm.component';
 import { SidebarComponent } from './shared/sidebar/sidebar.component';
 import { MultimapComponent } from './shared/multimap/multimap.component';
 import { VideoClipComponent } from './airlineopsmanager/videoclip/clip.component';
+import { SharedService } from './service/shared.service';
 
 @NgModule({
     declarations: [
@@ -75,6 +77,6 @@ import { VideoClipComponent } from './airlineopsmanager/videoclip/clip.component
     MatSidenavModule
 ],
     bootstrap: [AppComponent],
-    providers: [AuthGuard, provideHttpClient(withInterceptorsFromDi())]
+    providers: [AuthGuard,SharedService, provideHttpClient(withInterceptorsFromDi())]
 })
 export class AppModule { }

@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { Router, NavigationEnd, Event } from '@angular/router';
 import { filter } from 'rxjs/operators';
-import { SharedService } from './Service/shared.service';
+import { SharedService } from './service/shared.service';
 
 @Component({
   selector: 'app-root',
