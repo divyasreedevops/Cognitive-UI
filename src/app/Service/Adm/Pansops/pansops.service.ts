@@ -1,18 +1,19 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import {Baseurl,Adm} from "../../../utils/constants";
 @Injectable({
   providedIn: 'root'
 })
 export class PansopsService {
 
-  private apiUrl = 'http://localhost:3000'; // Replace with your API endpoint
+  private apiUrl =Baseurl; // Replace with your API endpoint
 
   constructor(private http: HttpClient) {}
 
   
   getAirports(): Observable<any> {
-    return this.http.get<any>(`${this.apiUrl}/airports`);
+    return this.http.get<any>(`${this.apiUrl}${Adm.airport}`);
   }
 
   getRunways(airportId:string): Observable<any> {
