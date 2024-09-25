@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
-import { SharedService } from '../service/shared.service';
+import { SharedService } from '../Service/shared.service';
 
 @Component({
   selector: 'app-opsmanager',

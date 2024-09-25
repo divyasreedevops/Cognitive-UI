@@ -1,5 +1,5 @@
 import { Component, HostListener } from '@angular/core';
-import { SharedService } from 'src/app/service/shared.service';
+import { SharedService } from 'src/app/Service/shared.service';
 import { Router } from '@angular/router';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { trigger, state, style, transition, animate } from '@angular/animations';

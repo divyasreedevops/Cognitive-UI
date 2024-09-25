@@ -4,14 +4,14 @@ import { MediaMatcher } from '@angular/cdk/layout';
 import { ChangeDetectorRef, OnDestroy } from '@angular/core';
 import * as L from 'leaflet';
 import 'leaflet-rotatedmarker';
-import { AuthService } from '../service/auth.service';
+import { AuthService } from '../Service/auth.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { StreamServiceService } from '../service/stream-service.service';
+import { StreamServiceService } from '../Service/stream-service.service';
 import { Flight, Plane } from '../target';
 import {  Subscription } from 'rxjs';
 import * as GeoJSON from 'geojson';
-import { SharedService } from 'src/app/service/shared.service';
-import {PansopsService} from "../service/Adm/Pansops/pansops.service";
+import { SharedService } from '../Service/shared.service';
+import { PansopsService } from '../Service/Adm/Pansops/pansops.service';
 declare module 'leaflet' {
   interface MarkerOptions {
     rotationAngle?: number;
