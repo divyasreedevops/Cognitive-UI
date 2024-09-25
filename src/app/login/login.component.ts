@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { AuthService } from '../service/auth.service';
+import { AuthService } from '../service/Auth/auth.service';
 
 @Component({
   selector: 'app-login',
@@ -26,15 +26,12 @@ export class LoginComponent implements OnInit {
   }
 
   onsubmit() {
-    if (this.LogInForm.valid) {
-      const email = this.LogInForm.get('email')?.value;
-      const password = this.LogInForm.get('password')?.value;
-     console.log(this.authService.login(email, password),"this.authService.login(email, password)")
-      if (this.authService.login(email, password)) {
-        this.router.navigate(['opsmanager']);
-      } else {
-        // Handle authentication error (show error message, etc.)
-      }
-    }
+      this.authService.login({
+        "email":this.LogInForm.value.email,
+        "password":this.LogInForm.value.password
+    }).subscribe((data)=>{
+      localStorage.setItem('token',data.token);
+      this.router.navigate(['opsmanager']);
+      })
   }
 }
