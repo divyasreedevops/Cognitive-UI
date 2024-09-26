@@ -5,5 +5,8 @@ export const Auth={
 }
 
 export const Adm={
-    airport:"/adm/airports/123e4567-e89b-12d3-a456-426614174000"
+    airport:"/adm/airports/123e4567-e89b-12d3-a456-426614174000",
+    runways:"/adm/runways/123e4567-e89b-12d3-a456-426614174000",
+    type:"/adm/types/123e4567-e89b-12d3-a456-426614174000",
+    procedureNames:"/adm/procedures"
 }

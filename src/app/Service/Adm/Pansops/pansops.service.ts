@@ -17,14 +17,24 @@ export class PansopsService {
   }
 
   getRunways(airportId:string): Observable<any> {
-    return this.http.get<any>(`${this.apiUrl}/runways/${airportId}`);
+    return this.http.get<any>(`${this.apiUrl}${Adm.runways}/${airportId}`);
   }
 
-  getProcedureNames(airportId:string,typeOfProcedure:string,procedureName:string):Observable<any>{
-    return this.http.get<any>(`${this.apiUrl}/procedures/${airportId}/${typeOfProcedure}/${procedureName}`);
+  getProcedureTypes(airportId:string,runwayId:string){
+    return this.http.get<any>(`${this.apiUrl}${Adm.type}/${airportId}/${runwayId}`);
+
   }
 
- 
+  getProcedureNames(airportId:string,typeOfProcedure:string,procedureName:string,data:any):Observable<any>{
+    const headers = new HttpHeaders({'Content-Type': 'application/json'});
+    return this.http.post<any>(`${this.apiUrl}/adm/procedures`,data,{headers});
+  }
+
+  getProcedure(data:any):Observable<any>{
+    const headers = new HttpHeaders({'Content-Type': 'application/json'});
+    return this.http.post<any>(`${this.apiUrl}/adm/procedure_data`,data,{headers});
+  }
+
 
   // // Example POST request
   // postData(data: any): Observable<any> {

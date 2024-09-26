@@ -3,6 +3,7 @@ import { SharedService } from 'src/app/service/shared.service';
 import { Router } from '@angular/router';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { trigger, state, style, transition, animate } from '@angular/animations';
+import { PansopsService } from 'src/app/service/Adm/Pansops/pansops.service';
 
 interface RowItem {
   [key: string]: string;
@@ -85,6 +86,10 @@ export class SidebarComponent {
     { value: 'VOBL/Bengaluru (KIA)', label: 'VOBL/BLR/Bengaluru' },
     { value: 'VEPY/PAKYONG', label: 'VEPY/PYG/Pakyong' },
     { value: 'VIJP/JAIPUR', label: 'VIJP/JAI/Jaipur' },];
+   optionRunway:{ value: any; label: any; }[]=[];
+  optionProviderType:{ value: any; label: any; }[]=[];
+
+
   optionsBengaluruKIARunway: { value: any; label: any; }[] = [];
   optionsVIJPJAIPURRunway: { value: any; label: any; }[] = [];
   optionsVEPYPAKYONGRunway: { value: any; label: any; }[] = [];
@@ -103,10 +108,11 @@ export class SidebarComponent {
   selectedProcedureName: string[] = [];
   isCompare=false;
 
-  multipart1=['AKTIM 7A','GUNIM 7A','ANIRO 7A'];
+  procedureNames:{value:any;label:any}[]=[];
 
   multipart2=['AKTIM 7A','GUNIM 7A','ANIRO 7A'];
 
+  multipart1=['AKTIM 7A','GUNIM 7A','ANIRO 7A'];
   selectedOptions: string[] = [];
   selectedOptionstoshow: string[] = [];
   isDropdownVisible = false;
@@ -114,7 +120,8 @@ export class SidebarComponent {
   constructor(
     private sharedService: SharedService,
     private router: Router,
-    private formbuilder: FormBuilder
+    private formbuilder: FormBuilder,
+    private pansopsService: PansopsService
   ){
 
   }
@@ -384,7 +391,14 @@ export class SidebarComponent {
     this.Airform.valueChanges.subscribe((values) => {
       this.onFormValuesChange(values);
     });
-
+    
+    this.pansopsService.getAirports().subscribe(response=>{
+      const transformedAirports = response.map((airport:any) => ({
+        value: airport.id,
+        label: airport.airport_icao
+    }));
+    this.optionsAirport=transformedAirports;
+   })
     this.compareObj = this.compareComplexObjects(this.obj1, this.obj2);
   }
 
@@ -394,8 +408,62 @@ export class SidebarComponent {
     // Add your logic here
   }
 
+   convertToArray(obj:any) {
+    const result:any = [];
+    Object.values(obj).forEach((array:any) => {
+        array.forEach((item:any) => {
+            result.push({ label: item.name + item.designator, value: item.id });
+        });
+    });
+    return result;
+};
+
   // Triggered on select change, optional for individual selects
-  onValueChange(event: Event): void {
+  onValueChange(event: Event,dropdownName:string): void {
+    switch(dropdownName){
+      case 'airport':
+        {
+          this.pansopsService.getRunways(this.selectedAirport.toString()).subscribe(response=>{
+            const transformesRunways = response.map((runway:any) => ({
+              value: runway.id,
+              label: runway.designation
+          }));
+          this.optionRunway=transformesRunways;
+         })
+        break;
+         }
+        
+      case 'runway':{
+        this.pansopsService.getProcedureTypes(this.selectedAirport.toString(),this.selectedRunway.toString()).subscribe(response=>{
+          const transformesType = response.map((type:any) => ({
+            value: type,
+            label: type
+        }));
+        this.optionProviderType=transformesType;
+        console.log(response)
+       })
+      break;
+      }
+      case 'typeOfProcedure':{
+        this.pansopsService.getProcedureNames(this.selectedAirport.toString(),this.selectedRunway.toString(),this.selectedTypeofProcedure.toString(),{
+          "airport_icao": "VOBL",
+             "rwy_dir":"09L",
+             "type": ["SID","STAR","APCH"],
+             "airac_id":"123e4567-e89b-12d3-a456-426614174000"
+         }).subscribe(response=>{
+        response= this.convertToArray(response)
+        this.procedureNames=response;
+        console.log(this.procedureNames,"this.procedureNames")
+       })
+        // procedureNames
+        break;
+      }
+        case 'procedureName':{
+          break;
+        }
+
+    }
+    console.log(dropdownName,"dropdownNamedropdownName")
     const formValues = this.Airform.value;
     this.sharedService.updateFormValues(formValues);
   }

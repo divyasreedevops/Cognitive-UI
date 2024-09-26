@@ -213,9 +213,7 @@ export class MapComponent implements OnInit {
      * api call to fetch the airport details
      */
 
-    this.pansopsService.getAirports().subscribe(response=>{
-       this.airPorts=response;
-    })
+
     
     this.selectedProcedureName=[];
     // this.route.params.subscribe(params => {
@@ -233,7 +231,7 @@ export class MapComponent implements OnInit {
     this.selectedTypeofProcedure = [];
     this.selectedProcedureName = [];
 
-    this.updateLayers();
+    // this.updateLayers();
 
     this.sharedService.formValues$.subscribe(formData => {
       if (formData) {
@@ -750,422 +748,264 @@ const newLon = referenceLon + deltaLon;
   
 
 
-  updateLayers(): void {
+  updateLayers(procedures:any): void {
 
-  
 
 
 
     // Clear existing layers
     this.airportLayerGroup.clearLayers();
 
-    const loadSIDProcedure = async (procedureName: string, pointFileName: string, lineFileName: string, iconFileName: string) => {
-      try {
 
-        // Load runway GeoJSON data
-        const runwayIcon = L.icon({
-          iconUrl: 'assets/AKTIM_7A/RWY.png',
-          iconSize: [20, 30],
-          iconAnchor: [10, 30]
-        });
+    try {
+      // Load runway GeoJSON data
+      const runwayIcon = L.icon({
+        iconUrl: 'assets/AKTIM_7A/RWY.png',
+        iconSize: [20, 30],
+        iconAnchor: [10, 30]
+      });
 
-        const runwayResponse = await fetch(iconFileName);
-        const runwayData = await runwayResponse.json();
-        console.log(runwayData,"runwayDatarunwayData")
-        const geoLayer = L.geoJSON(runwayData, {
-          pointToLayer: (feature, latlng) => {
-            const trueB = parseFloat(feature.properties.True_B);
-            let marker: L.Marker<any>|null;
+      const runwayResponse = await fetch(iconFileName);
+      const runwayData = await runwayResponse.json();
+   const pointLineJsons =   this.createGeoJsonPointObject(this.procedures,this.Airform.get('selectedTypeofProcedure')?.value);
+      this.airportLayerGroup.addLayer(geoLayer);
+      const stepIcon = L.icon({
+        iconUrl: 'assets/AKTIM_7A/Fly-by.png',
+        iconSize: [40, 40],
+        popupAnchor: [-3, -76],
+      });
+      let currentTooltip:any = null; // Initialize a variable to store the current tooltip
 
-            if (!isNaN(trueB)) {
-              const rotationAngle = trueB
-              console.log(rotationAngle)
-              /**
-               * @todo add +180 degree to rotate
-               */
-              marker = L.marker(latlng, { icon: runwayIcon, rotationAngle: rotationAngle });
-            } else {
-              console.error('Invalid True_B value:', feature.properties.True_B);
-              // Create a transparent marker as a fallback
-              marker = L.marker(latlng, { opacity: 0 });
-            }
-            return marker;
-          }
-        });
-
-     const pointLineJsons =   this.createGeoJsonPointObject(this.procedures);
-        this.airportLayerGroup.addLayer(geoLayer);
-        const stepIcon = L.icon({
-          iconUrl: 'assets/AKTIM_7A/Fly-by.png',
-          iconSize: [40, 40],
-          popupAnchor: [-3, -76],
-        });
-        let currentTooltip:any = null; // Initialize a variable to store the current tooltip
-
-        const geoJsonLayer = L.geoJSON(pointLineJsons.pointJson, {
-          pointToLayer: (feature, latlng) => {
-            const marker = L.marker(latlng, { icon: stepIcon });
-        
-            // Set up the permanent tooltip content
-            let tooltipContent = '';
-            if (feature.properties.Name) {
-              tooltipContent += `<b>${feature.properties.Name}</b><br>`;
-            }
-            if (feature.properties.Altitude) {
-              tooltipContent += `${feature.properties.Altitude}<br>`;
-            }
-            if (feature.properties.Speed) {
-              tooltipContent += `${feature.properties.Speed}<br>`;
-            }
-            if (feature.properties.Speed1) {
-              tooltipContent += `${feature.properties.Speed1}`;
-            }
-        
-            // Bind the permanent tooltip to the marker
-            if (tooltipContent !== '') {
-              marker.bindTooltip(tooltipContent, {
-                permanent: true,
-                direction: 'bottom',
-                className: 'labelstyle',
-                offset: L.point(25, 0),
-              });
-            }
-        
-            return marker;
-          },
-        
-          onEachFeature: (feature, layer) => {
-            if (layer instanceof L.Marker) {
-              layer.on('click', () => {
-                // Get the coordinates and waypoint name
-                const coordinates = layer.getLatLng();
-                const waypointName = feature.properties.Name || "Unknown Waypoint";
-                const latitude=this.toDMS(coordinates.lat);
-                const longitude=this.toDMS(coordinates.lng);
-
-                // Create tooltip content for the click
-                const tooltipContent = `
-                  <div>
-                    <strong>Waypoint:</strong> ${waypointName}<br />
-                    <strong>Coordinates:</strong>  ${latitude} , ${longitude}<br />
-                  </div>
-                `;
-        
-                // Create a popup to display the information
-                L.popup()
-                  .setLatLng(coordinates)
-                  .setContent(tooltipContent)
-                  .openOn(this.map); // Use the marker's map reference
-              });
-            }
-          }
-        });
-        
-        
-        
-        
-        
-        
-        // Add the layer to your map
-        geoJsonLayer.addTo(this.map);
-        
-        // Ensure to close tooltips when clicking on the map
-        this.map.on('click', () => {
-          if (currentTooltip) {
-            currentTooltip.closeTooltip();
-            currentTooltip = null; // Reset the current tooltip reference
-          }
-        });
-        
-
-        this.airportLayerGroup.addLayer(geoJsonLayer);
-        this.map.fitBounds(geoJsonLayer.getBounds());
-
-        // Load Line_SID GeoJSON datat  
-        // const lineResponse = await fetch(lineFileName);
-        const lineData :GeoJSON.FeatureCollection<GeoJSON.MultiLineString>= pointLineJsons.lineJson;
-
-
-          const lineFeatures = lineData.features; // Assuming lineData is your GeoJSON data
-
-          this.lineGeoJsonLayer = L.geoJSON(lineData, {
-              style: {
-                  color: 'black', // Set line color
-                  weight: 2 // Set line weight
-              },
-              onEachFeature: (feature: GeoJSON.Feature<GeoJSON.MultiLineString>, layer) => {
-                  const currentIndex = lineFeatures.indexOf(feature as GeoJSON.Feature<GeoJSON.MultiLineString>); // Type assertion here
-                  layer.on('click', () => {
-                    if (feature.properties) {
-                        const name = feature.properties['Name'];
-
-                        const startPoint=feature.properties['StartPoint']
-                        const endPoint=feature.properties['EndPoint']
-                      
-                        // Create a tooltip content
-                        const tooltipContent = `
-                            <div>
-                                <strong>Path Terminatore:</strong> ${name}<br />
-                                <strong>StartPoint:</strong> ${startPoint}<br/>
-                                <strong>EndPoint:</strong> ${endPoint}<br/>
-                            </div>
-                        `;
-                
-                        // Cast the layer to Polyline to access getLatLngs
-                        const polyline = layer as L.Polyline;
-                        const latLngs = polyline.getLatLngs();
-                        console.log(JSON.stringify(latLngs),"latLngslatLngs")
-                
-                      // Function to flatten LatLng coordinates
-                      const flattenLatLngs = (latLngs: L.LatLng | L.LatLng[] | L.LatLng[][] | L.LatLng[][][]): L.LatLng[] => {
-                        if (Array.isArray(latLngs)) {
-                            return latLngs.flatMap(flattenLatLngs); // Recursively flatten
-                        }
-                        return [latLngs]; // Wrap a single LatLng in an array
-                    };
-                        // Flattening the LatLngs
-                   // Flatten the LatLngs to ensure we have a single array
-                     const flatLatLngs: L.LatLng[] = flattenLatLngs(latLngs);
-                
-                        // Calculate bounds from the line's coordinates
-                        const bounds = L.latLngBounds(flatLatLngs);
-                
-                        // Show the tooltip at the center of the bounds
-                        L.popup()
-                            .setLatLng(bounds.getCenter())
-                            .setContent(tooltipContent)
-                            .openOn(this.map);
-                    }
-                });
-                
-                
-                
+      const geoJsonLayer = L.geoJSON(pointLineJsons.pointJson, {
+        pointToLayer: (feature, latlng) => {
+          const marker = L.marker(latlng, { icon: stepIcon });
       
+          // Set up the permanent tooltip content
+          let tooltipContent = '';
+          if (feature.properties.Name) {
+            tooltipContent += `<b>${feature.properties.Name}</b><br>`;
+          }
+          if (feature.properties.Altitude) {
+            tooltipContent += `${feature.properties.Altitude}<br>`;
+          }
+          if (feature.properties.Speed) {
+            tooltipContent += `${feature.properties.Speed}<br>`;
+          }
+          if (feature.properties.Speed1) {
+            tooltipContent += `${feature.properties.Speed1}`;
+          }
+      
+          // Bind the permanent tooltip to the marker
+          if (tooltipContent !== '') {
+            marker.bindTooltip(tooltipContent, {
+              permanent: true,
+              direction: 'bottom',
+              className: 'labelstyle',
+              offset: L.point(25, 0),
+            });
+          }
+      
+          return marker;
+        },
+      
+        onEachFeature: (feature, layer) => {
+          if (layer instanceof L.Marker) {
+            layer.on('click', () => {
+              // Get the coordinates and waypoint name
+              const coordinates = layer.getLatLng();
+              const waypointName = feature.properties.Name || "Unknown Waypoint";
+              const latitude=this.toDMS(coordinates.lat);
+              const longitude=this.toDMS(coordinates.lng);
+
+              // Create tooltip content for the click
+              const tooltipContent = `
+                <div>
+                  <strong>Waypoint:</strong> ${waypointName}<br />
+                  <strong>Coordinates:</strong>  ${latitude} , ${longitude}<br />
+                </div>
+              `;
+      
+              // Create a popup to display the information
+              L.popup()
+                .setLatLng(coordinates)
+                .setContent(tooltipContent)
+                .openOn(this.map); // Use the marker's map reference
+            });
+          }
+        }
+      });
+      
+      
+      
+      
+      
+      
+      // Add the layer to your map
+      geoJsonLayer.addTo(this.map);
+      
+      // Ensure to close tooltips when clicking on the map
+      this.map.on('click', () => {
+        if (currentTooltip) {
+          currentTooltip.closeTooltip();
+          currentTooltip = null; // Reset the current tooltip reference
+        }
+      });
+      
+
+      this.airportLayerGroup.addLayer(geoJsonLayer);
+      this.map.fitBounds(geoJsonLayer.getBounds());
+
+      // Load Line_SID GeoJSON datat  
+      // const lineResponse = await fetch(lineFileName);
+      const lineData :GeoJSON.FeatureCollection<GeoJSON.MultiLineString>= pointLineJsons.lineJson;
+
+
+        const lineFeatures = lineData.features; // Assuming lineData is your GeoJSON data
+
+        this.lineGeoJsonLayer = L.geoJSON(lineData, {
+            style: {
+                color: 'black', // Set line color
+                weight: 2 // Set line weight
+            },
+            onEachFeature: (feature: GeoJSON.Feature<GeoJSON.MultiLineString>, layer) => {
+                const currentIndex = lineFeatures.indexOf(feature as GeoJSON.Feature<GeoJSON.MultiLineString>); // Type assertion here
+                layer.on('click', () => {
                   if (feature.properties) {
-                      const bearing = feature.properties['Bearing'];
-                      const distance = feature.properties['Distance'];
-          
-                      if (bearing !== null || distance !== null) {
-                          let coordinates: number[][] = [];
-                          if (feature.geometry.type === 'MultiLineString') {
-                              coordinates = feature.geometry.coordinates[0]; // For MultiLineString, choose the first line
-                          } else if (feature.geometry.type === 'LineString') {
-                              coordinates = feature.geometry.coordinates[0];
-                          }
-          
-                          const start = coordinates[0];
-                          const end = coordinates[1];
-          
-                          // Calculate the angle between start and end points in radians
-                          let angle = Math.atan2(end[1] - start[1], end[0] - start[0]);
-          
-                          // Ensure angle is positive
-                          if (angle < 0) {
-                              angle += 2 * Math.PI;
-                          }
-          
-                          // Calculate the center point of the line segment
-                          const center = [(start[0] + end[0]) / 2, (start[1] + end[1]) / 2];
-          
-                          let rotationAngle;
-          
-                          if (distance !== null) {
-                              const customIcon = L.icon({
-                                  iconUrl: 'assets/AKTIM_7A/penta.png',
-                                  iconSize: [44, 36],
-                                  iconAnchor: [20, 19]
-                              });
-          
-                              let iconRotationAngle = parseFloat(bearing);
-          
-                              if (isNaN(iconRotationAngle)) {
-                                  const nextIndex = currentIndex + 1;
-                                  if (nextIndex < lineFeatures.length) {
-                                      const nextFeature = lineFeatures[nextIndex];
-                                      if (nextFeature.properties && nextFeature.properties['Bearing']) {
-                                          iconRotationAngle = parseFloat(nextFeature.properties['Bearing']);
-                                      }
-                                  }
-                              }
-          
-                              const marker = L.marker(L.latLng(center[1], center[0]), {
-                                  icon: customIcon,
-                                  rotationAngle: iconRotationAngle
-                              }).addTo(this.airportLayerGroup);
-          
-                              if (iconRotationAngle !== null) {
-                                  rotationAngle = iconRotationAngle >= 0 && iconRotationAngle < 180 
-                                                  ? iconRotationAngle - 90 
-                                                  : iconRotationAngle + 90;
-                              } else {
-                                  rotationAngle = angle * (180 / Math.PI) - 90;
-                              }
-          
-                              const distanceTooltip = `<div style="transform: rotate(${rotationAngle}deg); font-size: 8px;">${feature.properties['Distance']}</div>`;
-                              marker.bindTooltip(distanceTooltip, {
-                                  permanent: true,
-                                  direction: 'center',
-                                  className: 'labelstyle',
-                                  opacity: 1
-                              });
-                          }
-          
-                          if (bearing !== null) {
-                              const bearingMarker = L.marker(L.latLng(center[1], center[0]), {
-                                  rotationAngle: rotationAngle,
-                                  icon: L.divIcon({
-                                      className: 'bearing-label',
-                                      html: `<div style="font-size: 8px;">${feature.properties['Bearing']}</div>`,
-                                      iconAnchor: [10, 20]
-                                  })
-                              }).addTo(this.airportLayerGroup);
-                          }
+                      const name = feature.properties['Name'];
+
+                      const startPoint=feature.properties['StartPoint']
+                      const endPoint=feature.properties['EndPoint']
+                    
+                      // Create a tooltip content
+                      const tooltipContent = `
+                          <div>
+                              <strong>Path Terminatore:</strong> ${name}<br />
+                              <strong>StartPoint:</strong> ${startPoint}<br/>
+                              <strong>EndPoint:</strong> ${endPoint}<br/>
+                          </div>
+                      `;
+              
+                      // Cast the layer to Polyline to access getLatLngs
+                      const polyline = layer as L.Polyline;
+                      const latLngs = polyline.getLatLngs();
+                      console.log(JSON.stringify(latLngs),"latLngslatLngs")
+              
+                    // Function to flatten LatLng coordinates
+                    const flattenLatLngs = (latLngs: L.LatLng | L.LatLng[] | L.LatLng[][] | L.LatLng[][][]): L.LatLng[] => {
+                      if (Array.isArray(latLngs)) {
+                          return latLngs.flatMap(flattenLatLngs); // Recursively flatten
                       }
+                      return [latLngs]; // Wrap a single LatLng in an array
+                  };
+                      // Flattening the LatLngs
+                 // Flatten the LatLngs to ensure we have a single array
+                   const flatLatLngs: L.LatLng[] = flattenLatLngs(latLngs);
+              
+                      // Calculate bounds from the line's coordinates
+                      const bounds = L.latLngBounds(flatLatLngs);
+              
+                      // Show the tooltip at the center of the bounds
+                      L.popup()
+                          .setLatLng(bounds.getCenter())
+                          .setContent(tooltipContent)
+                          .openOn(this.map);
                   }
-              }
-          });
-          
-          this.airportLayerGroup.addLayer(this.lineGeoJsonLayer);
+              });
+              
+              
+              
+    
+                if (feature.properties) {
+                    const bearing = feature.properties['Bearing'];
+                    const distance = feature.properties['Distance'];
+        
+                    if (bearing !== null || distance !== null) {
+                        let coordinates: number[][] = [];
+                        if (feature.geometry.type === 'MultiLineString') {
+                            coordinates = feature.geometry.coordinates[0]; // For MultiLineString, choose the first line
+                        } else if (feature.geometry.type === 'LineString') {
+                            coordinates = feature.geometry.coordinates[0];
+                        }
+        
+                        const start = coordinates[0];
+                        const end = coordinates[1];
+        
+                        // Calculate the angle between start and end points in radians
+                        let angle = Math.atan2(end[1] - start[1], end[0] - start[0]);
+        
+                        // Ensure angle is positive
+                        if (angle < 0) {
+                            angle += 2 * Math.PI;
+                        }
+        
+                        // Calculate the center point of the line segment
+                        const center = [(start[0] + end[0]) / 2, (start[1] + end[1]) / 2];
+        
+                        let rotationAngle;
+        
+                        if (distance !== null) {
+                            const customIcon = L.icon({
+                                iconUrl: 'assets/AKTIM_7A/penta.png',
+                                iconSize: [44, 36],
+                                iconAnchor: [20, 19]
+                            });
+        
+                            let iconRotationAngle = parseFloat(bearing);
+        
+                            if (isNaN(iconRotationAngle)) {
+                                const nextIndex = currentIndex + 1;
+                                if (nextIndex < lineFeatures.length) {
+                                    const nextFeature = lineFeatures[nextIndex];
+                                    if (nextFeature.properties && nextFeature.properties['Bearing']) {
+                                        iconRotationAngle = parseFloat(nextFeature.properties['Bearing']);
+                                    }
+                                }
+                            }
+        
+                            const marker = L.marker(L.latLng(center[1], center[0]), {
+                                icon: customIcon,
+                                rotationAngle: iconRotationAngle
+                            }).addTo(this.airportLayerGroup);
+        
+                            if (iconRotationAngle !== null) {
+                                rotationAngle = iconRotationAngle >= 0 && iconRotationAngle < 180 
+                                                ? iconRotationAngle - 90 
+                                                : iconRotationAngle + 90;
+                            } else {
+                                rotationAngle = angle * (180 / Math.PI) - 90;
+                            }
+        
+                            const distanceTooltip = `<div style="transform: rotate(${rotationAngle}deg); font-size: 8px;">${feature.properties['Distance']}</div>`;
+                            marker.bindTooltip(distanceTooltip, {
+                                permanent: true,
+                                direction: 'center',
+                                className: 'labelstyle',
+                                opacity: 1
+                            });
+                        }
+        
+                        if (bearing !== null) {
+                            const bearingMarker = L.marker(L.latLng(center[1], center[0]), {
+                                rotationAngle: rotationAngle,
+                                icon: L.divIcon({
+                                    className: 'bearing-label',
+                                    html: `<div style="font-size: 8px;">${feature.properties['Bearing']}</div>`,
+                                    iconAnchor: [10, 20]
+                                })
+                            }).addTo(this.airportLayerGroup);
+                        }
+                    }
+                }
+            }
+        });
+        
+        this.airportLayerGroup.addLayer(this.lineGeoJsonLayer);
 
 
-      } catch (error) {
-        console.error(`Error loading ${procedureName} SID procedure:`, error);
-      }
-    };
-
-    // Mapping of procedure names to their respective file paths
-    const proceduresMap: { [key: string]: [string, string, string] } = {
-      //VOBL_RWY9L SID procedure
-      'AKTIM 7A': ['assets/VOBL_RWY9L/SID/AKTIM7A/AKTIM7A_Point.geojson', 'assets/VOBL_RWY9L/SID/AKTIM7A/AKTIM7A_line.geojson', 'assets/RWY/VOBL_RWY09L.geojson'],
-      'ANIRO 7A': ['assets/VOBL_RWY9L/SID/ANIRO7A/ANIRO7A_Point.geojson', 'assets/VOBL_RWY9L/SID/ANIRO7A/ANIRO7A_line.geojson', 'assets/RWY/VOBL_RWY09L.geojson'],
-      'GUNIM 7A': ['assets/VOBL_RWY9L/SID/GUNIM7A/GUNIM7A_Point.geojson', 'assets/VOBL_RWY9L/SID/GUNIM7A/GUNIM7A_Line.geojson', 'assets/RWY/VOBL_RWY09L.geojson'],
-      'VAGPU 7A': ['assets/VOBL_RWY9L/SID/VAGPU7A/VAGPU7A_Point.geojson', 'assets/VOBL_RWY9L/SID/VAGPU7A/VAGPU7A_Line.geojson', 'assets/RWY/VOBL_RWY09L.geojson'],
-      'GUNIM 7L': ['assets/VOBL_RWY9L/SID/GUNIM7L/GUNIM7L_Point.geojson', 'assets/VOBL_RWY9L/SID/GUNIM7L/GUNIM7L_Line.geojson', 'assets/RWY/VOBL_RWY09L.geojson'],
-      'OPAMO 7A': ['assets/VOBL_RWY9L/SID/OPAMO7A/OPAMO7A_Point.geojson', 'assets/VOBL_RWY9L/SID/OPAMO7A/OPAMO7A_Line.geojson', 'assets/RWY/VOBL_RWY09L.geojson'],
-      'PEXEG 7A': ['assets/VOBL_RWY9L/SID/PEXEG7A/PEXEG7A_Point.geojson', 'assets/VOBL_RWY9L/SID/PEXEG7A/PEXEG7A_Line.geojson', 'assets/RWY/VOBL_RWY09L.geojson'],
-      'TULNA 7A': ['assets/VOBL_RWY9L/SID/TULNA7A/TULNA7A_Point.geojson', 'assets/VOBL_RWY9L/SID/TULNA7A/TULNA7A_Line.geojson', 'assets/RWY/VOBL_RWY09L.geojson'],
-      'VEMBO 7A': ['assets/VOBL_RWY9L/SID/VEMBO7A/VEMBO7A_Point.geojson', 'assets/VOBL_RWY9L/SID/VEMBO7A/VEMBO7A_Line.geojson', 'assets/RWY/VOBL_RWY09L.geojson'],
-      'LATID 7A': ['assets/VOBL_RWY9L/SID/LATID7A/LATID7A_Point.geojson', 'assets/VOBL_RWY9L/SID/LATID7A/LATID7A_Line.geojson', 'assets/RWY/VOBL_RWY09L.geojson'],
-      'SAI 7A': ['assets/VOBL_RWY9L/SID/SAI7A/SAI7A_Point.geojson', 'assets/VOBL_RWY9L/SID/SAI7A/SAI7A_Line.geojson', ''],
-      //VOBL_RWY9L STAR procedure
-      'GUNIM 7E': ['assets/VOBL_RWY9L/STAR/GUNIM7E/GUNIM7E_Point.geojson', 'assets/VOBL_RWY9L/STAR/GUNIM7E/GUNIM7E_Line.geojson', 'assets/RWY/VOBL_RWY09L.geojson'],
-      'ADKAL 7E': ['assets/VOBL_RWY9L/STAR/ADKAL7E/ADKAL7E_Point.geojson', 'assets/VOBL_RWY9L/STAR/ADKAL7E/ADKAL7E_Line.geojson', 'assets/RWY/VOBL_RWY09L.geojson'],
-      'LEKAP 7E': ['assets/VOBL_RWY9L/STAR/LEKAP7E/LEKAP7E_Point.geojson', 'assets/VOBL_RWY9L/STAR/LEKAP7E/LEKAP7E_Line.geojson', 'assets/RWY/VOBL_RWY09L.geojson'],
-      'PEXEG 7E': ['assets/VOBL_RWY9L/STAR/PEXEG7E/PEXEG7E_Point.geojson', 'assets/VOBL_RWY9L/STAR/PEXEG7E/PEXEG7E_Line.geojson', 'assets/RWY/VOBL_RWY09L.geojson'],
-      'RIKBU 7E': ['assets/VOBL_RWY9L/STAR/RIKBU7E/RIKBU7E_Point.geojson', 'assets/VOBL_RWY9L/STAR/RIKBU7E/RIKBU7E_Line.geojson', 'assets/RWY/VOBL_RWY09L.geojson'],
-      'SUSIK 7E': ['assets/VOBL_RWY9L/STAR/SUSIK7E/SUSIK7E_Point.geojson', 'assets/VOBL_RWY9L/STAR/SUSIK7E/SUSIK7E_Line.geojson', 'assets/RWY/VOBL_RWY09L.geojson'],
-      'SUSIK 7J': ['assets/VOBL_RWY9L/STAR/SUSIK7J/SUSIK7J_Point.geojson', 'assets/VOBL_RWY9L/STAR/SUSIK7J/SUSIK7J_Line.geojson', 'assets/RWY/VOBL_RWY09L.geojson'],
-      'TELUV 7E': ['assets/VOBL_RWY9L/STAR/TELUV7E/TELUV7E_Point.geojson', 'assets/VOBL_RWY9L/STAR/TELUV7E/TELUV7E_Line.geojson', 'assets/RWY/VOBL_RWY09L.geojson'],
-      'UGABA 7E': ['assets/VOBL_RWY9L/STAR/UGABA7E/UGABA7E_Point.geojson', 'assets/VOBL_RWY9L/STAR/UGABA7E/UGABA7E_Line.geojson', 'assets/RWY/VOBL_RWY09L.geojson'],
-      'XIVIL 7E': ['assets/VOBL_RWY9L/STAR/XIVIL7E/XIVIL7E_Point.geojson', 'assets/VOBL_RWY9L/STAR/XIVIL7E/XIVIL7E_Line.geojson', 'assets/RWY/VOBL_RWY09L.geojson'],
-      // VOBL_RWY9L APCH procedure
-      'RNP': ['assets/VOBL_RWY9L/APCH/RNP/RNp_RWY_09L_Point.geojson', 'assets/VOBL_RWY9L/APCH/RNP/RNp_RWY_09L_Line.geojson', 'assets/RWY/VOBL_RWY09L.geojson'],
-      // VOBL_RWY27R sid procedure
-      'AKTIM 7B': ['assets/VOBL_RWY27R/SID27R_VOBL/AKTIM7B/AKTIM7B_Point.geojson', 'assets/VOBL_RWY27R/SID27R_VOBL/AKTIM7B/AKTIM7B_Line.geojson', 'assets/RWY/VOBL_RWY27R.geojson'],
-      'ANIRO 7B': ['assets/VOBL_RWY27R/SID27R_VOBL/ANIRO7B/ANIRO7B_Point.geojson', 'assets/VOBL_RWY27R/SID27R_VOBL/ANIRO7B/ANIRO7B_Line.geojson', 'assets/RWY/VOBL_RWY27R.geojson'],
-      'GUNIM 7B': ['assets/VOBL_RWY27R/SID27R_VOBL/GUNIM7B/GUNIM7B_Point.geojson', 'assets/VOBL_RWY27R/SID27R_VOBL/GUNIM7B/GUNIM7B_Line.geojson', 'assets/RWY/VOBL_RWY27R.geojson'],
-      'GUNIM 7J': ['assets/VOBL_RWY27R/SID27R_VOBL/GUNIM7J/GUNIM7J_Point.geojson', 'assets/VOBL_RWY27R/SID27R_VOBL/GUNIM7J/GUNIM7J_Line.geojson', 'assets/RWY/VOBL_RWY27R.geojson'],
-      'OPAMO 7B': ['assets/VOBL_RWY27R/SID27R_VOBL/OPAMO7B/OPAMO7B_Point.geojson', 'assets/VOBL_RWY27R/SID27R_VOBL/OPAMO7B/OPAMO7B_Line.geojson', 'assets/RWY/VOBL_RWY27R.geojson'],
-      'SAI 7B': ['assets/VOBL_RWY27R/SID27R_VOBL/SAI7B/SAI7B_Point.geojson', 'assets/VOBL_RWY27R/SID27R_VOBL/SAI7B/SAI7B_Line.geojson', 'assets/RWY/VOBL_RWY27R.geojson'],
-      'PEXEG 7B': ['assets/VOBL_RWY27R/SID27R_VOBL/PEXEG7B/PEXEG7B_Point.geojson', 'assets/VOBL_RWY27R/SID27R_VOBL/PEXEG7B/PEXEG7B_Line.geojson', 'assets/RWY/VOBL_RWY27R.geojson'],
-      'TULNA 7B': ['assets/VOBL_RWY27R/SID27R_VOBL/TULNA7B/TULNA7B_Point.geojson', 'assets/VOBL_RWY27R/SID27R_VOBL/TULNA7B/TULNA7B_Line.geojson', 'assets/RWY/VOBL_RWY27R.geojson'],
-      'VEMBO 7B': ['assets/VOBL_RWY27R/SID27R_VOBL/VEMBO7B/VEMBO7B_Point.geojson', 'assets/VOBL_RWY27R/SID27R_VOBL/VEMBO7B/VEMBO7B_Line.geojson', 'assets/RWY/VOBL_RWY27R.geojson'],
-      'LATID 7B': ['assets/VOBL_RWY27R/SID27R_VOBL/LATID7B/LATID7B_Point.geojson', 'assets/VOBL_RWY27R/SID27R_VOBL/LATID7B/LATID72_Line.geojson', 'assets/RWY/VOBL_RWY27R.geojson'],
-      'VEMBO 7S': ['assets/VOBL_RWY27R/SID27R_VOBL/VEMBO7S/VEMBO7S_Point.geojson', 'assets/VOBL_RWY27R/SID27R_VOBL/VEMBO7S/VEMBO7S_Line.geojson', 'assets/RWY/VOBL_RWY27R.geojson'],
-      'ANIRO 7S': ['assets/VOBL_RWY27R/SID27R_VOBL/ANIRO7S/ANIRO7S_Point.geojson', 'assets/VOBL_RWY27R/SID27R_VOBL/ANIRO7S/ANIRO7S_Line.geojson', 'assets/RWY/VOBL_RWY27R.geojson'],
-      'VAGPU 7B': ['assets/VOBL_RWY27R/SID27R_VOBL/VAGPU7B/VAGPU7B_Point.geojson', 'assets/VOBL_RWY27R/SID27R_VOBL/VAGPU7B/VAGPU7B_Line.geojson', 'assets/RWY/VOBL_RWY27R.geojson'],
-      //VOBL_RWY27R star procedure
-      'ADKAL 7F': ['assets/VOBL_RWY27R/STAR27R_VOBL/ADKAL7F/ADKAL7F_Point.geojson', 'assets/VOBL_RWY27R/STAR27R_VOBL/ADKAL7F/ADKAL7F_Line.geojson', 'assets/RWY/VOBL_RWY27R.geojson'],
-      'GUNIM 7F': ['assets/VOBL_RWY27R/STAR27R_VOBL/GUNIM7F/GUNIM7F_Point.geojson', 'assets/VOBL_RWY27R/STAR27R_VOBL/GUNIM7F/GUNIM7F_Line.geojson', 'assets/RWY/VOBL_RWY27R.geojson'],
-      'GUNIM 7N': ['assets/VOBL_RWY27R/STAR27R_VOBL/GUNIM7N/GUNIM7N_Point.geojson', 'assets/VOBL_RWY27R/STAR27R_VOBL/GUNIM7N/GUNIM7N_Line.geojson', 'assets/RWY/VOBL_RWY27R.geojson'],
-      'LEKAP 7F': ['assets/VOBL_RWY27R/STAR27R_VOBL/LEKAP7F/LEKAP7F_Point.geojson', 'assets/VOBL_RWY27R/STAR27R_VOBL/LEKAP7F/LEKAP7F_Line.geojson', 'assets/RWY/VOBL_RWY27R.geojson'],
-      'PEXEG 7F': ['assets/VOBL_RWY27R/STAR27R_VOBL/PEXEG7F/PEXEG7F_Point.geojson', 'assets/VOBL_RWY27R/STAR27R_VOBL/PEXEG7F/PEXEG7F_Line.geojson', 'assets/RWY/VOBL_RWY27R.geojson'],
-      'PEXEG 7N': ['assets/VOBL_RWY27R/STAR27R_VOBL/PEXEG7N/PEXEG7N_Point.geojson', 'assets/VOBL_RWY27R/STAR27R_VOBL/PEXEG7N/PEXEG7N_Line.geojson', 'assets/RWY/VOBL_RWY27R.geojson'],
-      'RIKBU 7F': ['assets/VOBL_RWY27R/STAR27R_VOBL/RIKBU7F/RIKBU7F_Point.geojson', 'assets/VOBL_RWY27R/STAR27R_VOBL/RIKBU7F/RIKBU7F_Line.geojson', 'assets/RWY/VOBL_RWY27R.geojson'],
-      'SUSIK 7F': ['assets/VOBL_RWY27R/STAR27R_VOBL/SUSIK7F/SUSIK7F_Point.geojson', 'assets/VOBL_RWY27R/STAR27R_VOBL/SUSIK7F/SUSIK7F_Line.geojson', 'assets/RWY/VOBL_RWY27R.geojson'],
-      'SUSIK 7L': ['assets/VOBL_RWY27R/STAR27R_VOBL/SUSIK7L/SUSIK7L_Point.geojson', 'assets/VOBL_RWY27R/STAR27R_VOBL/SUSIK7L/SUSIK7L_Line.geojson', 'assets/RWY/VOBL_RWY27R.geojson'],
-      'TELUV 7F': ['assets/VOBL_RWY27R/STAR27R_VOBL/TELUV7F/TELUV7F_Point.geojson', 'assets/VOBL_RWY27R/STAR27R_VOBL/TELUV7F/TELUV7F_Line.geojson', 'assets/RWY/VOBL_RWY27R.geojson'],
-      'UGABA 7F': ['assets/VOBL_RWY27R/STAR27R_VOBL/UGABA7F/UGABA7F_Point.geojson', 'assets/VOBL_RWY27R/STAR27R_VOBL/UGABA7F/UGABA7F_Line.geojson', 'assets/RWY/VOBL_RWY27R.geojson'],
-      'XIVIL 7F': ['assets/VOBL_RWY27R/STAR27R_VOBL/XIVIL7F/XIVIL7F_Point.geojson', 'assets/VOBL_RWY27R/STAR27R_VOBL/XIVIL7F/XIVIL7F_Line.geojson', 'assets/RWY/VOBL_RWY27R.geojson'],
-      //VOBL_RWY27R APCh procedure
-      'RNP_Y': ['assets/VOBL_RWY27R/APCH27R_VOBL/RNP_Y_RWY_27R_Point.geojson', 'assets/VOBL_RWY27R/APCH27R_VOBL/RNP_Y_RWY_27R_Line.geojson', 'assets/RWY/VOBL_RWY27R.geojson'],
-      //VIJP_RWY09 sid procedures
-      'UKASO 1D': ['assets/VIJP_RWY09/SID_RWY09/UKASO1D/UKASO1D_Point.geojson', 'assets/VIJP_RWY09/SID_RWY09/UKASO1D/UKASO1D_Line.geojson', 'assets/RWY/VIJP_RWY09.geojson'],
-      'UXENI 1D': ['assets/VIJP_RWY09/SID_RWY09/UXENI1D/UXENI1D_Point.geojson', 'assets/VIJP_RWY09/SID_RWY09/UXENI1D/UXENI1D_Line.geojson', 'assets/RWY/VIJP_RWY09.geojson'],
-      'GUDUM 1D': ['assets/VIJP_RWY09/SID_RWY09/GUDUM1D/GUDUM1D_1_Point.geojson', 'assets/VIJP_RWY09/SID_RWY09/GUDUM1D/GUDUM1D_1_Line.geojson', 'assets/RWY/VIJP_RWY09.geojson'],
-      'NIKOT 1D': ['assets/VIJP_RWY09/SID_RWY09/NIKOT1D/NIKOT1D_Point.geojson', 'assets/VIJP_RWY09/SID_RWY09/NIKOT1D/NIKOT1D_Line.geojson', 'assets/RWY/VIJP_RWY09.geojson'],
-      'IKAVA 1D': ['assets/VIJP_RWY09/SID_RWY09/IKAVA1D/IKAVA1D_Point.geojson', 'assets/VIJP_RWY09/SID_RWY09/IKAVA1D/IKAVA1D_Line.geojson', 'assets/RWY/VIJP_RWY09.geojson'],
-      'INTIL 1D': ['assets/VIJP_RWY09/SID_RWY09/INTIL1D/INTIL1D_Point.geojson', 'assets/VIJP_RWY09/SID_RWY09/INTIL1D/INTIL1D_Line.geojson', 'assets/RWY/VIJP_RWY09.geojson'],
-      'LOVGA 1D': ['assets/VIJP_RWY09/SID_RWY09/LOVGA1D/LOVGA1D_Point.geojson', 'assets/VIJP_RWY09/SID_RWY09/LOVGA1D/LOVGA1D_Line.geojson', 'assets/RWY/VIJP_RWY09.geojson'],
-      //VIJP_RWY09 Star procedures
-      'IGOLU 1C': ['assets/VIJP_RWY09/STAR_RWO9/IGOLU1C/IGOLU1C_Point.geojson', 'assets/VIJP_RWY09/STAR_RWO9/IGOLU1C/IGOLU1C_Line.geojson', 'assets/RWY/VIJP_RWY09.geojson'],
-      'LOVGA 1C': ['assets/VIJP_RWY09/STAR_RWO9/LOVGA1C/LOVGA1C_Point.geojson', 'assets/VIJP_RWY09/STAR_RWO9/LOVGA1C/LOVGA1C_Line.geojson', 'assets/RWY/VIJP_RWY09.geojson'],
-      'BUBNU 1C': ['assets/VIJP_RWY09/STAR_RWO9/BUBNU1C/BUBNU1C_Point.geojson', 'assets/VIJP_RWY09/STAR_RWO9/BUBNU1C/BUBNU1C_Line.geojson', 'assets/RWY/VIJP_RWY09.geojson'],
-      'RIDRA 1C': ['assets/VIJP_RWY09/STAR_RWO9/RIDRA1C/RIDRA1C_Point.geojson', 'assets/VIJP_RWY09/STAR_RWO9/RIDRA1C/RIDRA1C_Line.geojson', 'assets/RWY/VIJP_RWY09.geojson'],
-      'INTIL 1C': ['assets/VIJP_RWY09/STAR_RWO9/INTILC/INTIL1C_Point.geojson', 'assets/VIJP_RWY09/STAR_RWO9/INTILC/INTIL1C_Line.geojson', 'assets/RWY/VIJP_RWY09.geojson'],
-      'UXENI 1C': ['assets/VIJP_RWY09/STAR_RWO9/UXENI1C/UXENI1C_Point.geojson', 'assets/VIJP_RWY09/STAR_RWO9/UXENI1C/UXENI1C_Line.geojson', 'assets/RWY/VIJP_RWY09.geojson'],
-      //VIJP_RWY09 APCH procedures
-      'RNP_Y_RWY_09': ['assets/VIJP_RWY09/APCH_RW09/RNP_Y_RWY_09_Point.geojson', 'assets/VIJP_RWY09/APCH_RW09/RNP_Y_RWY_09_Line.geojson', 'assets/RWY/VIJP_RWY09.geojson'],
-      //VIJP_RWY27 SID procedures
-      'GUDUM 1B': ['assets/VIJP_RWY27/SID_RWY27/GUDUM1B/GUDUM1B_Point.geojson', 'assets/VIJP_RWY27/SID_RWY27/GUDUM1B/GUDUM1B_Line.geojson', 'assets/RWY/VIJP_RWY27.geojson'],
-      'UXENI 1B': ['assets/VIJP_RWY27/SID_RWY27/UXENI1B/UXENI1B_Point.geojson', 'assets/VIJP_RWY27/SID_RWY27/UXENI1B/UXENI1B_Line.geojson', 'assets/RWY/VIJP_RWY27.geojson'],
-      'IKAVA 1B': ['assets/VIJP_RWY27/SID_RWY27/IKAVA1B/IKAVA1B_Point.geojson', 'assets/VIJP_RWY27/SID_RWY27/IKAVA1B/IKAVA1B_Line.geojson', 'assets/RWY/VIJP_RWY27.geojson'],
-      'INTIL 1B': ['assets/VIJP_RWY27/SID_RWY27/INTIL1B/INTIL1B_Point.geojson', 'assets/VIJP_RWY27/SID_RWY27/INTIL1B/INTIL1B_Line.geojson', 'assets/RWY/VIJP_RWY27.geojson'],
-      'UKASO 1B': ['assets/VIJP_RWY27/SID_RWY27/UKASO1B/UKASO1B_Point.geojson', 'assets/VIJP_RWY27/SID_RWY27/UKASO1B/UKASO1B_Line.geojson', 'assets/RWY/VIJP_RWY27.geojson'],
-      'LOVGA 1B': ['assets/VIJP_RWY27/SID_RWY27/LOVGA1B/LOVGA1B_Point.geojson', 'assets/VIJP_RWY27/SID_RWY27/LOVGA1B/LOVGA1B_Line.geojson', 'assets/RWY/VIJP_RWY27.geojson'],
-      'NIKOT 1B': ['assets/VIJP_RWY27/SID_RWY27/NIKOT1B/NIKOT1B_Point.geojson', 'assets/VIJP_RWY27/SID_RWY27/NIKOT1B/NIKOT1B_Line.geojson', 'assets/RWY/VIJP_RWY27.geojson'],
-
-      //VIJP_RWY27 STAR procedures
-      'IGOLU 1A': ['assets/VIJP_RWY27/STAR_RWY27/IGOLU1A/IGOLU1A_Point.geojson', 'assets/VIJP_RWY27/STAR_RWY27/IGOLU1A/IGOLU1A_Line.geojson', 'assets/RWY/VIJP_RWY27.geojson'],
-      'LOVGA 1A': ['assets/VIJP_RWY27/STAR_RWY27/LOVGA1A/LOVGA1A_Point.geojson', 'assets/VIJP_RWY27/STAR_RWY27/LOVGA1A/LOVGA1A_Line.geojson', 'assets/RWY/VIJP_RWY27.geojson'],
-      'INTIL 1A': ['assets/VIJP_RWY27/STAR_RWY27/INTIL1A/INTIL1A_Point.geojson', 'assets/VIJP_RWY27/STAR_RWY27/INTIL1A/INTIL1A_Line.geojson', 'assets/RWY/VIJP_RWY27.geojson'],
-      'RIDRA 1A': ['assets/VIJP_RWY27/STAR_RWY27/RIDRA1A/RIDRA1A_Point.geojson', 'assets/VIJP_RWY27/STAR_RWY27/RIDRA1A/RIDRA1A_Line.geojson', 'assets/RWY/VIJP_RWY27.geojson'],
-      'BUBNU 1A': ['assets/VIJP_RWY27/STAR_RWY27/BUBNU1A/BUBNU1A_Point.geojson', 'assets/VIJP_RWY27/STAR_RWY27/BUBNU1A/BUBNU1A_Line.geojson', 'assets/RWY/VIJP_RWY27.geojson'],
-      'UXENI 1A': ['assets/VIJP_RWY27/STAR_RWY27/UXENI1A/UXENI1A_Point.geojson', 'assets/VIJP_RWY27/STAR_RWY27/UXENI1A/UXENI1A_Line.geojson', 'assets/RWY/VIJP_RWY27.geojson'],
-      //VIJP_RWY27 APCH procedures
-      'RNP_Y_RWY27': ['assets/VIJP_RWY27/APCH_RW27/RNP_Y_RWY27_Point.geojson', 'assets/VIJP_RWY27/APCH_RW27/RNP_Y_RWY27_Line.geojson', 'assets/RWY/VIJP_RWY27.geojson'],
-      //VEPY_RWY02 APCH procedures
-      'RNP_Y_RWY02': ['assets/VEPY/APCH_RWY02/RNP_Y_RWY02_Point.geojson', 'assets/VEPY/APCH_RWY02/RNP_Y_RWY02_Line.geojson', 'assets/RWY/VEPY_RWY02.geojson'],
-      //VEPY_RWY20 SID procedures
-      'BGD1': ['assets/VEPY/SID_RWY20/BGD1_Departure/BGD1_Point.geojson', 'assets/VEPY/SID_RWY20/BGD1_Departure/BGD1_Line.geojson', 'assets/RWY/VEPY_RWY20.geojson'],
-      //VOBL_RWY09R SID procedures
-      'AKTIM 7C': ['assets/VOBL_RWY09R/AKTIM7C/AKTIM7C_Point.geojson', 'assets/VOBL_RWY09R/AKTIM7C/AKTIM7C_Line.geojson', 'assets/RWY/VOBL_RWY09R.geojson'],
-      'ANIRO 7C': ['assets/VOBL_RWY09R/ANIRO7C/ANIRO7C_Point.geojson', 'assets/VOBL_RWY09R/ANIRO7C/ANIRO7C_Line.geojson', 'assets/RWY/VOBL_RWY09R.geojson'],
-      'GUNIM 7C': ['assets/VOBL_RWY09R/GUNIM7C/GUNIM7C_Point.geojson', 'assets/VOBL_RWY09R/GUNIM7C/GUNIM7C_Line.geojson', 'assets/RWY/VOBL_RWY09R.geojson'],
-      'GUNIM 7M': ['assets/VOBL_RWY09R/GUNIM7M/GUNIM7M_Point.geojson', 'assets/VOBL_RWY09R/GUNIM7M/GUNIM7M_Line.geojson', 'assets/RWY/VOBL_RWY09R.geojson'],
-      'LATID 7C': ['assets/VOBL_RWY09R/LATID7C/LATID7C_Point.geojson', 'assets/VOBL_RWY09R/LATID7C/LATID7C_Line.geojson', 'assets/RWY/VOBL_RWY09R.geojson'],
-      'OPAMO 7C': ['assets/VOBL_RWY09R/OPAMO7C/OPAMO7C_Point.geojson', 'assets/VOBL_RWY09R/OPAMO7C/OPAMO7C_Line.geojson', 'assets/RWY/VOBL_RWY09R.geojson'],
-      'PEXEG 7C': ['assets/VOBL_RWY09R/PEXEG7C/PEXEG7C_Point.geojson', 'assets/VOBL_RWY09R/PEXEG7C/PEXEG7C_Line.geojson', 'assets/RWY/VOBL_RWY09R.geojson'],
-      'SAI 7C': ['assets/VOBL_RWY09R/SAI7C/SAI7C_Point.geojson', 'assets/VOBL_RWY09R/SAI7C/SAI7C_Line.geojson', 'assets/RWY/VOBL_RWY09R.geojson'],
-      'TULNA 7C': ['assets/VOBL_RWY09R/TULNA7C/TULNA7C_Point.geojson', 'assets/VOBL_RWY09R/TULNA7C/TULNA7C_Line.geojson', 'assets/RWY/VOBL_RWY09R.geojson'],
-      'VAGPU 7C': ['assets/VOBL_RWY09R/VAGPU7C/VAGPU7C_Point.geojson', 'assets/VOBL_RWY09R/VAGPU7C/VAGPU7C_Line.geojson', 'assets/RWY/VOBL_RWY09R.geojson'],
-      'VEMBO 7C': ['assets/VOBL_RWY09R/VEMBO7C/VEMBO7C_Point.geojson', 'assets/VOBL_RWY09R/VEMBO7C/VEMBO7C_Line.geojson', 'assets/RWY/VOBL_RWY09R.geojson'],
-      //VOBL_RWY09R APCH procedures
-      'RNP_Y_RWY09R': ['assets/VOBL_RWY09R/VOBL_APCH09R/RNP_Y_RWY09R_Point.geojson', 'assets/VOBL_RWY09R/VOBL_APCH09R/RNP_Y_RWY09R_Line.geojson', 'assets/RWY/VOBL_RWY09R.geojson'],
-      //VOBL_RWY27L SID procedures
-      'AKTIM 7D': ['assets/VOBL_RW27L/AKTIM7D/AKTIM7D_Point.geojson', 'assets/VOBL_RW27L/AKTIM7D/AKTIM7D_Line.geojson', 'assets/RWY/VOBL_RWY27L.geojson'],
-      'ANIRO 7D': ['assets/VOBL_RW27L/ANIRO7D/ANIRO7D_Point.geojson', 'assets/VOBL_RW27L/ANIRO7D/ANIRO7D_Line.geojson', 'assets/RWY/VOBL_RWY27L.geojson'],
-      'GUNIM 7D': ['assets/VOBL_RW27L/GUNIM7D/GUNIM7D_Point.geojson', 'assets/VOBL_RW27L/GUNIM7D/GUNIM7D_Line.geojson', 'assets/RWY/VOBL_RWY27L.geojson'],
-      'GUNIM 7U': ['assets/VOBL_RW27L/GUNIM7U/GUNIM7U_Point.geojson', 'assets/VOBL_RW27L/GUNIM7U/GUNIM7U_Line.geojson', 'assets/RWY/VOBL_RWY27L.geojson'],
-      'LATID 7D': ['assets/VOBL_RW27L/LATID7D/LATID7D_Point.geojson', 'assets/VOBL_RW27L/LATID7D/LATID7D_Line.geojson', 'assets/RWY/VOBL_RWY27L.geojson'],
-      'OPAMO 7D': ['assets/VOBL_RW27L/OPAMO7D/OPAMO7D_Point.geojson', 'assets/VOBL_RW27L/OPAMO7D/OPAMO7D_Line.geojson', 'assets/RWY/VOBL_RWY27L.geojson'],
-      'PEXEG 7D': ['assets/VOBL_RW27L/PEXEG7D/PEXEG7D_Point.geojson', 'assets/VOBL_RW27L/PEXEG7D/PEXEG7D_Line.geojson', 'assets/RWY/VOBL_RWY27L.geojson'],
-      'SAI 7D': ['assets/VOBL_RW27L/SAI7D/SAI7D_Point.geojson', 'assets/VOBL_RW27L/SAI7D/SAI7D_Line.geojson', 'assets/RWY/VOBL_RWY27L.geojson'],
-      'TULNA 7D': ['assets/VOBL_RW27L/TULNA7D/TULNA7D_Point.geojson', 'assets/VOBL_RW27L/TULNA7D/TULNA7D_Line.geojson', 'assets/RWY/VOBL_RWY27L.geojson'],
-      'VAGPU 7D': ['assets/VOBL_RW27L/VAGPU7D/VAGPU7D_Point.geojson', 'assets/VOBL_RW27L/VAGPU7D/VAGPU7D_Line.geojson', 'assets/RWY/VOBL_RWY27L.geojson'],
-      'VEMBO 7D': ['assets/VOBL_RW27L/VEMBO7D/VEMBO7D_Point.geojson', 'assets/VOBL_RW27L/VEMBO7D/VEMBO7D_Line.geojson', 'assets/RWY/VOBL_RWY27L.geojson'],
-      'VEMBO 7Y': ['assets/VOBL_RW27L/VEMBO7Y/VEMBO7Y_Point.geojson', 'assets/VOBL_RW27L/VEMBO7Y/VEMBO7Y_Line.geojson', 'assets/RWY/VOBL_RWY27L.geojson'],
-      'ANIRO 7Y': ['assets/VOBL_RW27L/ANIRO7Y/ANIRO7Y_Point.geojson', 'assets/VOBL_RW27L/ANIRO7Y/ANIRO7Y_Line.geojson', 'assets/RWY/VOBL_RWY27L.geojson'],
-      //VOBL_RWY27L APCH procedures
-      'RNP_Y_RWY27L': ['assets/VOBL_RW27L/VOBL_APCH27L/RNP_Y_RWY27L_Point.geojson', 'assets/VOBL_RW27L/VOBL_APCH27L/RNP_Y_RWY27L_Line.geojson', 'assets/RWY/VOBL_RWY27L.geojson'],
-    };
-    // Iterate over selected procedures and load them
-    for (const procedureName in proceduresMap) {
-      if (this.selectedProcedureName.includes(procedureName)) {
-        const [pointFileName, lineFileName, iconFileName] = proceduresMap[procedureName];
-        loadSIDProcedure(procedureName, pointFileName, lineFileName, iconFileName);
-      }
+    } catch (error) {
+      console.error(`Error loading ${this.Airform.get('selectedTypeofProcedure')?.value} SID procedure:`, error);
     }
+
   }
 
 
@@ -1490,9 +1330,15 @@ const newLon = referenceLon + deltaLon;
 
     this.Airform.get('selectedProcedureName')?.valueChanges.subscribe((selectedProcedureName: string) => {
       if(selectedProcedureName.length!==0){
-        const procedurename = selectedProcedureName;
-        this.selectedProcedureName.push(selectedProcedureName);
-         this.updateLayers();
+       this.pansopsService.getProcedure({
+        "procedure_id":["1","3"]
+        }).subscribe((response:any)=>{
+           this.updateLayers(response);
+        })
+
+        // const procedurename = selectedProcedureName;
+        // this.selectedProcedureName.push(selectedProcedureName);
+        
       }
     })
   }

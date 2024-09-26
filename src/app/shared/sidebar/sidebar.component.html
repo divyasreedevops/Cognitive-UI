@@ -56,27 +56,20 @@
           <!--Select Airport -->
           <div class="select">
               <label for="selectedAirport">Airport</label>
-              <select formControlName="selectedAirport" [(ngModel)]="selectedAirport" id="selectedAirport" (change)="onValueChange($event)">
-                  <option *ngFor="let option of optionsAirport" [value]="option.value">{{ option.label }}</option>
+              <select formControlName="selectedAirport" [(ngModel)]="selectedAirport" id="selectedAirport" (change)="onValueChange($event,'airport')">
+                <option value="" disabled selected>Select an airport</option>
+                <option *ngFor="let option of optionsAirport" [value]="option.label">{{ option.label }}</option>
               </select>
           </div>
   
           <!--Select Runway -->
           <div class="select">
               <label for="selectedRunway">Runway</label>
-              <select formControlName="selectedRunway" [(ngModel)]="selectedRunway" id="selectedRunway" (change)="onValueChange($event)">
-                  <ng-container *ngIf="optionsBengaluruKIARunway && optionsBengaluruKIARunway.length > 0">
-                      <option *ngFor="let option of optionsBengaluruKIARunway" [value]="option.value">{{ option.label }}
+              <select formControlName="selectedRunway" [(ngModel)]="selectedRunway" id="selectedRunway" (change)="onValueChange($event,'runway')">
+                <option value="" disabled selected>Select an Runway</option>
+                     
+                <option *ngFor="let option of optionRunway" [value]="option.label">{{ option.label }}
                       </option>
-                  </ng-container>
-                  <ng-container *ngIf="optionsVIJPJAIPURRunway && optionsVIJPJAIPURRunway.length > 0">
-                      <option *ngFor="let option of optionsVIJPJAIPURRunway" [value]="option.value">{{ option.label }}
-                      </option>
-                  </ng-container>
-                  <ng-container *ngIf="optionsVEPYPAKYONGRunway && optionsVEPYPAKYONGRunway.length > 0">
-                      <option *ngFor="let option of optionsVEPYPAKYONGRunway" [value]="option.value">{{ option.label }}
-                      </option>
-                  </ng-container>
               </select>
               
           </div>
@@ -84,8 +77,10 @@
           <!--Select Type of Procedure -->
           <div class="select">
               <label for="selectedTypeofProcedure">Type of Procedure</label>
-              <select formControlName="selectedTypeofProcedure" [(ngModel)]="selectedTypeofProcedure" id="selectedTypeofProcedure" (change)="onValueChange($event)">
-                  <option *ngFor="let option of optionsRWY_09LTypeofProcedure" [value]="option.value">{{ option.label }}
+              <select formControlName="selectedTypeofProcedure" [(ngModel)]="selectedTypeofProcedure" id="selectedTypeofProcedure" (change)="onValueChange($event,'typeOfProcedure')">
+                <option value="" disabled selected>Select an Type</option>
+                
+                <option *ngFor="let option of optionProviderType" [value]="option.value">{{ option.label }}
                   </option>
               </select>
              
@@ -94,8 +89,10 @@
           <!--Select Procedure Name -->
           <div class="select" *ngIf="!isCompare">
               <label for="selectedProcedureName">Procedure Name</label>
-              <select formControlName="selectedProcedureName" [(ngModel)]="selectedProcedureName"  id="selectedProcedureName" (change)="onValueChange($event)">
-                  <option *ngFor="let option of optionsProcedureName" [value]="option.value">{{ option.label }}</option>
+              <select formControlName="selectedProcedureName" [(ngModel)]="selectedProcedureName"  id="selectedProcedureName" (change)="onValueChange($event,'procedureName')">
+                <option value="" disabled selected>Select an Type</option>
+                 
+                <option *ngFor="let option of procedureNames" [value]="option.value">{{ option.label }}</option>
               </select>
 
 
