@@ -398,6 +398,7 @@ export class SidebarComponent {
         label: airport.airport_icao
     }));
     this.optionsAirport=transformedAirports;
+    this.sharedService.setAirportData(response);
    })
     this.compareObj = this.compareComplexObjects(this.obj1, this.obj2);
   }
@@ -429,6 +430,7 @@ export class SidebarComponent {
               label: runway.designation
           }));
           this.optionRunway=transformesRunways;
+          this.sharedService.setRunwayData(response);
          })
         break;
          }
@@ -440,7 +442,6 @@ export class SidebarComponent {
             label: type
         }));
         this.optionProviderType=transformesType;
-        console.log(response)
        })
       break;
       }
@@ -459,6 +460,11 @@ export class SidebarComponent {
         break;
       }
         case 'procedureName':{
+          this.pansopsService.getProcedure({
+            "procedure_id":["1"]
+            }).subscribe(response=>{
+              console.log(response,"HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH")
+            })
           break;
         }
 

@@ -34,4 +34,19 @@ export class SharedService {
   updateSideBar(content: any) {
     this.updateSidebar.next(content);
   }
+
+
+  private airportSubject = new BehaviorSubject<any>(null);
+  private runwaySubject = new BehaviorSubject<any>(null);
+
+  airport$ = this.airportSubject.asObservable();
+  runway$ = this.runwaySubject.asObservable();
+
+  setAirportData(data: any) {
+    this.airportSubject.next(data);
+  }
+  setRunwayData(data: any) {
+    this.runwaySubject.next(data);
+  }
+
 }
