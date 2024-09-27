@@ -370,6 +370,22 @@ export class SidebarComponent {
     });
     this.isCompare=false;
     this.sharedService.sidebar$.subscribe((option:any) => {
+      this.selectedAirport=[];
+          this.optionRunway=[];
+          this.selectedRunway=[];
+          this.optionProviderType=[];
+          this.selectedTypeofProcedure=[];
+          this.procedureNames=[];
+          this.selectedProcedureName=[];
+          this.selectedProcedureNameShow=[];
+          this.previousSelectedProcedure=[];
+          this.previousSelectedTypeofProcedure=[];
+          this.Airform.reset({
+            selectedAirport: [],
+            selectedRunway: [],
+            selectedTypeofProcedure: [],
+            selectedProcedureName: [],
+          });
       switch(option){
         case 'Compare':
           this.isCompare=true;
