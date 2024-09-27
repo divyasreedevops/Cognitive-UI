@@ -205,6 +205,8 @@ export class MapComponent implements OnInit {
   searchQuery = '';
   airPorts:any;
   runways:any;
+  selectedAirac:any;
+  airacs:any;
   multipleProcedure:any;
   toggleSearchBar() {
     this.isExpanded = !this.isExpanded;
@@ -231,22 +233,25 @@ export class MapComponent implements OnInit {
       selectedProcedureName: [[]],
     });
 
-    // this.pansopsService.getAirports()\
+    this.sharedService.airac$.subscribe(airacRes=>{
+       this.airacs=airacRes
+    })
 
-
-
-
+  
+    this.sharedService.sidebar$.subscribe(sidebarRes => {
+      this.selectedAirac = sidebarRes;
+      console.log(this.selectedAirac,"HHHHHHHHHHHHHHHHHHHHh")
+    });
 
     this.sharedService.airport$.subscribe(airportsRes => {
       this.airPorts = airportsRes;
-      console.log( this.airPorts," this.airPorts this.airPorts")
     });
 
     this.sharedService.runway$.subscribe(runwaysRes => {
       this.runways = runwaysRes;
-      console.log( this.runways," this.airPorts this.airPorts")
     });
 
+  
    
 
 
@@ -617,31 +622,6 @@ const newLon = referenceLon + deltaLon;
   }
 
 
-  getWaypoints=(wayPoint:any)=>{
-     const waypoints=[
-      {
-          waypoint:'BL402',
-          coordinates:[ 77.91941944444444,13.205077777777777 ]
-      },
-      {
-          waypoint:'BL403',
-          coordinates:[  77.9148888888889, 13.078027777777777 ]
-      }, {
-          waypoint:'BL404',
-          coordinates:[ 77.70667777777778 ,13.012808333333334]
-      }, {
-          waypoint:'OMUKA',
-          coordinates:[  77.64480833333334,12.542319444444445] 
-      }, {
-          waypoint:'AKTIM',
-          coordinates:[  77.58271111111111,12.061094444444445 ]
-      },
-  ];
- const selectyedWayPoint= waypoints.find((ele)=>ele.waypoint===wayPoint);
- return selectyedWayPoint?.coordinates||[]
-
-  }
-
   getDistance=(altitude:any)=>{
     // altitude-(threelev)-16
     
@@ -655,7 +635,6 @@ const newLon = referenceLon + deltaLon;
         return [latitude1, longitude1];
     }
     const regex = /\(([^)]+)\)/; 
-    console.log(alpha1To2,"alpha1To2alpha1To2alpha1To2")
     const match = alpha1To2.match(regex);
     alpha1To2 = match[1];
     const f = 1.0 / 298.257223563; // WGS84
@@ -741,7 +720,6 @@ const newLon = referenceLon + deltaLon;
 
   createGeoJsonPointObject=(procedures:any,procedureName:any="sid")=>{
 
-    console.log(procedures,"proceduresproceduresprocedures")
 
     var  featureCollection: GeoJSON.FeatureCollection<GeoJSON.Point>= {
       "type": "FeatureCollection",
@@ -794,9 +772,6 @@ featureCollection.features.push( { "type": "Feature", "properties": { "Name": "I
                  );
                 }
             })
-console.log(featureCollection,lineJson,"*************************************************")
-
-    
     return {pointJson:featureCollection,lineJson:lineJson};
   }
 
@@ -810,8 +785,6 @@ console.log(featureCollection,lineJson,"****************************************
   this.airportLayerGroup.clearLayers();
     const loadSIDProcedure = async (procedureName: string[])=>{
       if(this.Airform.get('selectedRunway')?.value.length!==0){
-
-          
            const selectedRunwyInfo=  this.runways.find((runway:any)=>runway.designation=== this.Airform.get('selectedRunway')?.value);
            const angle=selectedRunwyInfo.true_bearing.replace(' DEG','°');
            const runwayIcon = L.icon({
@@ -858,8 +831,9 @@ console.log(featureCollection,lineJson,"****************************************
                  return marker;
                }
              });
+             const activeAirac=    this.airacs.find((ele:any)=>ele.status==="active");
          
-             ["1","71"].map((ele:string)=>{
+             ["1","306"].map((ele:string)=>{
               if(this.multipleProcedure[ele].type==="APCH"){
                 const result = [];
                 let currentGroup:any[] = [];
@@ -881,15 +855,28 @@ console.log(featureCollection,lineJson,"****************************************
                 result.map((procedure:any)=>{
                   const updatedProcedure={
                     type:"APCH",
-                    waypoints:procedure
+                    waypoints:procedure,
+                    airac_id:this.multipleProcedure[ele].airac_id
                   }
-                  console.log(updatedProcedure)
-                  this.plotProcedures(updatedProcedure,geoLayer)
+                  
+              if(this.selectedAirac==='compare'){
+                activeAirac.id===this.multipleProcedure[ele].airac_id?
+                this.plotProcedures(updatedProcedure,geoLayer,"green"):this.plotProcedures(updatedProcedure,geoLayer,"red")
+              }else{
+                this.plotProcedures(updatedProcedure,geoLayer,"black")
+              }
+           
                 })
 
               }
               else{
-                this.plotProcedures(this.multipleProcedure[ele],geoLayer)
+
+                if(this.selectedAirac==='compare'){
+                  activeAirac.id===this.multipleProcedure[ele].airac_id?
+                  this.plotProcedures(this.multipleProcedure[ele],geoLayer,"green"):this.plotProcedures(this.multipleProcedure[ele],geoLayer,"red")
+                }else{
+                  this.plotProcedures(this.multipleProcedure[ele],geoLayer,"black")
+                }
               }
           
              })
@@ -906,8 +893,7 @@ console.log(featureCollection,lineJson,"****************************************
 
 
 
- plotProcedures(ele:any,geoLayer:any){
-
+ plotProcedures(ele:any,geoLayer:any,color='black'){
 
  const pointLineJsons =   this.createGeoJsonPointObject(ele);
  this.airportLayerGroup.addLayer(geoLayer);
@@ -919,6 +905,9 @@ console.log(featureCollection,lineJson,"****************************************
  let currentTooltip:any = null; // Initialize a variable to store the current tooltip
 
  const geoJsonLayer = L.geoJSON(pointLineJsons.pointJson, {
+  style: {
+    color:  color, // Set line color
+},
    pointToLayer: (feature, latlng) => {
      const marker = L.marker(latlng, { icon: stepIcon });
  
@@ -1000,7 +989,7 @@ console.log(featureCollection,lineJson,"****************************************
 
    this.lineGeoJsonLayer = L.geoJSON(lineData, {
        style: {
-           color: 'black', // Set line color
+           color:  color, // Set line color
            weight: 2 // Set line weight
        },
        onEachFeature: (feature: GeoJSON.Feature<GeoJSON.MultiLineString>, layer) => {

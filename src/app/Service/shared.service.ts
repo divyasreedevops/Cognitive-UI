@@ -39,12 +39,14 @@ export class SharedService {
   private airportSubject = new BehaviorSubject<any>(null);
   private runwaySubject = new BehaviorSubject<any>(null);
   private procedureSubject = new BehaviorSubject<any>(null);
+  private AiracSubject = new BehaviorSubject<any>(null);
+
 
 
   airport$ = this.airportSubject.asObservable();
   runway$ = this.runwaySubject.asObservable();
   procedure$ = this.procedureSubject.asObservable();
-
+  airac$=this.AiracSubject.asObservable();
 
   setAirportData(data: any) {
     this.airportSubject.next(data);
@@ -54,5 +56,9 @@ export class SharedService {
   }
   setProcedureData(data: any) {
     this.procedureSubject.next(data);
+  }
+
+  setAiracInfo(data:any){
+    this.AiracSubject.next(data);
   }
 }

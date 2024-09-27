@@ -392,13 +392,24 @@ export class SidebarComponent {
       this.onFormValuesChange(values);
     });
     
-    this.pansopsService.getAirports().subscribe(response=>{
+  //   this.pansopsService.getAirports().subscribe(response=>{
+  //     const transformedAirports = response.map((airport:any) => ({
+  //       value: airport.id,
+  //       label: airport.airport_icao
+  //   }));
+  //   this.optionsAirport=transformedAirports;
+  //   this.sharedService.setAirportData(response);
+  //  })
+
+   this.sharedService.airport$.subscribe((response)=>{
+    if(response){
       const transformedAirports = response.map((airport:any) => ({
         value: airport.id,
         label: airport.airport_icao
     }));
     this.optionsAirport=transformedAirports;
-    this.sharedService.setAirportData(response);
+    }
+   
    })
     this.compareObj = this.compareComplexObjects(this.obj1, this.obj2);
   }
@@ -454,14 +465,13 @@ export class SidebarComponent {
          }).subscribe(response=>{
         response= this.convertToArray(response)
         this.procedureNames=response;
-        console.log(this.procedureNames,"this.procedureNames")
        })
         // procedureNames
         break;
       }
         case 'procedureName':{
           this.pansopsService.getProcedure({
-            "procedure_id":["1","2","71"]
+            "procedure_id":["1","306"]
             }).subscribe(response=>{
               this.sharedService.setProcedureData(response);
             })
