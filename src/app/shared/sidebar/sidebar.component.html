@@ -175,23 +175,23 @@
       <div class="multisection" *ngIf="isDropdownVisible">
         <!-- Part 1 Options -->
          <div>
-        <div class="multipart" *ngFor="let item of multipart1; let i = index" (click)="toggleSelection(item, 'part1', i)">
+        <div class="multipart" *ngFor="let item of multipart1; let i = index" (click)="toggleSelection(item.label, 'part1', i)">
           <span>
             <mat-icon>
-              {{ isSelected(item, 'part1', i) ? 'check_box' : 'check_box_outline_blank' }}
+              {{ isSelected(item.label, 'part1', i) ? 'check_box' : 'check_box_outline_blank' }}
             </mat-icon>
-            <span class="txt-green">{{ item }}</span>
+            <span class="txt-green">{{ item.label }}</span>
           </span>
         </div>
       </div>
         <!-- Part 2 Options -->
          <div>
-        <div class="multipart" *ngFor="let item of multipart2; let i = index" (click)="toggleSelection(item, 'part2', i)">
+        <div class="multipart" *ngFor="let item of multipart2; let i = index" (click)="toggleSelection(item.label, 'part2', i)">
           <span>
             <mat-icon>
-              {{ isSelected(item, 'part2', i) ? 'check_box' : 'check_box_outline_blank' }}
+              {{ isSelected(item.label, 'part2', i) ? 'check_box' : 'check_box_outline_blank' }}
             </mat-icon>
-            <span class="txt-red">{{ item }}</span>
+            <span class="txt-red">{{ item.label }}</span>
           </span>
         </div>
       </div>

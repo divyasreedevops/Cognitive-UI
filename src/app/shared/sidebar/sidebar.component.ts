@@ -4,9 +4,26 @@ import { Router } from '@angular/router';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { PansopsService } from 'src/app/service/Adm/Pansops/pansops.service';
-
+import { combineLatest } from 'rxjs';
 interface RowItem {
   [key: string]: string;
+}
+
+interface ResponseObject {
+  name: string | null;
+  designator: string | null;
+  type: string | null;
+  id: number | null;
+}
+
+interface ResponseData {
+  [key: string]: ResponseObject[];
+}
+
+// Define the structure of the final list object
+interface ListItem {
+  label: string;
+  value: number | null;  // Since id can be null, value can also be null
 }
 
 interface ComparedRowItem {
@@ -52,6 +69,8 @@ export class SidebarComponent {
   selectedTab='';
   isMultiMapView=false;
   procedureResponse=[];
+  multipart1: ListItem[] = [];
+  multipart2: ListItem[] = [];
   selectFormat=[
     {
       label:'Airports',
@@ -116,9 +135,6 @@ export class SidebarComponent {
 
   procedureNames:{value:any;label:any}[]=[];
 
-  multipart2=['AKTIM 7A','GUNIM 7A','ANIRO 7A'];
-
-  multipart1=['AKTIM 7A','GUNIM 7A','ANIRO 7A'];
   selectedOptions: string[] = [];
   selectedOptionstoshow: string[] = [];
   isDropdownVisible = false;
@@ -131,6 +147,8 @@ export class SidebarComponent {
   ){
 
   }
+
+  
   obj1:any={
     title: "AKTIM 7A",
     columns: [
@@ -351,9 +369,28 @@ export class SidebarComponent {
     ]
   }
   compareObj:any={};
+  airacs=[];
+  compareAiracValues={};
+  selectedAirac="";
   ngOnInit(){
     this.isMultiMapView = false;
     const route = localStorage.getItem('currentRoute');
+    this.sharedService.airac$.subscribe(airacRes=>{
+      this.airacs=airacRes
+  
+   })
+
+   this.sharedService.sidebar$.subscribe((res)=>{
+
+    this.selectedAirac=res;
+    
+  
+    })
+
+
+
+
+
     if(route === '/ADM/PANS-OPS'){
       this.isMultiMapView = true;
     }else{
@@ -430,6 +467,23 @@ export class SidebarComponent {
     this.compareObj = this.compareComplexObjects(this.obj1, this.obj2);
   }
 
+
+  createList(response: ResponseData, key: string): ListItem[] {
+    return response[key].map((item: ResponseObject) => {
+        return {
+            label: `${item.name || ''} ${item.designator || ''}`,  // Handle null for name, designator, and type
+            value: item.id  // id could be null as well
+        };
+    });
+  }
+  
+  compareResponse(resp:any){
+    const keys: string[] = Object.keys(resp);
+    this.multipart1 = this.createList(resp, keys[0]);
+    this.multipart2 = this.createList(resp, keys[1]);
+
+    console.log(this.multipart1,this.multipart2,"dvssiuviyvgru")
+  }
 
   onFormValuesChange(values: any): void {
     // this.sharedService.updateFormValues(values);
@@ -1444,7 +1498,26 @@ toggleDropdown(): void {
           this.Airform.patchValue({
             selectedProcedureName: [],
           });
-        this.getProcedureNames();
+
+        if(this.selectedAirac==='compare'){
+          console.log(this.airacs)
+          const airacValues:any[]=  this.airacs.filter((ele:any)=>ele.status!=="compare")||[];
+          this.pansopsService.getProcedureCompareDetails(
+            {
+              "action":"list_procedures",
+              "airport_icao": this.Airform.get('selectedAirport')?.value,
+             "rwy_dir":this.Airform.get('selectedRunway')?.value,
+             "type": this.Airform.get('selectedTypeofProcedure')?.value,
+             "airacs":[airacValues[0].id,airacValues[1].id]
+         }
+          ).subscribe((res)=>{
+               this.sharedService.setCompareAiracInfo(res);
+               this.compareAiracValues=res;
+               this.compareResponse(res)
+          })
+        }else{
+          this.getProcedureNames();
+        }
         this.previousSelectedTypeofProcedure = [...this.selectedTypeofProcedure];
         const formValues = this.Airform.value;
         this.sharedService.updateFormValues(formValues);

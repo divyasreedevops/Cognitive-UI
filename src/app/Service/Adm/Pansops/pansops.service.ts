@@ -56,6 +56,11 @@ export class PansopsService {
   }
 
 
+  getProcedureCompareDetails(data:any):Observable<any>{
+    const headers = new HttpHeaders({'Content-Type': 'application/json'});
+    return this.http.post<any>(`${this.apiUrl}/adm/compare`,data,{headers});
+  }
+
   // // Example POST request
   // postData(data: any): Observable<any> {
   //   const headers = new HttpHeaders({'Content-Type': 'application/json'});
