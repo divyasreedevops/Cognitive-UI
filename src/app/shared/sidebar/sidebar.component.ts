@@ -461,15 +461,13 @@ export class SidebarComponent {
       }
         case 'procedureName':{
           this.pansopsService.getProcedure({
-            "procedure_id":["1"]
+            "procedure_id":["1","2","71"]
             }).subscribe(response=>{
-              console.log(response,"HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH")
+              this.sharedService.setProcedureData(response);
             })
           break;
         }
-
     }
-    console.log(dropdownName,"dropdownNamedropdownName")
     const formValues = this.Airform.value;
     this.sharedService.updateFormValues(formValues);
   }
@@ -491,17 +489,13 @@ export class SidebarComponent {
   }
 
   watchAirportChanges(): void {
-    this.Airform.get('selectedAirport')?.valueChanges.subscribe((selectedAirport: string[]) => {
+       this.Airform.get('selectedAirport')?.valueChanges.subscribe((selectedAirport: string[]) => {
       // Clear all runway and procedure options when the selected airport changes
       this.optionsBengaluruKIARunway = [];
       this.optionsVIJPJAIPURRunway = [];
       this.optionsVEPYPAKYONGRunway = [];
       this.optionsRWY_09LTypeofProcedure = [];
       this.selectedTypeofProcedure = [];
-
-
-
-
       // Check if VOBL/Bengaluru (KIA) is selected
       if (selectedAirport.includes('VOBL/Bengaluru (KIA)')) {
 

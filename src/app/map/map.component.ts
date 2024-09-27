@@ -90,7 +90,7 @@ export class MapComponent implements OnInit {
     procedure:[
       {
         waypointIdentifies:'-',
-        pathDesignator: 'VA',
+        path_descriptor: 'VA',
         angle:'92.34',
         altitude:3400,
         turnDirection:'-',
@@ -99,7 +99,7 @@ export class MapComponent implements OnInit {
         },
     {
     waypointIdentifies:'BL402',
-    pathDesignator: 'DF',
+    path_descriptor: 'DF',
     angle:'-',
     altitude:3400,
     angleReduired:false,
@@ -108,7 +108,7 @@ export class MapComponent implements OnInit {
     },
     {
     waypointIdentifies:'BL403',
-    pathDesignator: 'TF',
+    path_descriptor: 'TF',
     angle:'183.83',
     altitude:3400,
     angleReduired:false,
@@ -118,7 +118,7 @@ export class MapComponent implements OnInit {
     
     {
       waypointIdentifies:'BL404',
-      pathDesignator: 'TF',
+      path_descriptor: 'TF',
       angle:'254.09',
       altitude:3400,
       angleReduired:false,
@@ -127,7 +127,7 @@ export class MapComponent implements OnInit {
       },
     {
     waypointIdentifies:'OMUKA',
-    pathDesignator: 'TF',
+    path_descriptor: 'TF',
     angle:'189.18',
     altitude:3400,
     angleReduired:false,
@@ -136,7 +136,7 @@ export class MapComponent implements OnInit {
     },
     {
         waypointIdentifies:'AKTIM',
-        pathDesignator: 'TF',
+        path_descriptor: 'TF',
         angle:'189.06',
         altitude:3400,
         angleReduired:false,
@@ -205,6 +205,7 @@ export class MapComponent implements OnInit {
   searchQuery = '';
   airPorts:any;
   runways:any;
+  multipleProcedure:any;
   toggleSearchBar() {
     this.isExpanded = !this.isExpanded;
     if (this.isExpanded) {
@@ -246,6 +247,7 @@ export class MapComponent implements OnInit {
       console.log( this.runways," this.airPorts this.airPorts")
     });
 
+   
 
 
 
@@ -270,6 +272,11 @@ export class MapComponent implements OnInit {
     this.selectedTypeofProcedure = [];
     this.selectedProcedureName = [];
     this.updateLayers();
+
+    this.sharedService.procedure$.subscribe(procedureRes => {
+      this.multipleProcedure = procedureRes;
+      this.updateLayers()
+    });
 
     this.sharedService.formValues$.subscribe(formData => {
       if (formData) {
@@ -605,6 +612,7 @@ const deltaLon = distanceKm * Math.sin(angleRad) / (111 * Math.cos(referenceLat 
 const newLat = referenceLat + deltaLat;
 const newLon = referenceLon + deltaLon;
   var returnData:number[]=[newLat,newLon,0.0];
+  
  return returnData
   }
 
@@ -635,14 +643,21 @@ const newLon = referenceLon + deltaLon;
   }
 
   getDistance=(altitude:any)=>{
+    // altitude-(threelev)-16
+    
     const distance =((altitude/200)*1852);
     return distance;
   }
+
+
   vinc=(latitude1:any, longitude1:any, alpha1To2:any, s:any, reverse_output = false)=> {
     if (s === 0) {
         return [latitude1, longitude1];
     }
-
+    const regex = /\(([^)]+)\)/; 
+    console.log(alpha1To2,"alpha1To2alpha1To2alpha1To2")
+    const match = alpha1To2.match(regex);
+    alpha1To2 = match[1];
     const f = 1.0 / 298.257223563; // WGS84
     const a = 6378137.0; // metres
     const piD4 = Math.atan(1.0);
@@ -726,6 +741,8 @@ const newLon = referenceLon + deltaLon;
 
   createGeoJsonPointObject=(procedures:any,procedureName:any="sid")=>{
 
+    console.log(procedures,"proceduresproceduresprocedures")
+
     var  featureCollection: GeoJSON.FeatureCollection<GeoJSON.Point>= {
       "type": "FeatureCollection",
       "features": [
@@ -737,48 +754,49 @@ const newLon = referenceLon + deltaLon;
         "features": [
          ]
         }
-      
-        if(procedureName.toLowerCase()==="1"){
 
-          /**
+        if(procedures.type==="SID"){
+/**
            * @todo need to consider end point
            */
-          const thresholdValues=   this.runways.find((ele:any)=>ele.designation===this.Airform.get('selectedRunway')?.value).geometry_runway_start.coordinates;
-          featureCollection.features.push( { "type": "Feature", "properties": { "Name": "IF",  "Speed": "", "Altitude": "" }, "geometry": { "type": "Point", "coordinates":thresholdValues } });
+const thresholdValues=   this.runways.find((ele:any)=>ele.designation===this.Airform.get('selectedRunway')?.value).geometry_runway_start.coordinates;
+featureCollection.features.push( { "type": "Feature", "properties": { "Name": "IF",  "Speed": "", "Altitude": "" }, "geometry": { "type": "Point", "coordinates":thresholdValues } });
+
         }
 
+        
+            procedures.waypoints.map((ele:any,index:number)=>{
+              var coordinates:number[];
+                if(ele.path_descriptor==='VA' || ele.path_descriptor==='CA' || ele.path_descriptor==='FA')
+                {
+                  const prevCoordinates=featureCollection.features[featureCollection.features.length-1].geometry.coordinates;
+                  const distance=this.getDistance( parseInt(ele.altitude_ll))
+                  coordinates  =  this.vinc( prevCoordinates[0],prevCoordinates[1],ele.course_angle,distance,false)
+                  featureCollection.features.push(
+                     { "type": "Feature", "properties": { "Name":  ele.waypoint_id,  "Speed": "", "Altitude": ele.altitude_ll }, "geometry": { "type": "Point", "coordinates":coordinates } }
+                  );
+                  // Safely get the last feature's name
+                const lastFeature = featureCollection.features[featureCollection.features.length - 1];
+                const startPoint = lastFeature && lastFeature.properties ? lastFeature.properties['Name']|| "" : "";
+                   lineJson.features.push({ "type": "Feature", "properties": { "Name":  ele.path_descriptor, "Distance":null, "Bearing": ele.course_angle, "StartPoint":startPoint,"EndPoint":  ele.waypoint.name}, "geometry": { "type": "MultiLineString", "coordinates": [ [ prevCoordinates, coordinates ] ] } },)
+                }else{
+                 if(featureCollection.features.length>0){
+                  const prevCoordinates=featureCollection.features[featureCollection.features.length-1].geometry.coordinates;
+                              // Safely get the last feature's name
+                const lastFeature = featureCollection.features[featureCollection.features.length - 1];
+                const startPoint = lastFeature && lastFeature.properties ? lastFeature.properties['Name']|| "" : "";
+                  lineJson.features.push({ "type": "Feature", "properties": { "Name":  ele.path_descriptor,"StartPoint":startPoint,"EndPoint":   ele.waypoint.name, "Distance":ele.dst_time?ele.dst_time:null, "Bearing": ele.course_angle }, "geometry":
+                     { "type": "MultiLineString", "coordinates": [ [ prevCoordinates, ele.waypoint.geometry.coordinates ] ] } },)
+                 }
+                  featureCollection.features.push(
+                    { "type": "Feature", "properties": { "Name":ele.waypoint.name, "Speed": "", "Altitude": ele.altitude_ll }, 
+                    "geometry": { "type": "Point", "coordinates": ele.waypoint.geometry.coordinates } }
+                 );
+                }
+            })
+console.log(featureCollection,lineJson,"*************************************************")
 
-
-    procedures.map((procedure:any)=>{
-      procedure.procedure.map((ele:any,index:number)=>{
-        var coordinates:number[];
-          if(ele.pathDesignator==='VA' || ele.pathDesignator==='CA' || ele.pathDesignator==='FA')
-          {
-            const prevCoordinates=featureCollection.features[featureCollection.features.length-1].geometry.coordinates;
-            const distance=this.getDistance( parseInt(ele.altitude))
-            coordinates  =  this.vinc( prevCoordinates[0],prevCoordinates[1],ele.angle,distance,false)
-            featureCollection.features.push(
-               { "type": "Feature", "properties": { "Name":  ele.waypointIdentifies,  "Speed": "", "Altitude": ele.altitude }, "geometry": { "type": "Point", "coordinates":coordinates } }
-            );
-            // Safely get the last feature's name
-       const lastFeature = featureCollection.features[featureCollection.features.length - 1];
-      const startPoint = lastFeature && lastFeature.properties ? lastFeature.properties['Name']|| "" : "";
-             lineJson.features.push({ "type": "Feature", "properties": { "Name":  ele.pathDesignator, "Distance":null, "Bearing": ele.angle, "StartPoint":startPoint,"EndPoint":  ele.waypointIdentifies}, "geometry": { "type": "MultiLineString", "coordinates": [ [ prevCoordinates, coordinates ] ] } },)
-          }else{
-            
-           if(featureCollection.features.length>0){
-            const prevCoordinates=featureCollection.features[featureCollection.features.length-1].geometry.coordinates;
-                        // Safely get the last feature's name
-          const lastFeature = featureCollection.features[featureCollection.features.length - 1];
-          const startPoint = lastFeature && lastFeature.properties ? lastFeature.properties['Name']|| "" : "";
-            lineJson.features.push({ "type": "Feature", "properties": { "Name":  ele.pathDesignator,"StartPoint":startPoint,"EndPoint":  ele.waypointIdentifies, "Distance":ele.distance?ele.distance:null, "Bearing": ele.angle }, "geometry": { "type": "MultiLineString", "coordinates": [ [ prevCoordinates, this.getWaypoints(ele.waypointIdentifies) ] ] } },)
-           }
-            featureCollection.features.push(
-              { "type": "Feature", "properties": { "Name": ele.waypointIdentifies, "Speed": "", "Altitude": ele.altitude }, "geometry": { "type": "Point", "coordinates":this.getWaypoints(ele.waypointIdentifies) } }
-           );
-          }
-      })
-    })
+    
     return {pointJson:featureCollection,lineJson:lineJson};
   }
 
@@ -792,6 +810,8 @@ const newLon = referenceLon + deltaLon;
   this.airportLayerGroup.clearLayers();
     const loadSIDProcedure = async (procedureName: string[])=>{
       if(this.Airform.get('selectedRunway')?.value.length!==0){
+
+          
            const selectedRunwyInfo=  this.runways.find((runway:any)=>runway.designation=== this.Airform.get('selectedRunway')?.value);
            const angle=selectedRunwyInfo.true_bearing.replace(' DEG','°');
            const runwayIcon = L.icon({
@@ -838,245 +858,290 @@ const newLon = referenceLon + deltaLon;
                  return marker;
                }
              });
-             const pointLineJsons =   this.createGeoJsonPointObject(this.procedures,procedureName[0]);
-             this.airportLayerGroup.addLayer(geoLayer);
-             const stepIcon = L.icon({
-               iconUrl: 'assets/AKTIM_7A/Fly-by.png',
-               iconSize: [40, 40],
-               popupAnchor: [-3, -76],
-             });
-             let currentTooltip:any = null; // Initialize a variable to store the current tooltip
-       
-             const geoJsonLayer = L.geoJSON(pointLineJsons.pointJson, {
-               pointToLayer: (feature, latlng) => {
-                 const marker = L.marker(latlng, { icon: stepIcon });
-             
-                 // Set up the permanent tooltip content
-                 let tooltipContent = '';
-                 if (feature.properties.Name) {
-                   tooltipContent += `<b>${feature.properties.Name}</b><br>`;
-                 }
-                 if (feature.properties.Altitude) {
-                   tooltipContent += `${feature.properties.Altitude}<br>`;
-                 }
-                 if (feature.properties.Speed) {
-                   tooltipContent += `${feature.properties.Speed}<br>`;
-                 }
-                 if (feature.properties.Speed1) {
-                   tooltipContent += `${feature.properties.Speed1}`;
-                 }
-             
-                 // Bind the permanent tooltip to the marker
-                 if (tooltipContent !== '') {
-                   marker.bindTooltip(tooltipContent, {
-                     permanent: true,
-                     direction: 'bottom',
-                     className: 'labelstyle',
-                     offset: L.point(25, 0),
-                   });
-                 }
-             
-                 return marker;
-               },
-             
-               onEachFeature: (feature, layer) => {
-                 if (layer instanceof L.Marker) {
-                   layer.on('click', () => {
-                     // Get the coordinates and waypoint name
-                     const coordinates = layer.getLatLng();
-                     const waypointName = feature.properties.Name || "Unknown Waypoint";
-                     const latitude=this.toDMS(coordinates.lat);
-                     const longitude=this.toDMS(coordinates.lng);
-       
-                     // Create tooltip content for the click
-                     const tooltipContent = `
-                       <div>
-                         <strong>Waypoint:</strong> ${waypointName}<br />
-                         <strong>Coordinates:</strong>  ${latitude} , ${longitude}<br />
-                       </div>
-                     `;
-             
-                     // Create a popup to display the information
-                     L.popup()
-                       .setLatLng(coordinates)
-                       .setContent(tooltipContent)
-                       .openOn(this.map); // Use the marker's map reference
-                   });
-                 }
-               }
-             });
-             // Add the layer to your map
-             geoJsonLayer.addTo(this.map);
-               
-             // Ensure to close tooltips when clicking on the map
-             this.map.on('click', () => {
-               if (currentTooltip) {
-                 currentTooltip.closeTooltip();
-                 currentTooltip = null; // Reset the current tooltip reference
-               }
-             });
-             
-       
-             this.airportLayerGroup.addLayer(geoJsonLayer);
-             this.map.fitBounds(geoJsonLayer.getBounds());
-       
-             // Load Line_SID GeoJSON datat  
-             // const lineResponse = await fetch(lineFileName);
-             const lineData :GeoJSON.FeatureCollection<GeoJSON.MultiLineString>= pointLineJsons.lineJson;
-       
-       
-               const lineFeatures = lineData.features; // Assuming lineData is your GeoJSON data
-       
-               this.lineGeoJsonLayer = L.geoJSON(lineData, {
-                   style: {
-                       color: 'black', // Set line color
-                       weight: 2 // Set line weight
-                   },
-                   onEachFeature: (feature: GeoJSON.Feature<GeoJSON.MultiLineString>, layer) => {
-                       const currentIndex = lineFeatures.indexOf(feature as GeoJSON.Feature<GeoJSON.MultiLineString>); // Type assertion here
-                       layer.on('click', () => {
-                         if (feature.properties) {
-                             const name = feature.properties['Name'];
-       
-                             const startPoint=feature.properties['StartPoint']
-                             const endPoint=feature.properties['EndPoint']
-                           
-                             // Create a tooltip content
-                             const tooltipContent = `
-                                 <div>
-                                     <strong>Path Terminatore:</strong> ${name}<br />
-                                     <strong>StartPoint:</strong> ${startPoint}<br/>
-                                     <strong>EndPoint:</strong> ${endPoint}<br/>
-                                 </div>
-                             `;
-                     
-                             // Cast the layer to Polyline to access getLatLngs
-                             const polyline = layer as L.Polyline;
-                             const latLngs = polyline.getLatLngs();
-                             console.log(JSON.stringify(latLngs),"latLngslatLngs")
-                     
-                           // Function to flatten LatLng coordinates
-                           const flattenLatLngs = (latLngs: L.LatLng | L.LatLng[] | L.LatLng[][] | L.LatLng[][][]): L.LatLng[] => {
-                             if (Array.isArray(latLngs)) {
-                                 return latLngs.flatMap(flattenLatLngs); // Recursively flatten
-                             }
-                             return [latLngs]; // Wrap a single LatLng in an array
-                         };
-                             // Flattening the LatLngs
-                        // Flatten the LatLngs to ensure we have a single array
-                          const flatLatLngs: L.LatLng[] = flattenLatLngs(latLngs);
-                     
-                             // Calculate bounds from the line's coordinates
-                             const bounds = L.latLngBounds(flatLatLngs);
-                     
-                             // Show the tooltip at the center of the bounds
-                             L.popup()
-                                 .setLatLng(bounds.getCenter())
-                                 .setContent(tooltipContent)
-                                 .openOn(this.map);
-                         }
-                     });
-                     
-                     
-                     
-           
-                       if (feature.properties) {
-                           const bearing = feature.properties['Bearing'];
-                           const distance = feature.properties['Distance'];
-               
-                           if (bearing !== null || distance !== null) {
-                               let coordinates: number[][] = [];
-                               if (feature.geometry.type === 'MultiLineString') {
-                                   coordinates = feature.geometry.coordinates[0]; // For MultiLineString, choose the first line
-                               } else if (feature.geometry.type === 'LineString') {
-                                   coordinates = feature.geometry.coordinates[0];
-                               }
-               
-                               const start = coordinates[0];
-                               const end = coordinates[1];
-               
-                               // Calculate the angle between start and end points in radians
-                               let angle = Math.atan2(end[1] - start[1], end[0] - start[0]);
-               
-                               // Ensure angle is positive
-                               if (angle < 0) {
-                                   angle += 2 * Math.PI;
-                               }
-               
-                               // Calculate the center point of the line segment
-                               const center = [(start[0] + end[0]) / 2, (start[1] + end[1]) / 2];
-               
-                               let rotationAngle;
-               
-                               if (distance !== null) {
-                                   const customIcon = L.icon({
-                                       iconUrl: 'assets/AKTIM_7A/penta.png',
-                                       iconSize: [44, 36],
-                                       iconAnchor: [20, 19]
-                                   });
-               
-                                   let iconRotationAngle = parseFloat(bearing);
-               
-                                   if (isNaN(iconRotationAngle)) {
-                                       const nextIndex = currentIndex + 1;
-                                       if (nextIndex < lineFeatures.length) {
-                                           const nextFeature = lineFeatures[nextIndex];
-                                           if (nextFeature.properties && nextFeature.properties['Bearing']) {
-                                               iconRotationAngle = parseFloat(nextFeature.properties['Bearing']);
-                                           }
-                                       }
-                                   }
-               
-                                   const marker = L.marker(L.latLng(center[1], center[0]), {
-                                       icon: customIcon,
-                                       rotationAngle: iconRotationAngle
-                                   }).addTo(this.airportLayerGroup);
-               
-                                   if (iconRotationAngle !== null) {
-                                       rotationAngle = iconRotationAngle >= 0 && iconRotationAngle < 180 
-                                                       ? iconRotationAngle - 90 
-                                                       : iconRotationAngle + 90;
-                                   } else {
-                                       rotationAngle = angle * (180 / Math.PI) - 90;
-                                   }
-               
-                                   const distanceTooltip = `<div style="transform: rotate(${rotationAngle}deg); font-size: 8px;">${feature.properties['Distance']}</div>`;
-                                   marker.bindTooltip(distanceTooltip, {
-                                       permanent: true,
-                                       direction: 'center',
-                                       className: 'labelstyle',
-                                       opacity: 1
-                                   });
-                               }
-               
-                               if (bearing !== null) {
-                                   const bearingMarker = L.marker(L.latLng(center[1], center[0]), {
-                                       rotationAngle: rotationAngle,
-                                       icon: L.divIcon({
-                                           className: 'bearing-label',
-                                           html: `<div style="font-size: 8px;">${feature.properties['Bearing']}</div>`,
-                                           iconAnchor: [10, 20]
-                                       })
-                                   }).addTo(this.airportLayerGroup);
-                               }
-                           }
-                       }
-                   }
-               });
-               
-               this.airportLayerGroup.addLayer(this.lineGeoJsonLayer);
+         
+             ["1","71"].map((ele:string)=>{
+              if(this.multipleProcedure[ele].type==="APCH"){
+                const result = [];
+                let currentGroup:any[] = [];
+                
+                this.multipleProcedure[ele].waypoints.forEach((item:any) => {
+                  if (item.seq_num === 10) {
+                    if (currentGroup.length > 0) {
+                      result.push(currentGroup);
+                    }
+                    currentGroup = [item]; 
+                  } else {
+                    currentGroup.push(item); 
+                  }
+                });
+                if (currentGroup.length > 0) {
+                  result.push(currentGroup);
+                }
+
+                result.map((procedure:any)=>{
+                  const updatedProcedure={
+                    type:"APCH",
+                    waypoints:procedure
+                  }
+                  console.log(updatedProcedure)
+                  this.plotProcedures(updatedProcedure,geoLayer)
+                })
+
+              }
+              else{
+                this.plotProcedures(this.multipleProcedure[ele],geoLayer)
+              }
+          
+             })
+
          }
     }
 
 
     if(this.selectedProcedureName.length!==0){
-       loadSIDProcedure(this.selectedProcedureName);
+       loadSIDProcedure(["1","2","3"]);
     }
 
 }
 
 
+
+ plotProcedures(ele:any,geoLayer:any){
+
+
+ const pointLineJsons =   this.createGeoJsonPointObject(ele);
+ this.airportLayerGroup.addLayer(geoLayer);
+ const stepIcon = L.icon({
+   iconUrl: 'assets/AKTIM_7A/Fly-by.png',
+   iconSize: [40, 40],
+   popupAnchor: [-3, -76],
+ });
+ let currentTooltip:any = null; // Initialize a variable to store the current tooltip
+
+ const geoJsonLayer = L.geoJSON(pointLineJsons.pointJson, {
+   pointToLayer: (feature, latlng) => {
+     const marker = L.marker(latlng, { icon: stepIcon });
+ 
+     // Set up the permanent tooltip content
+     let tooltipContent = '';
+     if (feature.properties.Name) {
+       tooltipContent += `<b>${feature.properties.Name}</b><br>`;
+     }
+     if (feature.properties.Altitude) {
+       tooltipContent += `${feature.properties.Altitude}<br>`;
+     }
+     if (feature.properties.Speed) {
+       tooltipContent += `${feature.properties.Speed}<br>`;
+     }
+     if (feature.properties.Speed1) {
+       tooltipContent += `${feature.properties.Speed1}`;
+     }
+ 
+     // Bind the permanent tooltip to the marker
+     if (tooltipContent !== '') {
+       marker.bindTooltip(tooltipContent, {
+         permanent: true,
+         direction: 'bottom',
+         className: 'labelstyle',
+         offset: L.point(25, 0),
+       });
+     }
+ 
+     return marker;
+   },
+ 
+   onEachFeature: (feature, layer) => {
+     if (layer instanceof L.Marker) {
+       layer.on('click', () => {
+         // Get the coordinates and waypoint name
+         const coordinates = layer.getLatLng();
+         const waypointName = feature.properties.Name || "Unknown Waypoint";
+         const latitude=this.toDMS(coordinates.lat);
+         const longitude=this.toDMS(coordinates.lng);
+
+         // Create tooltip content for the click
+         const tooltipContent = `
+           <div>
+             <strong>Waypoint:</strong> ${waypointName}<br />
+             <strong>Coordinates:</strong>  ${latitude} , ${longitude}<br />
+           </div>
+         `;
+ 
+         // Create a popup to display the information
+         L.popup()
+           .setLatLng(coordinates)
+           .setContent(tooltipContent)
+           .openOn(this.map); // Use the marker's map reference
+       });
+     }
+   }
+ });
+ // Add the layer to your map
+ geoJsonLayer.addTo(this.map);
+   
+ // Ensure to close tooltips when clicking on the map
+ this.map.on('click', () => {
+   if (currentTooltip) {
+     currentTooltip.closeTooltip();
+     currentTooltip = null; // Reset the current tooltip reference
+   }
+ });
+ 
+
+ this.airportLayerGroup.addLayer(geoJsonLayer);
+ this.map.fitBounds(geoJsonLayer.getBounds());
+
+ // Load Line_SID GeoJSON datat  
+ // const lineResponse = await fetch(lineFileName);
+ const lineData :GeoJSON.FeatureCollection<GeoJSON.MultiLineString>= pointLineJsons.lineJson;
+
+
+   const lineFeatures = lineData.features; // Assuming lineData is your GeoJSON data
+
+   this.lineGeoJsonLayer = L.geoJSON(lineData, {
+       style: {
+           color: 'black', // Set line color
+           weight: 2 // Set line weight
+       },
+       onEachFeature: (feature: GeoJSON.Feature<GeoJSON.MultiLineString>, layer) => {
+           const currentIndex = lineFeatures.indexOf(feature as GeoJSON.Feature<GeoJSON.MultiLineString>); // Type assertion here
+           layer.on('click', () => {
+             if (feature.properties) {
+                 const name = feature.properties['Name'];
+
+                 const startPoint=feature.properties['StartPoint']
+                 const endPoint=feature.properties['EndPoint']
+               
+                 // Create a tooltip content
+                 const tooltipContent = `
+                     <div>
+                         <strong>Path Terminatore:</strong> ${name}<br />
+                         <strong>StartPoint:</strong> ${startPoint}<br/>
+                         <strong>EndPoint:</strong> ${endPoint}<br/>
+                     </div>
+                 `;
+         
+                 // Cast the layer to Polyline to access getLatLngs
+                 const polyline = layer as L.Polyline;
+                 const latLngs = polyline.getLatLngs();
+                 console.log(JSON.stringify(latLngs),"latLngslatLngs")
+         
+               // Function to flatten LatLng coordinates
+               const flattenLatLngs = (latLngs: L.LatLng | L.LatLng[] | L.LatLng[][] | L.LatLng[][][]): L.LatLng[] => {
+                 if (Array.isArray(latLngs)) {
+                     return latLngs.flatMap(flattenLatLngs); // Recursively flatten
+                 }
+                 return [latLngs]; // Wrap a single LatLng in an array
+             };
+                 // Flattening the LatLngs
+            // Flatten the LatLngs to ensure we have a single array
+              const flatLatLngs: L.LatLng[] = flattenLatLngs(latLngs);
+         
+                 // Calculate bounds from the line's coordinates
+                 const bounds = L.latLngBounds(flatLatLngs);
+         
+                 // Show the tooltip at the center of the bounds
+                 L.popup()
+                     .setLatLng(bounds.getCenter())
+                     .setContent(tooltipContent)
+                     .openOn(this.map);
+             }
+         });
+         
+         
+         
+
+           if (feature.properties) {
+               const bearing = feature.properties['Bearing'];
+               const distance = feature.properties['Distance'];
+   
+               if (bearing !== null || distance !== null) {
+                   let coordinates: number[][] = [];
+                   if (feature.geometry.type === 'MultiLineString') {
+                       coordinates = feature.geometry.coordinates[0]; // For MultiLineString, choose the first line
+                   } else if (feature.geometry.type === 'LineString') {
+                       coordinates = feature.geometry.coordinates[0];
+                   }
+   
+                   const start = coordinates[0];
+                   const end = coordinates[1];
+   
+                   // Calculate the angle between start and end points in radians
+                   let angle = Math.atan2(end[1] - start[1], end[0] - start[0]);
+   
+                   // Ensure angle is positive
+                   if (angle < 0) {
+                       angle += 2 * Math.PI;
+                   }
+   
+                   // Calculate the center point of the line segment
+                   const center = [(start[0] + end[0]) / 2, (start[1] + end[1]) / 2];
+   
+                   let rotationAngle;
+   
+                   if (distance !== null) {
+                       const customIcon = L.icon({
+                           iconUrl: 'assets/AKTIM_7A/penta.png',
+                           iconSize: [44, 36],
+                           iconAnchor: [20, 19]
+                       });
+   
+                       let iconRotationAngle = parseFloat(bearing);
+   
+                       if (isNaN(iconRotationAngle)) {
+                           const nextIndex = currentIndex + 1;
+                           if (nextIndex < lineFeatures.length) {
+                               const nextFeature = lineFeatures[nextIndex];
+                               if (nextFeature.properties && nextFeature.properties['Bearing']) {
+                                   iconRotationAngle = parseFloat(nextFeature.properties['Bearing']);
+                               }
+                           }
+                       }
+   
+                       const marker = L.marker(L.latLng(center[1], center[0]), {
+                           icon: customIcon,
+                           rotationAngle: iconRotationAngle
+                       }).addTo(this.airportLayerGroup);
+   
+                       if (iconRotationAngle !== null) {
+                           rotationAngle = iconRotationAngle >= 0 && iconRotationAngle < 180 
+                                           ? iconRotationAngle - 90 
+                                           : iconRotationAngle + 90;
+                       } else {
+                           rotationAngle = angle * (180 / Math.PI) - 90;
+                       }
+   
+                       const distanceTooltip = `<div style="transform: rotate(${rotationAngle}deg); font-size: 8px;">${feature.properties['Distance']}</div>`;
+                       marker.bindTooltip(distanceTooltip, {
+                           permanent: true,
+                           direction: 'center',
+                           className: 'labelstyle',
+                           opacity: 1
+                       });
+                   }
+   
+                   if (bearing !== null) {
+                       const bearingMarker = L.marker(L.latLng(center[1], center[0]), {
+                           rotationAngle: rotationAngle,
+                           icon: L.divIcon({
+                               className: 'bearing-label',
+                               html: `<div style="font-size: 8px;">${feature.properties['Bearing']}</div>`,
+                               iconAnchor: [10, 20]
+                           })
+                       }).addTo(this.airportLayerGroup);
+                   }
+               }
+           }
+       }
+   });
+   
+   this.airportLayerGroup.addLayer(this.lineGeoJsonLayer);
+ }
+
+
   watchAirportChanges(): void {
+
+
     this.Airform.get('selectedAirport')?.valueChanges.subscribe((selectedAirport: string[]) => {
       console.log('trigger');
       // Clear all runway and procedure options when the selected airport changes
@@ -1401,7 +1466,7 @@ const newLon = referenceLon + deltaLon;
       if(selectedProcedureName.length!==0){
         console.log(selectedProcedureName,"sdjkndjk")
         this.selectedProcedureName=[selectedProcedureName];
-         this.updateLayers();
+        //  this.updateLayers();
       }
     })
   }
