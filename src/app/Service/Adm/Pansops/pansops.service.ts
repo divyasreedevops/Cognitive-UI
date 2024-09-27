@@ -41,6 +41,7 @@ export class PansopsService {
   }
 
   getProcedureNames(airportId:string,typeOfProcedure:string,procedureName:string,data:any):Observable<any>{
+    data.airac_id=this.getAiracId();
     const headers = new HttpHeaders({'Content-Type': 'application/json'});
     return this.http.post<any>(`${this.apiUrl}/adm/procedures`,data,{headers});
   }

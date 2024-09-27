@@ -240,6 +240,7 @@ export class MapComponent implements OnInit {
   
     this.sharedService.sidebar$.subscribe(sidebarRes => {
       this.selectedAirac = sidebarRes;
+      this.airportLayerGroup.clearLayers();
       console.log(this.selectedAirac,"HHHHHHHHHHHHHHHHHHHHh")
     });
 
@@ -279,6 +280,7 @@ export class MapComponent implements OnInit {
     this.updateLayers();
 
     this.sharedService.procedure$.subscribe(procedureRes => {
+      console.log(procedureRes,"procedureResprocedureRes")
       this.multipleProcedure = procedureRes;
       this.updateLayers()
     });
@@ -833,7 +835,7 @@ featureCollection.features.push( { "type": "Feature", "properties": { "Name": "I
              });
              const activeAirac=    this.airacs.find((ele:any)=>ele.status==="active");
          
-             ["1","306"].map((ele:string)=>{
+             this.Airform.get('selectedProcedureName')?.value.map((ele:string)=>{
               if(this.multipleProcedure[ele].type==="APCH"){
                 const result = [];
                 let currentGroup:any[] = [];
@@ -1150,65 +1152,6 @@ featureCollection.features.push( { "type": "Feature", "properties": { "Name": "I
 
 
 
-      // // Check if VOBL/Bengaluru (KIA) is selected
-      // if (selectedAirport.includes('VOBL/Bengaluru (KIA)')) {
-
-      //   this.airportLayerGroup.clearLayers(); // Remove all markers when no airport is selected
-
-      //   const marker = L.marker([13.198889, 77.705556], { icon: customIcon }).addTo(this.airportLayerGroup);
-
-
-      //   // Set the map view to the marker's position
-      //   this.map.setView([13.1979, 77.7063], 13);
-
-
-      //   this.optionsBengaluruKIARunway = [
-      //     { value: 'RWY 09L', label: 'RWY 09L' },
-      //     { value: 'RWY_9R', label: 'RWY 09R' },
-      //     { value: '27L_RWY', label: 'RWY 27L' },
-      //     { value: 'RWY 27R', label: 'RWY 27R' },
-      //   ];
-      //   // Set view to Bengaluru
-      //   this.map.setView([13.206944, 77.704167], 12);
-      // } else {
-      //   this.optionsBengaluruKIARunway = [];
-      // }
-
-      // // Check if VIJP/JAIPUR is selected
-      // if (selectedAirport.includes('VIJP/JAIPUR')) {
-      //   const marker = L.marker([26.824167, 75.8025], { icon: customIcon }).addTo(this.airportLayerGroup);
-
-
-      //   // Set the map view to the marker's position
-      //   this.map.setView([23.071111, 72.626389], 13);
-
-
-      //   // Show options for VIJP/JAIPUR
-      //   this.optionsVIJPJAIPURRunway = [
-      //     { value: 'RWY_09', label: 'RWY_08' },
-      //     { value: 'RWY_27', label: 'RWY_26' },
-      //   ];
-      //   // Set view to Jaipur
-      //   this.map.setView([26.824167, 75.812222], 12);
-      // } else {
-      //   this.optionsVIJPJAIPURRunway = [];
-      // }
-      // // Check if VEPY/PAKYONG is selected
-      // if (selectedAirport.includes('VEPY/PAKYONG')) {
-      //   const marker = L.marker([27.225833, 88.585833], { icon: customIcon }).addTo(this.airportLayerGroup);
-
-      //   // Set the map view to the marker's position
-      //   this.map.setView([27.1333, 88.3509], 13);
-      //   // Show options for VEPY/PAKYONG
-      //   this.optionsVEPYPAKYONGRunway = [
-      //     { value: 'RWY 02', label: 'RWY 02' },
-      //     { value: 'RWY 20', label: 'RWY 20' },
-      //   ];
-      //   // Set view to Pakyong
-      //   this.map.setView([27.2394, 88.5961], 12);
-      // } else {
-      //   this.optionsVEPYPAKYONGRunway = [];
-      // }
     });
 
     this.Airform.get('selectedRunway')?.valueChanges.subscribe((selectedRunway: string[]) => {

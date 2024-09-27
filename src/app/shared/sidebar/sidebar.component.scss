@@ -115,6 +115,13 @@ background: linear-gradient(267deg, rgb(58 82 91 / 71%) 1%, rgb(31 194 174 / 46%
     background-color: #f8f9fa; 
     height: 2.1rem;
     width: 100%;
+    border: none;
+    outline: none;
+    cursor: default;
+  }
+  .multi-select-container:focus{
+    border: none;
+    outline: none;
   }
 }
 
@@ -349,3 +356,37 @@ mat-icon{
   color: white;
 }
 
+
+.checkkarea{
+  position: absolute;
+  background-color: white;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  width: 100%;
+  max-height: 14rem;
+  overflow-y: auto;
+  top: 36px;
+  // padding: 12px;
+  border-radius: 5px;
+  z-index: 1;
+  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+  .checkoption{
+    display: flex;
+    gap: 7px;
+    padding: 5px 2px 5px 7px;
+    align-items: center;
+  }
+
+  .checkoption:hover{
+    background-color: #0056b3;
+    color: white;
+    cursor: pointer;
+  }
+}
+
+.checkbox-show {
+  display: block !important;
+  height: 1rem;
+  width: .9rem;
+}
