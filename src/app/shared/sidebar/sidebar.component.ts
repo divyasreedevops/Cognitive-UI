@@ -51,7 +51,7 @@ export class SidebarComponent {
   isCollapsed = false;
   selectedTab='';
   isMultiMapView=false;
-
+  procedureResponse=[];
   selectFormat=[
     {
       label:'Airports',
@@ -589,7 +589,6 @@ export class SidebarComponent {
             selectedOptions.push(target.value);
             this.selectedProcedureName.push(target.value);
             const name:any = this.procedureNames.find(procedure => procedure.value == target.value);
-            console.log(name);
             if(name){
              this.selectedProcedureNameShow.push(name.label);
             }
@@ -1309,11 +1308,116 @@ onToggleChange(event: any) {
  
   if (event.target.checked) {
    this.isAIXM=true;
-   
+   this.procedureAixmTable(this.procedureResponse)
   } else {
     this.isAIXM=false;
 
   }
+}
+
+
+procedureAixmTable(resp:any){
+
+  console.log(resp,"respresprespresprespresprespresprespresp")
+  let flghtData = [];
+  for (let key in resp) {
+    if (resp.hasOwnProperty(key)) {
+      let row: any[] = []
+      for (let i = 0; i < resp[key].length; i++) {
+        const tempRow = resp[key][i];
+        let temp = {
+          waypointIdentifier: "",
+          pathDescriptor: "",
+          flyOver: "",
+          courseAngle: "",
+          turnDirection: "",
+          upperLimitAltitude: "",
+          lowerLimitAltitude: "",
+          speedLimit: "",
+          tmDst: "",
+          va: "",
+          navigationSpecification: ""
+        }
+        if (tempRow.waypoint.length){
+          temp.waypointIdentifier = tempRow.waypoint[0]['name']
+        }
+        else{
+          temp.waypointIdentifier = "-"
+        }
+        if (tempRow.path_descriptor){
+          temp.pathDescriptor = tempRow.path_descriptor
+        }
+        else{
+          temp.pathDescriptor = "-"
+        }
+        if (tempRow.fly_over){
+          temp.flyOver = tempRow.fly_over
+        }
+        else{
+          temp.flyOver = "-"
+        }
+        if (tempRow.turn_dir){
+          temp.turnDirection = tempRow.turn_dir
+        }
+        else{
+          temp.turnDirection = "-"
+        }
+        if (tempRow.altitude_ul){
+          temp.upperLimitAltitude = tempRow.altitude_ul
+        }
+        else{
+          temp.upperLimitAltitude = "-"
+        }
+        if (tempRow.altitude_ll){
+          temp.lowerLimitAltitude = tempRow.altitude_ll
+        }
+        else{
+          temp.lowerLimitAltitude = "-"
+        }
+        if (tempRow.dst_time){
+          temp.tmDst = tempRow.dst_time
+        }
+        else{
+          temp.tmDst = "-"
+        }
+        if (tempRow.vpa_tch){
+          temp.va = tempRow.vpa_tch
+        }
+        else{
+          temp.va = "-"
+        }
+        if (tempRow.nav_spec){
+          temp.navigationSpecification = tempRow.nav_spec
+        }
+        else{
+          temp.navigationSpecification = "-"
+        }
+        temp.courseAngle = tempRow.course_angle
+        row.push(temp)
+      }
+      let tempObj = {
+        'title': key,
+        'columns': [
+          "Waypoint Identifier",
+          "Path Descriptor",
+          "Fly Over",
+          "Course Angle °M(°T)",
+          "Turn Direction",
+          "Upper Limit Altitude ft",
+          "Lower Limit Altitude ft",
+          "Speed Limit kt",
+          "TM DST NM",
+          "VA",
+          "Navigation specification"
+        ],
+        'rows': row
+      }
+      flghtData.push(tempObj)
+    }
+  
+  }
+  this.flightData = flghtData
+  this.cropData = [this.flightData[0]]
 }
 
 toggleSelection(item: string, part: string, index: number): void {
@@ -1330,7 +1434,6 @@ toggleSelection(item: string, part: string, index: number): void {
     this.selectedOptionstoshow.splice(selectedIndex,1);
   }
 
-  console.log(this.selectedOptions);
 }
 
 // Function to check if an item is selected
@@ -1434,7 +1537,6 @@ toggleDropdown(): void {
   }
   
   getProcedureNames(){
-    console.log(this.Airform.get('selectedTypeofProcedure')?.value)
     this.pansopsService.getProcedureNames(this.selectedAirport.toString(),this.selectedRunway.toString(),this.selectedTypeofProcedure.toString(),{
       "airport_icao": this.Airform.get('selectedAirport')?.value,
          "rwy_dir":this.Airform.get('selectedRunway')?.value,
@@ -1443,7 +1545,6 @@ toggleDropdown(): void {
     response= this.convertToArray(response)
     
     this.procedureNames=response;
-    console.log(this.procedureNames,"this.procedureNames")
    })
   }
 
@@ -1452,8 +1553,7 @@ toggleDropdown(): void {
       "procedure_id":this.Airform.get('selectedProcedureName')?.value
       }).subscribe(response=>{
           this.sharedService.setProcedureData(response)
-
-        console.log(response,"HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH")
+         this.procedureResponse=response;
       })
   }
   
