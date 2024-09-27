@@ -478,9 +478,10 @@ export class SidebarComponent {
   }
   
   compareResponse(resp:any){
-    const keys: string[] = Object.keys(resp);
-    this.multipart1 = this.createList(resp, keys[0]);
-    this.multipart2 = this.createList(resp, keys[1]);
+    const activeAirac:any= this.airacs.find((ele:any)=>ele.status==="active");
+    const inactiveAirac:any= this.airacs.find((ele:any)=>ele.status==="inActive");
+    this.multipart1 = this.createList(resp, activeAirac.id);
+    this.multipart2 = this.createList(resp, inactiveAirac.id);
 
     console.log(this.multipart1,this.multipart2,"dvssiuviyvgru")
   }
