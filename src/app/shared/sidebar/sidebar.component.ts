@@ -1311,7 +1311,7 @@ toggleExpand() {
   if(!this.isExpanded){
       this.cropData=[this.flightData[0]];
   }else{
-      this.cropData = [...this.cropData,...this.flightData]
+      this.cropData = [...this.flightData]
   }
 
   this.isExpanded = !this.isExpanded;
@@ -1333,14 +1333,13 @@ onToggleChange(event: any) {
 
 
 procedureAixmTable(resp:any){
-
-  console.log(resp,"respresprespresprespresprespresprespresp")
   let flghtData = [];
   for (let key in resp) {
     if (resp.hasOwnProperty(key)) {
+      console.log(`Key: ${key}`);
       let row: any[] = []
-      for (let i = 0; i < resp[key].length; i++) {
-        const tempRow = resp[key][i];
+      for (let i = 0; i < resp[key]['waypoints'].length; i++) {
+        const tempRow = resp[key]['waypoints'][i];
         let temp = {
           waypointIdentifier: "",
           pathDescriptor: "",
@@ -1354,61 +1353,17 @@ procedureAixmTable(resp:any){
           va: "",
           navigationSpecification: ""
         }
-        if (tempRow.waypoint.length){
-          temp.waypointIdentifier = tempRow.waypoint[0]['name']
-        }
-        else{
-          temp.waypointIdentifier = "-"
-        }
-        if (tempRow.path_descriptor){
-          temp.pathDescriptor = tempRow.path_descriptor
-        }
-        else{
-          temp.pathDescriptor = "-"
-        }
-        if (tempRow.fly_over){
-          temp.flyOver = tempRow.fly_over
-        }
-        else{
-          temp.flyOver = "-"
-        }
-        if (tempRow.turn_dir){
-          temp.turnDirection = tempRow.turn_dir
-        }
-        else{
-          temp.turnDirection = "-"
-        }
-        if (tempRow.altitude_ul){
-          temp.upperLimitAltitude = tempRow.altitude_ul
-        }
-        else{
-          temp.upperLimitAltitude = "-"
-        }
-        if (tempRow.altitude_ll){
-          temp.lowerLimitAltitude = tempRow.altitude_ll
-        }
-        else{
-          temp.lowerLimitAltitude = "-"
-        }
-        if (tempRow.dst_time){
-          temp.tmDst = tempRow.dst_time
-        }
-        else{
-          temp.tmDst = "-"
-        }
-        if (tempRow.vpa_tch){
-          temp.va = tempRow.vpa_tch
-        }
-        else{
-          temp.va = "-"
-        }
-        if (tempRow.nav_spec){
-          temp.navigationSpecification = tempRow.nav_spec
-        }
-        else{
-          temp.navigationSpecification = "-"
-        }
-        temp.courseAngle = tempRow.course_angle
+        temp.waypointIdentifier = tempRow.waypoint && Object.keys(tempRow.waypoint).length ? tempRow.waypoint['name'] || "-" : "-";
+        temp.pathDescriptor = tempRow.path_descriptor ? tempRow.path_descriptor : "-";
+        temp.flyOver = tempRow.fly_over ? tempRow.fly_over : "-";
+        temp.turnDirection = tempRow.turn_dir ? tempRow.turn_dir : "-";
+        temp.upperLimitAltitude = tempRow.altitude_ul ? tempRow.altitude_ul : "-";
+        temp.lowerLimitAltitude = tempRow.altitude_ll ? tempRow.altitude_ll : "-";
+        temp.speedLimit = tempRow.speed_limit ? tempRow.speed_limit : "-";
+        temp.tmDst = tempRow.dst_time ? tempRow.dst_time : "-";
+        temp.va = tempRow.vpa_tch ? tempRow.vpa_tch : "-";
+        temp.navigationSpecification = tempRow.nav_spec ? tempRow.nav_spec : "-";
+        temp.courseAngle = tempRow.course_angle ? tempRow.course_angle : '-';
         row.push(temp)
       }
       let tempObj = {
@@ -1432,6 +1387,7 @@ procedureAixmTable(resp:any){
     }
   
   }
+  // console.log('fffff', flghtData)
   this.flightData = flghtData
   this.cropData = [this.flightData[0]]
 }
