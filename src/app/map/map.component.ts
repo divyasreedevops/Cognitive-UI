@@ -752,7 +752,7 @@ if (match) {
            * @todo need to consider end point
            */
 const thresholdValues=   this.runways.find((ele:any)=>ele.designation===this.Airform.get('selectedRunway')?.value).geometry_runway_start.coordinates;
-featureCollection.features.push( { "type": "Feature", "properties": { "Name": "IF",  "Speed": "", "Altitude": "" }, "geometry": { "type": "Point", "coordinates":thresholdValues } });
+featureCollection.features.push( { "type": "Feature", "properties": { "Name": "",  "Speed": "", "Altitude": "" }, "geometry": { "type": "Point", "coordinates":thresholdValues } });
 
         }
 
