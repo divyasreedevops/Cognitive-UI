@@ -309,6 +309,7 @@ mat-icon{
   position: relative;
   .multisection{
     position: absolute;
+    z-index: 100;
     background-color: white;
     width: 100%;
     max-height: 233px;
