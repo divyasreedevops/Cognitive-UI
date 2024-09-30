@@ -3,9 +3,27 @@ import { SharedService } from 'src/app/Service/shared.service';
 import { Router } from '@angular/router';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { trigger, state, style, transition, animate } from '@angular/animations';
-
+import { PansopsService } from 'src/app/service/Adm/Pansops/pansops.service';
+import { combineLatest } from 'rxjs';
 interface RowItem {
   [key: string]: string;
+}
+
+interface ResponseObject {
+  name: string | null;
+  designator: string | null;
+  type: string | null;
+  id: number | null;
+}
+
+interface ResponseData {
+  [key: string]: ResponseObject[];
+}
+
+// Define the structure of the final list object
+interface ListItem {
+  label: string;
+  value: number | null;  // Since id can be null, value can also be null
 }
 
 interface ComparedRowItem {
@@ -50,7 +68,9 @@ export class SidebarComponent {
   isCollapsed = false;
   selectedTab='';
   isMultiMapView=false;
-
+  procedureResponse=[];
+  multipart1: ListItem[] = [];
+  multipart2: ListItem[] = [];
   selectFormat=[
     {
       label:'Airports',
@@ -85,6 +105,10 @@ export class SidebarComponent {
     { value: 'VOBL/Bengaluru (KIA)', label: 'VOBL/BLR/Bengaluru' },
     { value: 'VEPY/PAKYONG', label: 'VEPY/PYG/Pakyong' },
     { value: 'VIJP/JAIPUR', label: 'VIJP/JAI/Jaipur' },];
+   optionRunway:{ value: any; label: any; }[]=[];
+  optionProviderType:{ value: any; label: any; }[]=[];
+
+
   optionsBengaluruKIARunway: { value: any; label: any; }[] = [];
   optionsVIJPJAIPURRunway: { value: any; label: any; }[] = [];
   optionsVEPYPAKYONGRunway: { value: any; label: any; }[] = [];
@@ -103,9 +127,13 @@ export class SidebarComponent {
   selectedProcedureName: string[] = [];
   isCompare=false;
 
-  multipart1=['AKTIM 7A','GUNIM 7A','ANIRO 7A'];
+  previousSelectedTypeofProcedure:any[] = [];
+  previousSelectedProcedure:any[] = [];
+   isProcedureType=false;
+  isProcedureName=false;
+  selectedProcedureNameShow:any=[];
 
-  multipart2=['AKTIM 7A','GUNIM 7A','ANIRO 7A'];
+  procedureNames:{value:any;label:any}[]=[];
 
   selectedOptions: string[] = [];
   selectedOptionstoshow: string[] = [];
@@ -114,10 +142,13 @@ export class SidebarComponent {
   constructor(
     private sharedService: SharedService,
     private router: Router,
-    private formbuilder: FormBuilder
+    private formbuilder: FormBuilder,
+    private pansopsService: PansopsService
   ){
 
   }
+
+  
   obj1:any={
     title: "AKTIM 7A",
     columns: [
@@ -338,25 +369,63 @@ export class SidebarComponent {
     ]
   }
   compareObj:any={};
+  airacs=[];
+  compareAiracValues={};
+  selectedAirac="";
   ngOnInit(){
     this.isMultiMapView = false;
     const route = localStorage.getItem('currentRoute');
+    this.sharedService.airac$.subscribe(airacRes=>{
+      this.airacs=airacRes
+  
+   })
+
+   this.sharedService.sidebar$.subscribe((res)=>{
+
+    this.selectedAirac=res;
+    
+  
+    })
+
+
+
+
+
     if(route === '/ADM/PANS-OPS'){
       this.isMultiMapView = true;
     }else{
       this.isMultiMapView = false;
     }
 
+    
+
     this.Airform = this.formbuilder.group({
       selectedAirport: [[]],
       selectedRunway: [[]],
       selectedTypeofProcedure: [[]],
-      selectedProcedureName: [["PEXEG 7E","ADKAL 7E"]],
+      selectedProcedureName: [[]],
     });
     this.isCompare=false;
     this.sharedService.sidebar$.subscribe((option:any) => {
+      this.selectedAirport=[];
+          this.optionRunway=[];
+          this.selectedRunway=[];
+          this.optionProviderType=[];
+          this.selectedTypeofProcedure=[];
+          this.procedureNames=[];
+          this.selectedProcedureName=[];
+          this.selectedProcedureNameShow=[];
+          this.previousSelectedProcedure=[];
+          this.previousSelectedTypeofProcedure=[];
+          this.selectedOptionstoshow=[];
+          this.Airform.reset({
+            selectedAirport: [],
+            selectedRunway: [],
+            selectedTypeofProcedure: [],
+            selectedProcedureName: [],
+          });
       switch(option){
-        case 'Compare':
+        case 'compare':
           this.isCompare=true;
           break;
         case 'AIRAC 2402':
@@ -384,20 +453,245 @@ export class SidebarComponent {
     this.Airform.valueChanges.subscribe((values) => {
       this.onFormValuesChange(values);
     });
+    
 
+   this.sharedService.airport$.subscribe((response)=>{
+    if(response){
+      const transformedAirports = response.map((airport:any) => ({
+        value: airport.id,
+        label: airport.airport_icao
+    }));
+    this.optionsAirport=transformedAirports;
+    }
+   
+   })
     this.compareObj = this.compareComplexObjects(this.obj1, this.obj2);
   }
 
 
+  createList(response: ResponseData, key: string): ListItem[] {
+    return response[key].map((item: ResponseObject) => {
+        return {
+            label: `${item.name || ''} ${item.designator || ''}`,  // Handle null for name, designator, and type
+            value: item.id  // id could be null as well
+        };
+    });
+  }
+  
+  compareResponse(resp:any){
+    const activeAirac:any= this.airacs.find((ele:any)=>ele.status==="active");
+    const inactiveAirac:any= this.airacs.find((ele:any)=>ele.status==="inActive");
+    this.multipart1 = this.createList(resp, activeAirac.id);
+    this.multipart2 = this.createList(resp, inactiveAirac.id);
+
+    console.log(this.multipart1,this.multipart2,"dvssiuviyvgru")
+  }
+
   onFormValuesChange(values: any): void {
-    this.sharedService.updateFormValues(values);
+    // this.sharedService.updateFormValues(values);
     // Add your logic here
   }
 
+   convertToArray(obj:any) {
+    const result:any = [];
+    Object.values(obj).forEach((array:any) => {
+        array.forEach((item:any) => {
+            result.push({ label: item.name + item.designator, value: item.id });
+        });
+    });
+    return result;
+};
+
   // Triggered on select change, optional for individual selects
-  onValueChange(event: Event): void {
-    const formValues = this.Airform.value;
-    this.sharedService.updateFormValues(formValues);
+  // onValueChange(event: Event,dropdownName:string): void {
+  //   switch(dropdownName){
+  //     case 'airport':
+  //       {
+  //         this.pansopsService.getRunways(this.selectedAirport.toString()).subscribe(response=>{
+  //           const transformesRunways = response.map((runway:any) => ({
+  //             value: runway.id,
+  //             label: runway.designation
+  //         }));
+  //         this.optionRunway=transformesRunways;
+  //         this.sharedService.setRunwayData(response);
+  //        })
+  //       break;
+  //        }
+        
+  //     case 'runway':{
+  //       this.pansopsService.getProcedureTypes(this.selectedAirport.toString(),this.selectedRunway.toString()).subscribe(response=>{
+  //         const transformesType = response.map((type:any) => ({
+  //           value: type,
+  //           label: type
+  //       }));
+  //       this.optionProviderType=transformesType;
+  //      })
+  //     break;
+  //     }
+  //     case 'typeOfProcedure':{
+  //       this.pansopsService.getProcedureNames(this.selectedAirport.toString(),this.selectedRunway.toString(),this.selectedTypeofProcedure.toString(),{
+  //         "airport_icao": "VOBL",
+  //            "rwy_dir":"09L",
+  //            "type": ["SID","STAR","APCH"],
+  //            "airac_id":"123e4567-e89b-12d3-a456-426614174000"
+  //        }).subscribe(response=>{
+  //       response= this.convertToArray(response)
+  //       this.procedureNames=response;
+  //      })
+  //       // procedureNames
+  //       break;
+  //     }
+  //       case 'procedureName':{
+  //         this.pansopsService.getProcedure({
+  //           "procedure_id":["1","306"]
+  //           }).subscribe(response=>{
+  //             this.sharedService.setProcedureData(response);
+  //           })
+  //         break;
+  //       }
+  //   }
+  //   const formValues = this.Airform.value;
+  //   this.sharedService.updateFormValues(formValues);
+  // }
+
+
+  onValueChange(event: Event,dropdownName:string): void {
+    const target = event.target as HTMLInputElement; // Narrowing event.target type
+
+  if (!target) {
+    return; // Early return if the target is null
+  }
+    switch(dropdownName){
+      case 'airport':
+        {
+          this.optionRunway=[];
+          this.selectedRunway=[];
+          this.optionProviderType=[];
+          this.selectedTypeofProcedure=[];
+          this.procedureNames=[];
+          this.selectedProcedureName=[];
+          this.selectedProcedureNameShow=[];
+          this.previousSelectedProcedure=[];
+          this.previousSelectedTypeofProcedure=[];
+          this.selectedOptionstoshow=[];
+          this.Airform.patchValue({
+            
+            selectedRunway: [],
+            selectedTypeofProcedure: [],
+            selectedProcedureName: [],
+          });
+
+          this.pansopsService.getRunways(this.selectedAirport.toString()).subscribe(response=>{
+            const transformesRunways = response.map((runway:any) => ({
+              value: runway.id,
+              label: runway.designation
+          }));
+          this.optionRunway=transformesRunways;
+          this.sharedService.setRunwayData(response);
+         })
+         const formValues = this.Airform.value;
+          this.sharedService.updateFormValues(formValues);
+        break;
+         }
+        
+      case 'runway':{
+        this.optionProviderType=[];
+          this.selectedTypeofProcedure=[];
+          this.procedureNames=[];
+          this.selectedProcedureName=[];
+          this.selectedProcedureNameShow=[];
+          this.previousSelectedProcedure=[];
+          this.previousSelectedTypeofProcedure=[];
+          this.selectedOptionstoshow=[];
+          this.Airform.patchValue({
+            selectedTypeofProcedure: [],
+            selectedProcedureName: [],
+          });
+        this.pansopsService.getProcedureTypes(this.selectedAirport.toString(),this.selectedRunway.toString()).subscribe(response=>{
+          const transformesType = response.map((type:any) => ({
+            value: type,
+            label: type
+        }));
+        this.optionProviderType=transformesType;
+       })
+       const formValues = this.Airform.value;
+      this.sharedService.updateFormValues(formValues);
+      break;
+      }
+      case 'typeOfProcedure':{
+        this.selectedOptionstoshow=[];
+        const selectedOptions = this.Airform.get('selectedTypeofProcedure')?.value || [];
+  
+    if (target.checked) {
+      // Add selected value
+      selectedOptions.push(target.value);
+      this.selectedTypeofProcedure.push(target.value);
+    } else {
+      // Remove deselected value
+      const index = selectedOptions.indexOf(target.value);
+      if (index > -1) {
+        selectedOptions.splice(index, 1);
+        this.selectedTypeofProcedure.splice(index, 1);
+      }
+    }
+  
+    // Update the form control with new selected options
+    this.Airform.get('selectedTypeofProcedure')?.setValue(selectedOptions);
+
+
+      //   this.pansopsService.getProcedureNames(this.selectedAirport.toString(),this.selectedRunway.toString(),this.selectedTypeofProcedure.toString(),{
+      //     "airport_icao": "VOBL",
+      //        "rwy_dir":"09L",
+      //        "type": ["SID","STAR","APCH"],
+      //        "airac_id":"123e4567-e89b-12d3-a456-426614174000"
+      //    }).subscribe(response=>{
+      //   response= this.convertToArray(response)
+        
+      //   this.procedureNames=response;
+      //   console.log(this.procedureNames,"this.procedureNames")
+      //  })
+        // procedureNames
+        const formValues = this.Airform.value;
+        this.sharedService.updateFormValues(formValues);
+        break;
+      }
+        case 'procedureName':{
+          const selectedOptions = this.Airform.get('selectedProcedureName')?.value || [];
+  
+          if (target.checked) {
+            // Add selected value
+            selectedOptions.push(target.value);
+            this.selectedProcedureName.push(target.value);
+            const name:any = this.procedureNames.find(procedure => procedure.value == target.value);
+            if(name){
+             this.selectedProcedureNameShow.push(name.label);
+            }
+          } else {
+            // Remove deselected value
+            const index = selectedOptions.indexOf(target.value);
+            if (index > -1) {
+              selectedOptions.splice(index, 1);
+              this.selectedProcedureName.splice(index, 1);
+              this.selectedProcedureNameShow.splice(index, 1);
+            }
+          }
+        
+          // Update the form control with new selected options
+          this.Airform.get('selectedProcedureName')?.setValue(selectedOptions);
+
+          
+          // this.pansopsService.getProcedure({
+          //   "procedure_id":["1"]
+          //   }).subscribe(response=>{
+          //     console.log(response,"HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH")
+          //   })
+          
+          break;
+        }
+
+    }
+    // const formValues = this.Airform.value;
+    // this.sharedService.updateFormValues(formValues);
   }
 
 
@@ -417,17 +711,13 @@ export class SidebarComponent {
   }
 
   watchAirportChanges(): void {
-    this.Airform.get('selectedAirport')?.valueChanges.subscribe((selectedAirport: string[]) => {
+       this.Airform.get('selectedAirport')?.valueChanges.subscribe((selectedAirport: string[]) => {
       // Clear all runway and procedure options when the selected airport changes
       this.optionsBengaluruKIARunway = [];
       this.optionsVIJPJAIPURRunway = [];
       this.optionsVEPYPAKYONGRunway = [];
       this.optionsRWY_09LTypeofProcedure = [];
       this.selectedTypeofProcedure = [];
-
-
-
-
       // Check if VOBL/Bengaluru (KIA) is selected
       if (selectedAirport.includes('VOBL/Bengaluru (KIA)')) {
 
@@ -1079,7 +1369,7 @@ toggleExpand() {
   if(!this.isExpanded){
       this.cropData=[this.flightData[0]];
   }else{
-      this.cropData = [...this.cropData,...this.flightData]
+      this.cropData = [...this.flightData]
   }
 
   this.isExpanded = !this.isExpanded;
@@ -1092,28 +1382,93 @@ onToggleChange(event: any) {
  
   if (event.target.checked) {
    this.isAIXM=true;
-   
+   this.procedureAixmTable(this.procedureResponse)
   } else {
     this.isAIXM=false;
 
   }
 }
 
-toggleSelection(item: string, part: string, index: number): void {
+
+procedureAixmTable(resp:any){
+  let flghtData = [];
+  for (let key in resp) {
+    if (resp.hasOwnProperty(key)) {
+      console.log(`Key: ${key}`);
+      let row: any[] = []
+      for (let i = 0; i < resp[key]['waypoints'].length; i++) {
+        const tempRow = resp[key]['waypoints'][i];
+        let temp = {
+          waypointIdentifier: "",
+          pathDescriptor: "",
+          flyOver: "",
+          courseAngle: "",
+          turnDirection: "",
+          upperLimitAltitude: "",
+          lowerLimitAltitude: "",
+          speedLimit: "",
+          tmDst: "",
+          va: "",
+          navigationSpecification: ""
+        }
+        temp.waypointIdentifier = tempRow.waypoint && Object.keys(tempRow.waypoint).length ? tempRow.waypoint['name'] || "-" : "-";
+        temp.pathDescriptor = tempRow.path_descriptor ? tempRow.path_descriptor : "-";
+        temp.flyOver = tempRow.fly_over ? tempRow.fly_over : "-";
+        temp.turnDirection = tempRow.turn_dir ? tempRow.turn_dir : "-";
+        temp.upperLimitAltitude = tempRow.altitude_ul ? tempRow.altitude_ul : "-";
+        temp.lowerLimitAltitude = tempRow.altitude_ll ? tempRow.altitude_ll : "-";
+        temp.speedLimit = tempRow.speed_limit ? tempRow.speed_limit : "-";
+        temp.tmDst = tempRow.dst_time ? tempRow.dst_time : "-";
+        temp.va = tempRow.vpa_tch ? tempRow.vpa_tch : "-";
+        temp.navigationSpecification = tempRow.nav_spec ? tempRow.nav_spec : "-";
+        temp.courseAngle = tempRow.course_angle ? tempRow.course_angle : '-';
+        row.push(temp)
+      }
+      let tempObj = {
+        'title': key,
+        'columns': [
+          "Waypoint Identifier",
+          "Path Descriptor",
+          "Fly Over",
+          "Course Angle °M(°T)",
+          "Turn Direction",
+          "Upper Limit Altitude ft",
+          "Lower Limit Altitude ft",
+          "Speed Limit kt",
+          "TM DST NM",
+          "VA",
+          "Navigation specification"
+        ],
+        'rows': row
+      }
+      flghtData.push(tempObj)
+    }
+  
+  }
+  // console.log('fffff', flghtData)
+  this.flightData = flghtData
+  this.cropData = [this.flightData[0]]
+}
+
+toggleSelection(item: string, part: string, index: number,value:any): void {
+  const selectedOptions = this.Airform.get('selectedProcedureName')?.value || [];
+
   const uniqueId = `${item}-${part}-${index}`; // Create unique identifier for the item
 
   const selectedIndex = this.selectedOptions.indexOf(uniqueId);
   if (selectedIndex === -1) {
     // Item is not selected, so add it
+    selectedOptions.push(value);
     this.selectedOptions.push(uniqueId);
     this.selectedOptionstoshow.push(item);
   } else {
     // Item is already selected, so remove it
+    selectedOptions.splice(selectedIndex, 1);
     this.selectedOptions.splice(selectedIndex, 1);
     this.selectedOptionstoshow.splice(selectedIndex,1);
   }
-
-  console.log(this.selectedOptions);
+  this.Airform.get('selectedProcedureName')?.setValue(selectedOptions);
+  console.log('this.airf  ',this.Airform);
 }
 
 // Function to check if an item is selected
@@ -1123,16 +1478,77 @@ isSelected(item: string, part: string, index: number): boolean {
 }
 
 toggleDropdown(): void {
+  console.log('clickkk...');
   this.isDropdownVisible = !this.isDropdownVisible;
-}
+  
+    const formValues = this.Airform.value;
 
+  if(!this.areArraysEqual(formValues['selectedProcedureName'], this.previousSelectedProcedure)){ 
+    console.log('huhu ',formValues);
+    this.sharedService.updateFormValues(formValues);
+    this.sharedService.setProcedureData(formValues['selectedProcedureName']);
+    this.getProcedure();
+    this.previousSelectedProcedure = [...formValues['selectedProcedureName']];
+
+  }
+}
 @HostListener('document:click', ['$event'])
   handleOutsideClick(event: Event): void {
+    
     const target = event.target as HTMLElement;
     const clickedInside = target.closest('.select');
 
     if (!clickedInside) {
-      this.isDropdownVisible = false; // Hide the dropdown if clicked outside
+      this.isDropdownVisible = false; 
+      if (this.isProcedureName) {
+        this.isProcedureName = false; 
+        if(!this.areArraysEqual(this.selectedProcedureName, this.previousSelectedProcedure)){
+        this.getProcedure();
+        this.previousSelectedProcedure = [...this.selectedProcedureName];
+        const formValues = this.Airform.value;
+        this.sharedService.updateFormValues(formValues);
+        }
+      }
+      if(this.isProcedureType){
+        this.isProcedureType = false;
+        if (!this.areArraysEqual(this.selectedTypeofProcedure, this.previousSelectedTypeofProcedure)) {
+          this.procedureNames=[];
+          this.selectedProcedureName=[];
+          this.selectedProcedureNameShow=[];
+          this.previousSelectedProcedure=[];
+          this.Airform.patchValue({
+            selectedProcedureName: [],
+          });
+
+        if(this.selectedAirac==='compare'){
+          console.log('compare outside...');
+          console.log(this.airacs)
+          const airacValues:any[]=  this.airacs.filter((ele:any)=>ele.status!=="compare")||[];
+          this.pansopsService.getProcedureCompareDetails(
+            {
+              "action":"list_procedures",
+              "airport_icao": this.Airform.get('selectedAirport')?.value,
+             "rwy_dir":this.Airform.get('selectedRunway')?.value,
+             "type": this.Airform.get('selectedTypeofProcedure')?.value,
+             "airacs":[airacValues[0].id,airacValues[1].id]
+         }
+          ).subscribe((res)=>{
+               this.sharedService.setCompareAiracInfo(res);
+               this.compareAiracValues=res;
+               this.compareResponse(res)
+          })
+        }else{
+          this.getProcedureNames();
+        }
+        this.previousSelectedTypeofProcedure = [...this.selectedTypeofProcedure];
+        const formValues = this.Airform.value;
+        this.sharedService.updateFormValues(formValues);
+        }
+      }
+      if(this.selectedAirac==='compare'  ){
+          this.toggleDropdown();
+          this.isDropdownVisible = false;
+      }
     }
   }
 
@@ -1161,5 +1577,95 @@ toggleDropdown(): void {
       }
     }
     return newRow;
+  }
+
+  toggleCheckbox(option: any, dropdownName: string): void {
+    const isChecked = this.getCheckedStatus(option, dropdownName); 
+    const event = {
+      target: {
+        value: option,
+        checked: !isChecked
+      }
+    } as unknown as Event; 
+    this.onValueChange(event, dropdownName);
+  }
+
+
+  getCheckedStatus(optionValue: string, dropdownName: string): boolean {
+    if (dropdownName === 'typeOfProcedure') {
+      return this.isChecked(optionValue);  
+    } else if (dropdownName === 'procedureName') {
+      return this.isChecked2(optionValue);  
+    }
+    return false; 
+  }
+  
+  isChecked(optionValue: string): boolean {
+    return this.Airform.get('selectedTypeofProcedure')?.value.includes(optionValue);
+  }
+  isChecked2(optionValue: string): boolean {
+    return this.Airform.get('selectedProcedureName')?.value.includes(optionValue);
+  }
+  
+  getProcedureNames(){
+    this.pansopsService.getProcedureNames(this.selectedAirport.toString(),this.selectedRunway.toString(),this.selectedTypeofProcedure.toString(),{
+      "airport_icao": this.Airform.get('selectedAirport')?.value,
+         "rwy_dir":this.Airform.get('selectedRunway')?.value,
+         "type": this.Airform.get('selectedTypeofProcedure')?.value,
+     }).subscribe(response=>{
+    response= this.convertToArray(response)
+    
+    this.procedureNames=response;
+   })
+  }
+
+  getProcedure(){
+    this.pansopsService.getProcedure({
+      "procedure_id":this.Airform.get('selectedProcedureName')?.value
+      }).subscribe(response=>{
+          this.sharedService.setProcedureData(response)
+         this.procedureResponse=response;
+      })
+  }
+  
+   areArraysEqual(arr1: any[], arr2: any[]): boolean {
+    if (arr1.length !== arr2.length) return false;
+    for (let i = 0; i < arr1.length; i++) {
+      if (arr1[i] !== arr2[i]) return false;
+    }
+    return true;
+  }
+
+  toggledropdown(event: Event, dropmenu:any){
+
+    switch(dropmenu){
+      case "type":
+        event.stopPropagation();
+        this.isProcedureType = !this.isProcedureType;
+        if (!this.areArraysEqual(this.selectedTypeofProcedure, this.previousSelectedTypeofProcedure)) {
+          this.procedureNames=[];
+          this.selectedProcedureName=[];
+          this.previousSelectedProcedure=[];
+          this.selectedProcedureNameShow=[];
+          this.Airform.patchValue({
+            selectedProcedureName: [],
+          });
+        this.getProcedureNames();
+        this.previousSelectedTypeofProcedure = [...this.selectedTypeofProcedure];
+        const formValues = this.Airform.value;
+        this.sharedService.updateFormValues(formValues);
+        }
+        break;
+      case "name":
+        event.stopPropagation();
+        this.isProcedureName = !this.isProcedureName;
+        if(!this.areArraysEqual(this.selectedProcedureName, this.previousSelectedProcedure)){
+          this.getProcedure();
+          this.previousSelectedProcedure = [...this.selectedProcedureName];
+          const formValues = this.Airform.value;
+          this.sharedService.updateFormValues(formValues);
+        }
+        break;
+    }
   }
 }

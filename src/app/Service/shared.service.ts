@@ -34,4 +34,39 @@ export class SharedService {
   updateSideBar(content: any) {
     this.updateSidebar.next(content);
   }
+
+
+  private airportSubject = new BehaviorSubject<any>(null);
+  private runwaySubject = new BehaviorSubject<any>(null);
+  private procedureSubject = new BehaviorSubject<any>(null);
+  private AiracSubject = new BehaviorSubject<any>(null);
+  private CompareAiracSubject = new BehaviorSubject<any>(null);
+
+
+
+
+  airport$ = this.airportSubject.asObservable();
+  runway$ = this.runwaySubject.asObservable();
+  procedure$ = this.procedureSubject.asObservable();
+  airac$=this.AiracSubject.asObservable();
+  compareAirac$=this.CompareAiracSubject.asObservable();
+
+
+  setAirportData(data: any) {
+    this.airportSubject.next(data);
+  }
+  setRunwayData(data: any) {
+    this.runwaySubject.next(data);
+  }
+  setProcedureData(data: any) {
+    this.procedureSubject.next(data);
+  }
+
+  setAiracInfo(data:any){
+    this.AiracSubject.next(data);
+  }
+
+  setCompareAiracInfo(data:any){
+    this.CompareAiracSubject.next(data);
+  }
 }

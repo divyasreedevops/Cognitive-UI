@@ -19,7 +19,7 @@
         <ng-container *ngIf="navInfo.isFilterActive">
         <div class="custom-dropdown">
             <select [(ngModel)]="selectedOption" class="dropdown-select" (change)="sendDropdownOption()">
-                <option *ngFor="let option of dropdownOptions" [value]="option">{{ option }}</option>
+                <option *ngFor="let option of dropdownOptions" [value]="option.id">{{ option.process_name }}</option>
             </select>
         </div>
     
