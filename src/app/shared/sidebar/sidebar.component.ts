@@ -417,6 +417,7 @@ export class SidebarComponent {
           this.selectedProcedureNameShow=[];
           this.previousSelectedProcedure=[];
           this.previousSelectedTypeofProcedure=[];
+          this.selectedOptionstoshow=[];
           this.Airform.reset({
             selectedAirport: [],
             selectedRunway: [],
@@ -572,6 +573,7 @@ export class SidebarComponent {
           this.selectedProcedureNameShow=[];
           this.previousSelectedProcedure=[];
           this.previousSelectedTypeofProcedure=[];
+          this.selectedOptionstoshow=[];
           this.Airform.patchValue({
             
             selectedRunway: [],
@@ -600,6 +602,7 @@ export class SidebarComponent {
           this.selectedProcedureNameShow=[];
           this.previousSelectedProcedure=[];
           this.previousSelectedTypeofProcedure=[];
+          this.selectedOptionstoshow=[];
           this.Airform.patchValue({
             selectedTypeofProcedure: [],
             selectedProcedureName: [],
@@ -616,7 +619,7 @@ export class SidebarComponent {
       break;
       }
       case 'typeOfProcedure':{
-
+        this.selectedOptionstoshow=[];
         const selectedOptions = this.Airform.get('selectedTypeofProcedure')?.value || [];
   
     if (target.checked) {
@@ -1479,10 +1482,15 @@ toggleDropdown(): void {
   this.isDropdownVisible = !this.isDropdownVisible;
   
     const formValues = this.Airform.value;
+
+  if(!this.areArraysEqual(formValues['selectedProcedureName'], this.previousSelectedProcedure)){ 
     console.log('huhu ',formValues);
     this.sharedService.updateFormValues(formValues);
     this.sharedService.setProcedureData(formValues['selectedProcedureName']);
-    this.getProcedure()
+    this.getProcedure();
+    this.previousSelectedProcedure = [...formValues['selectedProcedureName']];
+
+  }
 }
 @HostListener('document:click', ['$event'])
   handleOutsideClick(event: Event): void {
@@ -1536,6 +1544,10 @@ toggleDropdown(): void {
         const formValues = this.Airform.value;
         this.sharedService.updateFormValues(formValues);
         }
+      }
+      if(this.selectedAirac==='compare'  ){
+          this.toggleDropdown();
+          this.isDropdownVisible = false;
       }
     }
   }
