@@ -731,7 +731,7 @@ if (match) {
 }
 
   createGeoJsonPointObject=(procedures:any,procedureName:any="sid")=>{
-
+ console.log(procedures,"proceduresprocedures ")
 
     var  featureCollection: GeoJSON.FeatureCollection<GeoJSON.Point>= {
       "type": "FeatureCollection",
@@ -756,6 +756,8 @@ featureCollection.features.push( { "type": "Feature", "properties": { "Name": "I
 
         }
 
+
+        console.log(procedures,"kjsdbcnsdbhdnejehuiervrb")
         
             procedures.waypoints.map((ele:any,index:number)=>{
               var coordinates:number[];
@@ -796,6 +798,7 @@ featureCollection.features.push( { "type": "Feature", "properties": { "Name": "I
 
   updateLayers(): void {
   // Clear existing layers
+
   this.airportLayerGroup.clearLayers();
     const loadSIDProcedure = async (procedureName: string[])=>{
       if(this.Airform.get('selectedRunway')?.value.length!==0){
@@ -846,9 +849,9 @@ featureCollection.features.push( { "type": "Feature", "properties": { "Name": "I
                }
              });
              const activeAirac=    this.airacs.find((ele:any)=>ele.status==="active");
-         
+             console.log(this.Airform.get('selectedProcedureName')?.value,"this.Airform.get('selectedProcedureName')?.value")
              this.Airform.get('selectedProcedureName')?.value.map((ele:string)=>{
-              console.log(this.multipleProcedure,' ', ele);
+              console.log(this.multipleProcedure,"this.multipleProcedure[ele]")
               if(this.multipleProcedure[ele]){
               if(this.multipleProcedure[ele].type==="APCH"){
                 const result = [];

@@ -1482,7 +1482,7 @@ toggleDropdown(): void {
     console.log('huhu ',formValues);
     this.sharedService.updateFormValues(formValues);
     this.sharedService.setProcedureData(formValues['selectedProcedureName']);
-  
+    this.getProcedure()
 }
 @HostListener('document:click', ['$event'])
   handleOutsideClick(event: Event): void {
