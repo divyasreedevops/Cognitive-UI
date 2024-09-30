@@ -624,10 +624,20 @@ const newLon = referenceLon + deltaLon;
   }
 
 
-  getDistance=(altitude:any)=>{
-    // altitude-(threelev)-16
+  getDistance=(altitude:any,selectedRunway:any)=>{
     
-    const distance =((altitude/200)*1852);
+    // altitude-(threelev)-16
+const text = selectedRunway.end_thres_elevation;
+const regex = /THR:\s*(\d+)/;
+const match = text.match(regex);
+
+if (match) {
+    console.log(match[1],"&&&&&&&&&&&&&&&&&&&&&&&"); // Output: '702'
+} else {
+    console.log('No match found');
+}
+    const distance =(((altitude-parseInt(match[1])-16)/200)*1852);
+    console.log(distance,"distancedistancedistance")
     return distance;
   }
 
@@ -735,6 +745,8 @@ const newLon = referenceLon + deltaLon;
          ]
         }
 
+        const selectedRunwayDetails= this.runways.find((ele:any)=>ele.designation===this.Airform.get('selectedRunway')?.value);
+      console.log(selectedRunwayDetails)
         if(procedures.type==="SID"){
 /**
            * @todo need to consider end point
@@ -750,7 +762,7 @@ featureCollection.features.push( { "type": "Feature", "properties": { "Name": "I
                 if(ele.path_descriptor==='VA' || ele.path_descriptor==='CA' || ele.path_descriptor==='FA')
                 {
                   const prevCoordinates=featureCollection.features[featureCollection.features.length-1].geometry.coordinates;
-                  const distance=this.getDistance( parseInt(ele.altitude_ll))
+                  const distance=this.getDistance( parseInt(ele.altitude_ll),selectedRunwayDetails)
                   coordinates  =  this.vinc( prevCoordinates[0],prevCoordinates[1],ele.course_angle,distance,false)
                   featureCollection.features.push(
                      { "type": "Feature", "properties": { "Name":  ele.waypoint_id,  "Speed": "", "Altitude": ele.altitude_ll }, "geometry": { "type": "Point", "coordinates":coordinates } }

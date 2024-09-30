@@ -424,7 +424,7 @@ export class SidebarComponent {
             selectedProcedureName: [],
           });
       switch(option){
-        case 'Compare':
+        case 'compare':
           this.isCompare=true;
           break;
         case 'AIRAC 2402':
