@@ -424,7 +424,7 @@ export class SidebarComponent {
             selectedProcedureName: [],
           });
       switch(option){
-        case 'Compare':
+        case 'compare':
           this.isCompare=true;
           break;
         case 'AIRAC 2402':
@@ -1447,20 +1447,25 @@ procedureAixmTable(resp:any){
   this.cropData = [this.flightData[0]]
 }
 
-toggleSelection(item: string, part: string, index: number): void {
+toggleSelection(item: string, part: string, index: number,value:any): void {
+  const selectedOptions = this.Airform.get('selectedProcedureName')?.value || [];
+
   const uniqueId = `${item}-${part}-${index}`; // Create unique identifier for the item
 
   const selectedIndex = this.selectedOptions.indexOf(uniqueId);
   if (selectedIndex === -1) {
     // Item is not selected, so add it
+    selectedOptions.push(value);
     this.selectedOptions.push(uniqueId);
     this.selectedOptionstoshow.push(item);
   } else {
     // Item is already selected, so remove it
+    selectedOptions.splice(selectedIndex, 1);
     this.selectedOptions.splice(selectedIndex, 1);
     this.selectedOptionstoshow.splice(selectedIndex,1);
   }
-
+  this.Airform.get('selectedProcedureName')?.setValue(selectedOptions);
+  console.log('this.airf  ',this.Airform);
 }
 
 // Function to check if an item is selected
@@ -1470,7 +1475,12 @@ isSelected(item: string, part: string, index: number): boolean {
 }
 
 toggleDropdown(): void {
+  console.log('clickkk...');
   this.isDropdownVisible = !this.isDropdownVisible;
+  if(!this.isDropdownVisible){
+    const formValues = this.Airform.value;
+    this.sharedService.updateFormValues(formValues);
+  }
 }
 @HostListener('document:click', ['$event'])
   handleOutsideClick(event: Event): void {
@@ -1501,6 +1511,7 @@ toggleDropdown(): void {
           });
 
         if(this.selectedAirac==='compare'){
+          console.log('compare outside...');
           console.log(this.airacs)
           const airacValues:any[]=  this.airacs.filter((ele:any)=>ele.status!=="compare")||[];
           this.pansopsService.getProcedureCompareDetails(
