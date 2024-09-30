@@ -43,7 +43,7 @@
 import { Component, AfterViewInit } from '@angular/core';
 import * as L from 'leaflet';
 import { Location } from '@angular/common';
-import { SharedService } from 'src/app/Service/shared.service';
+import { SharedService } from 'src/app/service/shared.service';
 import { Router } from '@angular/router';
 
 @Component({

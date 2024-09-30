@@ -36,7 +36,7 @@ import { WxmComponent } from './shared/wxm/wxm.component';
 import { SidebarComponent } from './shared/sidebar/sidebar.component';
 import { MultimapComponent } from './shared/multimap/multimap.component';
 import { VideoClipComponent } from './airlineopsmanager/videoclip/clip.component';
-import { SharedService } from 'src/app/Service/shared.service';
+import { SharedService } from 'src/app/service/shared.service';
 import { AuthInterceptor } from './interceptor/auth.interceptor';
 
 @NgModule({
