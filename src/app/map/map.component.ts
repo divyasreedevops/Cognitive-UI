@@ -848,6 +848,8 @@ featureCollection.features.push( { "type": "Feature", "properties": { "Name": "I
              const activeAirac=    this.airacs.find((ele:any)=>ele.status==="active");
          
              this.Airform.get('selectedProcedureName')?.value.map((ele:string)=>{
+              console.log(this.multipleProcedure,' ', ele);
+              if(this.multipleProcedure[ele]){
               if(this.multipleProcedure[ele].type==="APCH"){
                 const result = [];
                 let currentGroup:any[] = [];
@@ -892,7 +894,7 @@ featureCollection.features.push( { "type": "Feature", "properties": { "Name": "I
                   this.plotProcedures(this.multipleProcedure[ele],geoLayer,"black")
                 }
               }
-          
+            }
              })
 
          }

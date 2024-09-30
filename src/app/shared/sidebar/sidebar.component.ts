@@ -1477,10 +1477,12 @@ isSelected(item: string, part: string, index: number): boolean {
 toggleDropdown(): void {
   console.log('clickkk...');
   this.isDropdownVisible = !this.isDropdownVisible;
-  if(!this.isDropdownVisible){
+  
     const formValues = this.Airform.value;
+    console.log('huhu ',formValues);
     this.sharedService.updateFormValues(formValues);
-  }
+    this.sharedService.setProcedureData(formValues['selectedProcedureName']);
+  
 }
 @HostListener('document:click', ['$event'])
   handleOutsideClick(event: Event): void {
