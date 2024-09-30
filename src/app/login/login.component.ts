@@ -29,7 +29,7 @@ export class LoginComponent implements OnInit {
       this.authService.login({
         "email":this.LogInForm.value.email,
         "password":this.LogInForm.value.password
-    }).subscribe((data)=>{
+    }).subscribe((data:any)=>{
       localStorage.setItem('token',data.token);
       this.router.navigate(['opsmanager']);
       })

@@ -1,5 +1,5 @@
 <div class="outer-hold">
-    <div class="side-container" [@slideInOut]="isCollapsed ? 'in' : 'out'">
+    <div class="side-container" [ngClass]="{'collapsed': isCollapsed}">
         <div class="tab-toggel" [ngClass]="{'displayEnd': !isMultiMapView || isCollapsed , 'displayBetween': isMultiMapView && !isCollapsed }">
             <div class="arrow-hold" *ngIf="!isCollapsed && isMultiMapView">
                 <mat-icon (click)="navigateToMultiMap()">west</mat-icon>

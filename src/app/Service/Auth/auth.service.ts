@@ -11,6 +11,8 @@ export class AuthService {
   private apiUrl = Baseurl; 
 
   constructor(private http: HttpClient) {}
+
+  
   login(data: any): Observable<any> {
     const headers = new HttpHeaders({'Content-Type': 'application/json'});
     const url=`${this.apiUrl}${Auth.login}`;
