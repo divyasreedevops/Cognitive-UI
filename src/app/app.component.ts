@@ -63,7 +63,7 @@ export class AppComponent {
         navBtn:[],
         navTitle:'AIRLINE OPS MANAGER'
       };
-    }else if(this.currentRoute === '/videoclip' || this.currentRoute === '/ADM'){
+    }else if(this.currentRoute === '/videoclip' || this.currentRoute === '/ADM' || this.currentRoute === '/NOTAM-Management'){
       
       
 

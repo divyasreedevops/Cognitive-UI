@@ -138,6 +138,68 @@ export class SidebarComponent {
   selectedOptions: string[] = [];
   selectedOptionstoshow: string[] = [];
   isDropdownVisible = false;
+  isNotamTable=false;
+  isminNotam=false;
+  filters = [
+    {
+      name: 'FIR',
+      allOptionsChecked: false,
+      isOpen: false, // To track dropdown open/close
+      options: [
+        { name: 'Option 1', checked: false },
+        { name: 'Option 2', checked: false },
+        { name: 'Option 3', checked: false },
+      ],
+      fliterSelectedOptions: [],
+    },
+    {
+      name: 'Airports',
+      allOptionsChecked: false,
+      isOpen: false,
+      options: [
+        { name: 'Option 1', checked: false },
+        { name: 'Option 2', checked: false },
+        { name: 'Option 3', checked: false },
+      ],
+      fliterSelectedOptions: [],
+    },
+    {
+      name: 'Closure',
+      allOptionsChecked: false,
+      isOpen: false,
+      options: [
+        { name: 'Option 1', checked: false },
+        { name: 'Option 2', checked: false },
+        { name: 'Option 3', checked: false },
+      ],
+      fliterSelectedOptions: [],
+    },
+    {
+      name: 'Facility Downgrade',
+      allOptionsChecked: false,
+      isOpen: false,
+      options: [
+        { name: 'Option 1', checked: false },
+        { name: 'Option 2', checked: false },
+        { name: 'Option 3', checked: false },
+      ],
+      fliterSelectedOptions: [],
+    },
+    {
+      name: 'Airspace/ENR',
+      allOptionsChecked: false,
+    },
+    {
+      name: 'ATC Watch Hours',
+      allOptionsChecked: false,
+    },
+    {
+      name: 'Enter Your ATS Plan',
+      allOptionsChecked: false
+    }
+
+  ];
+
 
   constructor(
     private sharedService: SharedService,
@@ -397,7 +459,12 @@ export class SidebarComponent {
       this.isMultiMapView = false;
     }
 
-    
+    if(route === '/NOTAM-Management'){
+      this.isNotamTable=true;
+    }else{
+      this.isNotamTable=false;
+    }
+
 
     this.Airform = this.formbuilder.group({
       selectedAirport: [[]],
@@ -1667,5 +1734,37 @@ toggleDropdown(): void {
         }
         break;
     }
+  }
+
+  selectAllOption(field: any) {
+    field.allOptionsChecked = !field.allOptionsChecked
+    for (let element in field.options) {
+      field.options[element]['checked'] = field.allOptionsChecked;
+    }
+    if (field.allOptionsChecked) {
+      field.fliterSelectedOptions = ['Option 1', 'Option 2', 'Option 3']
+    } else {
+      field.fliterSelectedOptions = []
+    }
+  }
+
+  toggleOption(filter: any, option: any) {
+    if (filter.options) {
+      option.checked = !option.checked;
+      if (option.checked) {
+        filter.fliterSelectedOptions.push(option.name)
+      }
+      else {
+        filter.fliterSelectedOptions = filter.fliterSelectedOptions.filter((item: any) => item !== option.name);
+      }
+    }
+    else {
+      filter.checked = !filter.checked
+    }
+  }
+
+  minimize(event:any){
+    this.isNotamTable = !this.isNotamTable;
+    this.isminNotam = !this.isminNotam;
   }
 }

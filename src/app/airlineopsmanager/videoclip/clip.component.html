@@ -4,10 +4,14 @@
     <div><img src="/assets/images/background.jpg" alt="Image 3" /></div>
     <div><img src="/assets/images/background.jpg" alt="Image 4" /></div>
 </div> -->
-<div class="full-screen-image-grid">
+<div class="full-screen-image-grid" *ngIf="activeTab === 'ADM'">
     <img src="assets/images/1.jpg" alt="Image 1">
     <img src="assets/images/2.jpg" alt="Image 2">
     <img src="assets/images/3.jpg" alt="Image 3">
     <img src="assets/images/4.jpg" alt="Image 4">
   </div>
   
+  <div class="fullscreen" *ngIf="activeTab === 'NOTAM Management'">
+    <img class="background" src="assets/images/2.jpg" alt="Image 2">
+         <img class="notamimg" src="assets/icons/notam.png">
+  </div>

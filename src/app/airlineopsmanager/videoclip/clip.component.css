@@ -17,3 +17,19 @@
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Optional: adds shadow */
   overflow: hidden;
 }
+.fullscreen{
+  width: 100vw;
+  height: 100vh;
+  position: relative;
+}
+.background{
+  width: 100vw;
+  height: 100vh;
+  position: absolute;
+}
+.notamimg{
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}

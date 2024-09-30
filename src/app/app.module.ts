@@ -38,7 +38,7 @@ import { MultimapComponent } from './shared/multimap/multimap.component';
 import { VideoClipComponent } from './airlineopsmanager/videoclip/clip.component';
 import { SharedService } from 'src/app/service/shared.service';
 import { AuthInterceptor } from './interceptor/auth.interceptor';
-
+import { NotamTableComponent } from './shared/notam-table/notam-table.component';
 @NgModule({
     declarations: [
         AppComponent,
@@ -55,7 +55,8 @@ import { AuthInterceptor } from './interceptor/auth.interceptor';
         SidebarComponent,
         WxmComponent,
         MultimapComponent,
-        VideoClipComponent
+        VideoClipComponent,
+        NotamTableComponent
     ],
   
     imports: [
