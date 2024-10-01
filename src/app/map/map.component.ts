@@ -83,69 +83,6 @@ export class MapComponent implements OnInit {
   animationInterval: any;
 
 
-
-    procedures=[
-    {
-    procedureaName:'AKTIM 7A',
-    procedure:[
-      {
-        waypointIdentifies:'-',
-        path_descriptor: 'VA',
-        angle:'92.34',
-        altitude:3400,
-        turnDirection:'-',
-        angleReduired:true,
-        distance:""
-        },
-    {
-    waypointIdentifies:'BL402',
-    path_descriptor: 'DF',
-    angle:'-',
-    altitude:3400,
-    angleReduired:false,
-    distance:"",
-    turnDirection:'-'
-    },
-    {
-    waypointIdentifies:'BL403',
-    path_descriptor: 'TF',
-    angle:'183.83',
-    altitude:3400,
-    angleReduired:false,
-    distance:"7.50",
-    turnDirection:'R'
-    },
-    
-    {
-      waypointIdentifies:'BL404',
-      path_descriptor: 'TF',
-      angle:'254.09',
-      altitude:3400,
-      angleReduired:false,
-      distance:"7.50",
-      turnDirection:'R'
-      },
-    {
-    waypointIdentifies:'OMUKA',
-    path_descriptor: 'TF',
-    angle:'189.18',
-    altitude:3400,
-    angleReduired:false,
-    distance:"28.34",
-    turnDirection:'L'
-    },
-    {
-        waypointIdentifies:'AKTIM',
-        path_descriptor: 'TF',
-        angle:'189.06',
-        altitude:3400,
-        angleReduired:false,
-        distance:"28.98",
-        turnDirection:'-'
-        },
-    ]
-    }
-    ]
   toggleMenu() {
     this.menuOpen = !this.menuOpen;
   }
@@ -164,9 +101,7 @@ export class MapComponent implements OnInit {
     const d = Math.floor(absDegrees);
     const m = Math.floor((absDegrees - d) * 60);
     const s = ((absDegrees - d - m / 60) * 3600).toFixed(2); // Keeping two decimal places
-  
     const direction = degrees >= 0 ? (degrees === d ? 'N' : 'E') : (degrees === -d ? 'S' : 'W');
-  
     return `${d}° ${m}' ${s}" ${direction}`;
   }
 
@@ -194,12 +129,8 @@ export class MapComponent implements OnInit {
     snav.toggle();
     this.isSidenavOpen = !this.isSidenavOpen;
   }
-
   mobileQuery!: MediaQueryList;
-
   fillerNav = ['Home', 'Login', 'Join Us'].concat(Array.from({ length: 0 }, (_, i) => ` ${i + 1}`));
-
-
   private _mobileQueryListener: () => void;
   isExpanded = false;
   searchQuery = '';
@@ -252,7 +183,7 @@ export class MapComponent implements OnInit {
       this.runways = runwaysRes;
     });
 
-  
+   
    
 
 
@@ -294,6 +225,37 @@ export class MapComponent implements OnInit {
 
   
 
+  }
+  notamData(){
+    var map = L.map('map').setView([20.5937, 78.9629], 5);
+    var circles = [
+      { lat: 19.0760, lng: 72.8777, radius: 100000, fillColor: 'red', fillOpacity: 0.4 },   // Mumbai
+      { lat: 18.5204, lng: 73.8567, radius: 100000, fillColor: 'yellow', fillOpacity: 0.4 }, // Pune
+      { lat: 21.1702, lng: 72.8311, radius: 100000, fillColor: 'orange', fillOpacity: 0.4 }, // Surat
+      { lat: 21.1458, lng: 79.0882, radius: 100000, fillColor: 'green', fillOpacity: 0.4 },  // Nagpur
+      { lat: 28.7041, lng: 77.1025, radius: 100000, fillColor: 'blue', fillOpacity: 0.4 },   // Delhi
+      { lat: 13.0827, lng: 80.2707, radius: 100000, fillColor: 'purple', fillOpacity: 0.4 }, // Chennai
+      { lat: 22.5726, lng: 88.3639, radius: 100000, fillColor: 'pink', fillOpacity: 0.4 },   // Kolkata
+      { lat: 23.0225, lng: 72.5714, radius: 100000, fillColor: 'cyan', fillOpacity: 0.4 },   // Ahmedabad
+      { lat: 26.8467, lng: 80.9462, radius: 100000, fillColor: 'magenta', fillOpacity: 0.4 },// Lucknow
+      { lat: 12.9716, lng: 77.5946, radius: 100000, fillColor: 'lime', fillOpacity: 0.4 },   // Bangalore
+      { lat: 15.2993, lng: 74.1240, radius: 100000, fillColor: 'teal', fillOpacity: 0.4 },   // Goa
+      { lat: 17.3850, lng: 78.4867, radius: 100000, fillColor: 'brown', fillOpacity: 0.4 },  // Hyderabad
+      { lat: 9.9312, lng: 76.2673, radius: 100000, fillColor: 'olive', fillOpacity: 0.4 },   // Kochi
+      { lat: 10.8505, lng: 76.2711, radius: 100000, fillColor: 'gold', fillOpacity: 0.4 },   // Kerala
+      { lat: 11.0168, lng: 76.9558, radius: 100000, fillColor: 'coral', fillOpacity: 0.4 },  // Coimbatore
+      { lat: 19.7515, lng: 75.7139, radius: 100000, fillColor: 'salmon', fillOpacity: 0.4 }, // Aurangabad
+      { lat: 27.1767, lng: 78.0081, radius: 100000, fillColor: 'violet', fillOpacity: 0.4 }, // Agra
+      { lat: 25.3176, lng: 82.9739, radius: 100000, fillColor: 'indigo', fillOpacity: 0.4 }, // Varanasi
+      { lat: 24.5854, lng: 73.7125, radius: 100000, fillColor: 'navy', fillOpacity: 0.4 }    // Udaipur
+  ];
+  circles.forEach(function(circle) {
+    L.circle([circle.lat, circle.lng], {
+        radius: circle.radius,
+        fillColor: circle.fillColor,
+        fillOpacity: circle.fillOpacity
+    }).addTo(map);
+});
   }
 
 
