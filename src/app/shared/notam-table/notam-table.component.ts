@@ -12,6 +12,9 @@ export class NotamTableComponent {
   notemanNumber:any="";
   flag:any="";
   @Output() isMinimize:any = new EventEmitter<string>();
+
+  p: number = 1;
+  total: number = 42;
   notamData:any = [
     { sn: 1, notamNumber: 'V0593/24', status: 'Active', airport: 'VECC', traffic: 'IFR', purpose: 'Aerodrome', scope: '', series: 'New', type: 'TEMP' ,flag:'red' },
     { sn: 2, notamNumber: 'A1584/24', status: 'Active', airport: 'VIDP', traffic: 'VFR', purpose: 'Enroute', scope: '', series: 'New', type: 'TEMP',flag:'green' },
@@ -27,8 +30,34 @@ export class NotamTableComponent {
     { sn: 12, notamNumber: 'A1565/24', status: 'Active', airport: 'VOBL', traffic: 'VFR', purpose: 'Enroute', scope: '', series: 'New', type: 'PERM',flag:'green' },
     { sn: 13, notamNumber: 'A1565/24', status: 'Active', airport: 'VOBL', traffic: 'VFR', purpose: 'Enroute', scope: '', series: 'New', type: 'PERM',flag:'red' },
     { sn: 14, notamNumber: 'A1565/24', status: 'Active', airport: 'VOBL', traffic: 'VFR', purpose: 'Enroute', scope: '', series: 'New', type: 'PERM',flag:'red' },
-   
-    
+    { sn: 1, notamNumber: 'V0593/24', status: 'Active', airport: 'VECC', traffic: 'IFR', purpose: 'Aerodrome', scope: '', series: 'New', type: 'TEMP' ,flag:'red' },
+    { sn: 2, notamNumber: 'A1584/24', status: 'Active', airport: 'VIDP', traffic: 'VFR', purpose: 'Enroute', scope: '', series: 'New', type: 'TEMP',flag:'green' },
+    { sn: 3, notamNumber: 'A1565/24', status: 'Active', airport: 'VOBL', traffic: 'VFR', purpose: 'Enroute', scope: '', series: 'New', type: 'PERM',flag:'red' },
+    { sn: 4, notamNumber: 'V0593/24', status: 'Active', airport: 'VECC', traffic: 'IFR', purpose: 'Aerodrome', scope: '', series: 'New', type: 'TEMP',flag:'green' },
+    { sn: 5, notamNumber: 'A1584/24', status: 'Active', airport: 'VIDP', traffic: 'VFR', purpose: 'Enroute', scope: '', series: 'New', type: 'TEMP',flag:'green' },
+    { sn: 6, notamNumber: 'A1565/24', status: 'Active', airport: 'VOBL', traffic: 'VFR', purpose: 'Enroute', scope: '', series: 'New', type: 'PERM',flag:'yellow' },
+    { sn: 7, notamNumber: 'V0593/24', status: 'Active', airport: 'VECC', traffic: 'IFR', purpose: 'Aerodrome', scope: '', series: 'New', type: 'TEMP',flag:'red' },
+    { sn: 8, notamNumber: 'A1584/24', status: 'Active', airport: 'VIDP', traffic: 'VFR', purpose: 'Enroute', scope: '', series: 'New', type: 'TEMP',flag:'red' },
+    { sn: 9, notamNumber: 'A1565/24', status: 'Active', airport: 'VOBL', traffic: 'VFR', purpose: 'Enroute', scope: '', series: 'New', type: 'PERM',flag:'red' },
+    { sn: 10, notamNumber: 'V0593/24', status: 'Active', airport: 'VECC', traffic: 'IFR', purpose: 'Aerodrome', scope: '', series: 'New', type: 'TEMP',flag:'yellow' },
+    { sn: 11, notamNumber: 'A1584/24', status: 'Active', airport: 'VIDP', traffic: 'VFR', purpose: 'Enroute', scope: '', series: 'New', type: 'TEMP',flag:'yellow' },
+    { sn: 12, notamNumber: 'A1565/24', status: 'Active', airport: 'VOBL', traffic: 'VFR', purpose: 'Enroute', scope: '', series: 'New', type: 'PERM',flag:'green' },
+    { sn: 13, notamNumber: 'A1565/24', status: 'Active', airport: 'VOBL', traffic: 'VFR', purpose: 'Enroute', scope: '', series: 'New', type: 'PERM',flag:'red' },
+    { sn: 14, notamNumber: 'A1565/24', status: 'Active', airport: 'VOBL', traffic: 'VFR', purpose: 'Enroute', scope: '', series: 'New', type: 'PERM',flag:'red' },
+    { sn: 1, notamNumber: 'V0593/24', status: 'Active', airport: 'VECC', traffic: 'IFR', purpose: 'Aerodrome', scope: '', series: 'New', type: 'TEMP' ,flag:'red' },
+    { sn: 2, notamNumber: 'A1584/24', status: 'Active', airport: 'VIDP', traffic: 'VFR', purpose: 'Enroute', scope: '', series: 'New', type: 'TEMP',flag:'green' },
+    { sn: 3, notamNumber: 'A1565/24', status: 'Active', airport: 'VOBL', traffic: 'VFR', purpose: 'Enroute', scope: '', series: 'New', type: 'PERM',flag:'red' },
+    { sn: 4, notamNumber: 'V0593/24', status: 'Active', airport: 'VECC', traffic: 'IFR', purpose: 'Aerodrome', scope: '', series: 'New', type: 'TEMP',flag:'green' },
+    { sn: 5, notamNumber: 'A1584/24', status: 'Active', airport: 'VIDP', traffic: 'VFR', purpose: 'Enroute', scope: '', series: 'New', type: 'TEMP',flag:'green' },
+    { sn: 6, notamNumber: 'A1565/24', status: 'Active', airport: 'VOBL', traffic: 'VFR', purpose: 'Enroute', scope: '', series: 'New', type: 'PERM',flag:'yellow' },
+    { sn: 7, notamNumber: 'V0593/24', status: 'Active', airport: 'VECC', traffic: 'IFR', purpose: 'Aerodrome', scope: '', series: 'New', type: 'TEMP',flag:'red' },
+    { sn: 8, notamNumber: 'A1584/24', status: 'Active', airport: 'VIDP', traffic: 'VFR', purpose: 'Enroute', scope: '', series: 'New', type: 'TEMP',flag:'red' },
+    { sn: 9, notamNumber: 'A1565/24', status: 'Active', airport: 'VOBL', traffic: 'VFR', purpose: 'Enroute', scope: '', series: 'New', type: 'PERM',flag:'red' },
+    { sn: 10, notamNumber: 'V0593/24', status: 'Active', airport: 'VECC', traffic: 'IFR', purpose: 'Aerodrome', scope: '', series: 'New', type: 'TEMP',flag:'yellow' },
+    { sn: 11, notamNumber: 'A1584/24', status: 'Active', airport: 'VIDP', traffic: 'VFR', purpose: 'Enroute', scope: '', series: 'New', type: 'TEMP',flag:'yellow' },
+    { sn: 12, notamNumber: 'A1565/24', status: 'Active', airport: 'VOBL', traffic: 'VFR', purpose: 'Enroute', scope: '', series: 'New', type: 'PERM',flag:'green' },
+    { sn: 13, notamNumber: 'A1565/24', status: 'Active', airport: 'VOBL', traffic: 'VFR', purpose: 'Enroute', scope: '', series: 'New', type: 'PERM',flag:'red' },
+    { sn: 14, notamNumber: 'A1565/24', status: 'Active', airport: 'VOBL', traffic: 'VFR', purpose: 'Enroute', scope: '', series: 'New', type: 'PERM',flag:'red' },
   ];
   filteredNotamData: any[] = [...this.notamData];
   headers = [
@@ -91,6 +120,9 @@ export class NotamTableComponent {
 
   latest(){
     this.filteredNotamData = [...this.notamData];
+  }
+  pageChangeEvent(event: number){
+    this.p=event;
   }
 
 }

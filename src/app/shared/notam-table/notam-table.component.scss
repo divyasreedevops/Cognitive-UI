@@ -47,6 +47,10 @@
 
   }
 
+  ::ng-deep .ngx-pagination{
+    margin-top: 10px;
+  }
+
 .red {
     color: red;
   }
@@ -58,6 +62,20 @@
   .yellow {
     color: yellow;
   }
+
+   ::ng-deep .ngx-pagination .current {
+    padding: 2px 4px;
+    background: black !important;
+    color: #fefefe;
+    cursor: default;
+    border-radius: 22px;
+}
+
+::ng-deep a{
+  text-decoration: none !important;
+}
+
+
 
   .dflex{
   display: flex;
@@ -201,4 +219,9 @@
     border-radius: 4px;
     cursor: pointer;
   }
+}
+
+.notam-paginationContainer{
+  display: flex;
+  justify-content: flex-end;
 }

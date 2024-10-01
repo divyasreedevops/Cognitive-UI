@@ -39,6 +39,9 @@ import { VideoClipComponent } from './airlineopsmanager/videoclip/clip.component
 import { SharedService } from 'src/app/service/shared.service';
 import { AuthInterceptor } from './interceptor/auth.interceptor';
 import { NotamTableComponent } from './shared/notam-table/notam-table.component';
+
+import { NgxPaginationModule } from 'ngx-pagination'; 
+
 @NgModule({
     declarations: [
         AppComponent,
@@ -76,7 +79,8 @@ import { NotamTableComponent } from './shared/notam-table/notam-table.component'
     MatListModule,
     MatMenuModule,
     LayoutModule,
-    MatSidenavModule
+    MatSidenavModule,
+    NgxPaginationModule,
 ],
     bootstrap: [AppComponent],
     providers: [AuthGuard,SharedService,  { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },provideHttpClient(withInterceptorsFromDi())]
