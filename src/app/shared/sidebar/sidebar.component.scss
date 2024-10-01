@@ -333,7 +333,9 @@ mat-icon{
     }
 
     span:hover{
-      background-color: lightgray;
+      background-color: #0056b3;
+      color: white;
+      border-radius: 3px;
     }
 
     .multipart{
@@ -655,4 +657,10 @@ mat-icon{
     font-weight: bold;
     margin-top: 3px;
     }
+  }
+
+  .selectedmultiOption{
+    background-color: #0056b3;
+    color: white;
+    border-radius: 3px;
   }

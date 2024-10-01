@@ -1516,27 +1516,70 @@ procedureAixmTable(resp:any){
   this.flightData = flghtData
   this.cropData = [this.flightData[0]]
 }
-
-toggleSelection(item: string, part: string, index: number,value:any): void {
+toggleSelection(item: string, part: string, index: number, value: any): void {
   const selectedOptions = this.Airform.get('selectedProcedureName')?.value || [];
+  const uniqueId = `${item}-${part}-${index}`; // Create a unique identifier for the item
 
-  const uniqueId = `${item}-${part}-${index}`; // Create unique identifier for the item
-
+  // Check if the item is already selected
   const selectedIndex = this.selectedOptions.indexOf(uniqueId);
+
+  // Ensure only one option is selected per column
+  if (part === 'part1') {
+    // Clear previous selection in Part 1
+    this.multipart1.forEach((_, idx) => {
+      const idToRemove = `-${part}-${idx}`;
+      const removeIndex = this.selectedOptions.findIndex(id => id.includes(idToRemove));
+      if (removeIndex !== -1) {
+        selectedOptions.splice(removeIndex, 1); // Remove from form selectedOptions
+        this.selectedOptions.splice(removeIndex, 1); // Remove from internal selectedOptions
+        this.selectedOptionstoshow.splice(removeIndex, 1); // Remove from display
+      }
+    });
+  } else if (part === 'part2') {
+    // Clear previous selection in Part 2
+    this.multipart2.forEach((_, idx) => {
+      const idToRemove = `-${part}-${idx}`;
+      const removeIndex = this.selectedOptions.findIndex(id => id.includes(idToRemove));
+      if (removeIndex !== -1) {
+        selectedOptions.splice(removeIndex, 1); // Remove from form selectedOptions
+        this.selectedOptions.splice(removeIndex, 1); // Remove from internal selectedOptions
+        this.selectedOptionstoshow.splice(removeIndex, 1); // Remove from display
+      }
+    });
+  }
+
+  // Add new selection if not already selected
   if (selectedIndex === -1) {
-    // Item is not selected, so add it
     selectedOptions.push(value);
     this.selectedOptions.push(uniqueId);
     this.selectedOptionstoshow.push(item);
-  } else {
-    // Item is already selected, so remove it
-    selectedOptions.splice(selectedIndex, 1);
-    this.selectedOptions.splice(selectedIndex, 1);
-    this.selectedOptionstoshow.splice(selectedIndex,1);
   }
+
+  // Update form control with the new selected options
   this.Airform.get('selectedProcedureName')?.setValue(selectedOptions);
-  console.log('this.airf  ',this.Airform);
+  console.log('this.airf ', this.Airform);
 }
+
+// toggleSelection(item: string, part: string, index: number,value:any): void {
+//   const selectedOptions = this.Airform.get('selectedProcedureName')?.value || [];
+
+//   const uniqueId = `${item}-${part}-${index}`; // Create unique identifier for the item
+
+//   const selectedIndex = this.selectedOptions.indexOf(uniqueId);
+//   if (selectedIndex === -1) {
+//     // Item is not selected, so add it
+//     selectedOptions.push(value);
+//     this.selectedOptions.push(uniqueId);
+//     this.selectedOptionstoshow.push(item);
+//   } else {
+//     // Item is already selected, so remove it
+//     selectedOptions.splice(selectedIndex, 1);
+//     this.selectedOptions.splice(selectedIndex, 1);
+//     this.selectedOptionstoshow.splice(selectedIndex,1);
+//   }
+//   this.Airform.get('selectedProcedureName')?.setValue(selectedOptions);
+//   console.log('this.airf  ',this.Airform);
+// }
 
 // Function to check if an item is selected
 isSelected(item: string, part: string, index: number): boolean {
