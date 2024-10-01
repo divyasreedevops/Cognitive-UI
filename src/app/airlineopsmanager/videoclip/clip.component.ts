@@ -7,13 +7,28 @@ import { Router } from '@angular/router';
   styleUrls: ['./clip.component.css']
 })
 export class VideoClipComponent implements OnInit {
+  activeTab:any='';
 
   constructor(private router: Router) {}
 timeoutId:any;
   ngOnInit(): void {
-    this.timeoutId = setTimeout(() => {
-      this.router.navigate(['/ADM']); 
-    }, 3000);
+    this.activeTab = localStorage.getItem('activeNav');
+    if(this.activeTab){
+      
+      switch(this.activeTab){
+
+        case 'ADM':
+          this.timeoutId = setTimeout(() => {
+            this.router.navigate(['/ADM']); 
+          }, 3000);
+          break;
+        case 'NOTAM Management':
+          this.timeoutId = setTimeout(() => {
+            this.router.navigate(['/NOTAM-Management']);
+          }, 3000);
+          break;
+      }
+    }
   }
 
 

@@ -46,7 +46,7 @@ export class OpsManagerComponent {
           title: 'NOTAM Management',
           description: 'Simplifying NOTAM handling for safer flights. Streamline notifications, enhance safety, and ensure compliance.',
           icon: '../../assets/icons/3.png', 
-          router: 'opsmanager',
+          router: '/videoclip',
         },
         {
           title: 'Aircraft Tracking',

@@ -17,7 +17,7 @@ const routes: Routes = [
     path: '', component: LoginComponent, canActivate: [AuthGuard]
   },
   { path: 'login', component: LoginComponent },
-  // { path: 'PANS-OPS', component: MapComponent },
+  { path: 'NOTAM-Management', component: MapComponent },
   { path: 'mapViewer', component: MapViewerComponent },
   { path: 'mapview', component: MapViewerComponent, canActivate: [AuthGuard] },
   { path: 'header', component: HeaderComponent },

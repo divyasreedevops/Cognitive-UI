@@ -9,7 +9,7 @@
             <mat-icon (click)="toggleSidebar()" class="tgbtn"*ngIf="isCollapsed">chevron_right</mat-icon>
         </div>
     
-        <ng-container *ngIf="!isMultiMapView">
+        <ng-container *ngIf="!isMultiMapView && !isNotamTable && !isminNotam">
         <div class="sub-option" [ngClass]="{'active': selectedTab==='PANS-OPS'}"  (click)="navigateToFullMap()">
             <mat-icon class="maticon">dataset</mat-icon>
             <span>PANS-OPS</span>
@@ -24,7 +24,7 @@
         </div>
     </ng-container>
     
-    <ng-container *ngIf="isMultiMapView && !isCollapsed">
+    <ng-container *ngIf="isMultiMapView && !isCollapsed && !isNotamTable && !isminNotam">
        
         <!-- <ng-container *ngFor="let opt of selectFormat">
         <div class="select">
@@ -230,6 +230,48 @@
     </div>
     
     </ng-container>
+
+    <!-- For Notam Table  -->
+    <ng-container *ngIf="!isMultiMapView && !isCollapsed && (isNotamTable || isminNotam)">
+      <div class="filter-container">
+        <div class="not-title">
+          <div class="headtitle">
+            <mat-icon>flight</mat-icon>
+            <span>NOTAM Filters</span>
+          </div>
+        </div>
+        <div *ngFor="let filter of filters" class="dropdown">
+          <div class="">
+            <label class="titleLable">{{ filter.name }}</label>
+            <!-- <mat-icon (click)="selectAllOption(filter)">
+              {{ filter.allOptionsChecked ? 'check_box' : 'check_box_outline_blank' }}
+            </mat-icon> -->
+            <input (click)="selectAllOption(filter)" type="checkbox" [checked]="filter.allOptionsChecked" class="checkbox-show checkBoxSize">
+          </div>
+          <div class="input-Div">
+            <input *ngIf="filter.options" type="text" name="selectedOptions" id="selectedOptions" class="inputTag" readonly
+              [ngModel]="filter.fliterSelectedOptions.join(', ')" (click)="toggleDropdown()">
+            <mat-icon *ngIf="filter.options" (click)="filter.isOpen = !filter.isOpen" class="drop-icon">
+              {{ filter.isOpen ? 'expand_less' : 'expand_more' }}
+            </mat-icon>
+          </div>
+          <div *ngIf="filter.isOpen" class="dropdown-content">
+            <div *ngFor="let option of filter.options" class="options-Styl">
+              <!-- <mat-icon (click)="toggleOption(filter, option)">
+                {{ option.checked ? 'check_box' : 'check_box_outline_blank' }}
+              </mat-icon> -->
+              <input (click)="toggleOption(filter, option)" type="checkbox" [checked]="option.checked" class="checkbox-show">
+              <span>{{ option.name }}</span>
+            </div>
+          </div>
+        </div>
+        <div class="submitDiv">
+          <button type="submit" class="submitButton">Submit</button>
+        </div>
+      </div>
+      
+    </ng-container>
+
     </div>
     
     <div class="tab" *ngIf="isAIXM && !isCompare">
@@ -341,4 +383,33 @@
 
       </div>    
   </div>
+
+
+  <!-- Noatm Table -->
+
+  <div class="tab tab-style" style="pointer-events: auto;" *ngIf="isNotamTable">
+     <app-notam-table (isMinimize)="minimize($event)"></app-notam-table>
   </div>
+
+  <div class="tab" *ngIf="isminNotam">
+    <div class="min-tab">
+
+      <div class="dflex" style="gap: 5px; font-weight: 501;">
+        <div class="dflex border">
+            <mat-icon class="flag green">play_arrow</mat-icon> Normal
+        </div>
+        <div class="dflex border">
+            <mat-icon class="flag yellow">play_arrow</mat-icon> Warning
+        </div>
+        <div class="dflex border">
+            <mat-icon class="flag red">play_arrow</mat-icon> Critical
+        </div>
+    </div>
+
+    <div class="dflex border" (click)="minimize($event)">
+      Close Map
+  </div>
+    </div>
+  </div>
+
+</div>
