@@ -177,10 +177,10 @@
          <div>
         <div class="multipart" *ngFor="let item of multipart1; let i = index" (click)="toggleSelection(item.label, 'part1', i,item.value)">
           <span>
-            <mat-icon>
+            <!-- <mat-icon>
               {{ isSelected(item.label, 'part1', i) ? 'check_box' : 'check_box_outline_blank' }}
-            </mat-icon>
-            <span class="txt-green">{{ item.label }}</span>
+            </mat-icon> -->
+            <span class="txt-green" [ngClass]="{'selectedmultiOption': isSelected(item.label, 'part1', i)}">{{ item.label }}</span>
           </span>
         </div>
       </div>
@@ -188,10 +188,10 @@
          <div>
         <div class="multipart" *ngFor="let item of multipart2; let i = index" (click)="toggleSelection(item.label, 'part2', i,item.value)">
           <span>
-            <mat-icon>
+            <!-- <mat-icon>
               {{ isSelected(item.label, 'part2', i) ? 'check_box' : 'check_box_outline_blank' }}
-            </mat-icon>
-            <span class="txt-red">{{ item.label }}</span>
+            </mat-icon> -->
+            <span class="txt-red" [ngClass]="{'selectedmultiOption': isSelected(item.label, 'part2', i)}">{{ item.label }}</span>
           </span>
         </div>
       </div>
