@@ -60,12 +60,11 @@
     </tr>
   </thead>
     <tbody>
-      <tr *ngFor="let entry of filteredNotamData">
+      <tr *ngFor="let entry of filteredNotamData| paginate: { itemsPerPage: 2, currentPage: p, totalItems: total }">
         <td>{{ entry.sn }}</td>
         <td>
           <div class="dflex" (click)="showPopup(entry.notamNumber,entry.flag)">
           <mat-icon class="flag" [ngClass]="{'red': entry.flag === 'red','green': entry.flag === 'green','yellow': entry.flag === 'yellow'}">play_arrow</mat-icon> <span>{{ entry.notamNumber }}</span>  <mat-icon>keyboard_arrow_down</mat-icon> 
-
         </div>
         </td>
         <td>{{ entry.status }}</td>
@@ -84,6 +83,13 @@
     </tbody>
     
   </table>
+  <div>
+    
+  </div>
+  <div class="notam-paginationContainer">
+    <pagination-controls  (pageChange)="p = $event"></pagination-controls>
+
+  </div>
   <div class="popup" *ngIf="isShowPopup">
       <div style="display: flex; align-items: center;">
         <mat-icon class="flag" style="font-size: 68px;width: 4rem;height: 4rem;" [ngClass]="{'red': flag === 'red','green': flag === 'green','yellow': flag === 'yellow'}">play_arrow</mat-icon><span style="font-size: 1.5rem;font-weight: 501;">{{notemanNumber}}</span></div>
