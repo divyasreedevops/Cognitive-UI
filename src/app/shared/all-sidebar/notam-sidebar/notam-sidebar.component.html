@@ -1,0 +1,36 @@
+<div class="filter-container">
+    <div class="not-title">
+      <div class="headtitle">
+        <mat-icon>flight</mat-icon>
+        <span>NOTAM Filters</span>
+      </div>
+    </div>
+    <div *ngFor="let filter of filters" class="dropdown">
+      <div class="">
+        <label class="titleLable">{{ filter.name }}</label>
+        <!-- <mat-icon (click)="selectAllOption(filter)">
+          {{ filter.allOptionsChecked ? 'check_box' : 'check_box_outline_blank' }}
+        </mat-icon> -->
+        <input (click)="selectAllOption(filter)" type="checkbox" [checked]="filter.allOptionsChecked" class="checkbox-show checkBoxSize">
+      </div>
+      <div class="input-Div" (click)="filter.isOpen = !filter.isOpen">
+        <input *ngIf="filter.options" type="text" name="selectedOptions" id="selectedOptions" class="inputTag" readonly
+          [ngModel]="filter.fliterSelectedOptions.join(', ')">
+        <mat-icon *ngIf="filter.options"  class="drop-icon">
+          {{ filter.isOpen ? 'expand_less' : 'expand_more' }}
+        </mat-icon>
+      </div>
+      <div *ngIf="filter.isOpen" class="dropdown-content">
+        <div *ngFor="let option of filter.options" class="options-Styl" (click)="toggleOption(filter, option)">
+          <!-- <mat-icon (click)="toggleOption(filter, option)">
+            {{ option.checked ? 'check_box' : 'check_box_outline_blank' }}
+          </mat-icon> -->
+          <input  type="checkbox" [checked]="option.checked" class="checkbox-show">
+          <span>{{ option.name }}</span>
+        </div>
+      </div>
+    </div>
+    <div class="submitDiv">
+      <button type="submit" class="submitButton" (click)="submit()">Submit</button>
+    </div>
+  </div>

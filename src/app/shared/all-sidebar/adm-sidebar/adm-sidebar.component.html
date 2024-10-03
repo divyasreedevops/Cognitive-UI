@@ -1,0 +1,179 @@
+<form [formGroup]="Airform" autocomplete="on" novalidate>
+      
+  
+    <!--Select Airport -->
+    <div class="select">
+        <label for="selectedAirport">Airport</label>
+        <select formControlName="selectedAirport" [(ngModel)]="selectedAirport" id="selectedAirport" (change)="onValueChange($event,'airport')">
+          <option value="" disabled selected>Select an airport</option>
+          <option *ngFor="let option of optionsAirport" [value]="option.label">{{ option.label }}</option>
+        </select>
+    </div>
+
+    <!--Select Runway -->
+    <div class="select">
+        <label for="selectedRunway">Runway</label>
+        <select formControlName="selectedRunway" [(ngModel)]="selectedRunway" id="selectedRunway" (change)="onValueChange($event,'runway')">
+          <option value="" disabled selected>Select an Runway</option>
+               
+          <option *ngFor="let option of optionRunway" [value]="option.label">{{ option.label }}
+                </option>
+        </select>
+        
+    </div>
+
+    <!--Select Type of Procedure -->
+    <!-- <div class="select">
+        <label for="selectedTypeofProcedure">Type of Procedure</label>
+        <select formControlName="selectedTypeofProcedure" [(ngModel)]="selectedTypeofProcedure" id="selectedTypeofProcedure" (change)="onValueChange($event,'typeOfProcedure')">
+          <option value="" disabled selected>Select an Type</option>
+          
+          <option *ngFor="let option of optionProviderType" [value]="option.value">{{ option.label }}
+            </option>
+        </select>
+       
+    </div> -->
+
+    <!--Select Procedure Name -->
+    <!-- <div class="select" *ngIf="!isCompare">
+        <label for="selectedProcedureName">Procedure Name</label>
+        <select formControlName="selectedProcedureName" [(ngModel)]="selectedProcedureName"  id="selectedProcedureName" (change)="onValueChange($event,'procedureName')">
+          <option value="" disabled selected>Select an Type</option>
+           
+          <option *ngFor="let option of procedureNames" [value]="option.value">{{ option.label }}</option>
+        </select>
+
+
+        
+    </div> -->
+  
+    <div class="select">
+      <label for="selectedTypeofProcedure">Type of Procedure</label>
+      <div style="position: relative;">
+        <!-- Textbox showing the selected options, comma-separated -->
+        <input 
+        type="text" 
+        name="selectedOptions" 
+        id="selectedOptions" 
+        class="multi-select-container" 
+        [value]="selectedTypeofProcedure.length > 0 ? selectedTypeofProcedure.join(', ') : 'Select Procedure Type'"  
+        (click)="toggledropdown($event,'type')"
+        placeholder="Select Procedure Type" 
+        readonly>
+    
+        <!-- Checkbox options -->
+        <div class="checkkarea" *ngIf="isProcedureType">
+          <ng-container *ngFor="let option of optionProviderType">
+            <div class="checkoption" (click)="toggleCheckbox(option.value, 'typeOfProcedure')">
+              <!-- Bind each checkbox to form using the change event to track selections -->
+              <input class="checkbox-show" type="checkbox" [value]="option.value" (change)="onValueChange($event,'typeOfProcedure')" [checked]="isChecked(option.value)">
+              <span>{{ option.label }}</span>
+            </div>
+          </ng-container>
+        </div>
+        <mat-icon style="position: absolute;right: -3px;
+        top: 5px;
+        font-size: 21px;
+        font-weight: 555;">keyboard_arrow_down</mat-icon>
+      </div>
+    </div>
+
+
+<div class="select" *ngIf="!isCompare">
+      <label for="selectedTypeofProcedure">Procedure Name</label>
+      <div style="position: relative;">
+        <!-- Textbox showing the selected options, comma-separated -->
+        <input type="text" 
+        name="selectedOptions" 
+        id="selectedOptions" 
+        class="multi-select-container" 
+        [value]="selectedProcedureNameShow.length > 0 ? selectedProcedureNameShow.join(', ') : 'Select Procedure Name'"  
+        (click)="toggledropdown($event,'name')" 
+        placeholder="Select Procedure Name" 
+        readonly>
+    
+        <!-- Checkbox options -->
+        <div class="checkkarea" *ngIf="isProcedureName">
+          <ng-container *ngFor="let option of procedureNames">
+            <div class="checkoption" (click)="toggleCheckbox(option.value.toString(), 'procedureName')">
+              <!-- Bind each checkbox to form using the change event to track selections -->
+              <input class="checkbox-show" type="checkbox" [value]="option.value"  [checked]="isChecked2(option.value.toString())">
+              <span>{{ option.label }}</span>
+            </div>
+          </ng-container>
+        </div>
+
+        <mat-icon style="position: absolute;right: -3px;
+        top: 5px;
+        font-size: 21px;
+        font-weight: 555;">keyboard_arrow_down</mat-icon>
+      </div>
+    </div>
+    
+    
+    
+
+
+</form>
+<div class="select" *ngIf="isCompare">
+<label for="selectedProcedureName">Procedure Name</label>
+<div class="multihold">
+<input type="text" name="selectedOptions" id="selectedOptions" class="multi-select-container" readonly [ngModel]="selectedOptionstoshow.join(', ')" (click)="toggleDropdown()">
+
+<div class="multisection" *ngIf="isDropdownVisible">
+  <!-- Part 1 Options -->
+   <div>
+  <div class="multipart" *ngFor="let item of multipart1; let i = index" (click)="toggleSelection(item.label, 'part1', i,item.value)">
+    <span>
+      <!-- <mat-icon>
+        {{ isSelected(item.label, 'part1', i) ? 'check_box' : 'check_box_outline_blank' }}
+      </mat-icon> -->
+      <span class="txt-green" [ngClass]="{'selectedmultiOption': isSelected(item.label, 'part1', i)}">{{ item.label }}</span>
+    </span>
+  </div>
+</div>
+  <!-- Part 2 Options -->
+   <div>
+  <div class="multipart" *ngFor="let item of multipart2; let i = index" (click)="toggleSelection(item.label, 'part2', i,item.value)">
+    <span>
+      <!-- <mat-icon>
+        {{ isSelected(item.label, 'part2', i) ? 'check_box' : 'check_box_outline_blank' }}
+      </mat-icon> -->
+      <span class="txt-red" [ngClass]="{'selectedmultiOption': isSelected(item.label, 'part2', i)}">{{ item.label }}</span>
+    </span>
+  </div>
+</div>
+</div>
+</div>
+</div>
+
+
+<div class="toggle-outer">
+  <div class="tog">
+  <label for="">AIXM</label>
+  <div class="toggle-container">
+      <label class="toggle-label">
+        <input type="checkbox" (change)="onToggle($event)">
+        <!-- (change)="onToggleChange($event)" -->
+        <span class="toggle-switch"></span>
+      </label>
+    </div>
+  </div>
+
+  <div class="tog">
+      <label for="">ARINC 424</label>
+      <div class="toggle-container">
+          <label class="toggle-label">
+            <input type="checkbox" >
+            <span class="toggle-switch"></span>
+          </label>
+        </div>
+      </div>
+</div>
+
+<div class="button-outer">
+
+  <button type="button">Export PDF</button>
+  <button type="button">Export GeoJSON</button>
+  <button type="button">Export CSV</button>
+</div>
