@@ -22,7 +22,7 @@ export class OpsManagerComponent {
           title: 'WxM',
           description: 'Weather Management module aims to provide precise, timely, and actionable weather insights ensuring safe and optimized operations for aviation professionals globally.',
           icon: '../../assets/icons/7.png', 
-          router: 'opsmanager',
+          router: '/videoclip',
         },
         {
           title: 'APM',
@@ -63,6 +63,7 @@ export class OpsManagerComponent {
       ];
 
       onCardSelected(cardTitle: string) {
+        console.log(cardTitle,"sdjcdbcuiwbhvhjvrivgbrvruiv")
         this.sharedService.updatenavbar(cardTitle);
       }
 }

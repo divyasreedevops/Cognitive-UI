@@ -14,7 +14,7 @@ timeoutId:any;
   ngOnInit(): void {
     this.activeTab = localStorage.getItem('activeNav');
     if(this.activeTab){
-      
+        console.log(this.activeTab,"*********************")
       switch(this.activeTab){
 
         case 'ADM':
@@ -25,6 +25,11 @@ timeoutId:any;
         case 'NOTAM Management':
           this.timeoutId = setTimeout(() => {
             this.router.navigate(['/NOTAM-Management']);
+          }, 3000);
+          break;
+          case 'WxM':
+          this.timeoutId = setTimeout(() => {
+            this.router.navigate(['/weather']);
           }, 3000);
           break;
       }

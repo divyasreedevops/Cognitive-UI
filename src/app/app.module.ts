@@ -41,6 +41,9 @@ import { AuthInterceptor } from './interceptor/auth.interceptor';
 import { NotamTableComponent } from './shared/notam-table/notam-table.component';
 
 import { NgxPaginationModule } from 'ngx-pagination'; 
+import { AdmSidebarComponent } from './shared/all-sidebar/adm-sidebar/adm-sidebar.component';
+import { NotamSidebarComponent } from './shared/all-sidebar/notam-sidebar/notam-sidebar.component';
+import { WeatherComponent } from './weather/weather.component';
 
 @NgModule({
     declarations: [
@@ -59,7 +62,10 @@ import { NgxPaginationModule } from 'ngx-pagination';
         WxmComponent,
         MultimapComponent,
         VideoClipComponent,
-        NotamTableComponent
+        NotamTableComponent,
+        AdmSidebarComponent,
+        NotamSidebarComponent,
+        WeatherComponent
     ],
   
     imports: [
