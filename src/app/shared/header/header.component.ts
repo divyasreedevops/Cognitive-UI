@@ -2,7 +2,7 @@ import { Component, EventEmitter, Input, Output} from '@angular/core';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { SharedService } from 'src/app/service/shared.service';
 import { PansopsService } from 'src/app/service/Adm/Pansops/pansops.service';
-
+import { Router } from '@angular/router';
 @Component({
   selector: 'app-header',
   templateUrl: './header.component.html',
@@ -38,7 +38,7 @@ export class HeaderComponent {
   dropdownOptions: any[] = [];
   searchQuery = '';
  
-  constructor(private service : SharedService,private pansopsService:PansopsService){
+  constructor(private service : SharedService,private pansopsService:PansopsService,private router:Router){
     this.pansopsService.getAiracInfo().subscribe(response=>{
       this.dropdownOptions=response;
       this.dropdownOptions.push({id:"compare",process_name:"compare"})
@@ -56,6 +56,10 @@ export class HeaderComponent {
   // Method to emit the button clicked event
   setActive(button: string) {
     this.activeChange.emit(button);
+    this.service.updatenavbar(button);
+    setTimeout(() => {
+      this.router.navigate(['/videoclip']); 
+    }, 100);
   }
   toggleNavbar() {
     this.isHeaderOpen = !this.isHeaderOpen;
