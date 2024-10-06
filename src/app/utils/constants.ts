@@ -11,3 +11,8 @@ export const Adm={
     procedureNames:"/adm/procedures",
     airac:"/adm/airac"
 }
+
+export const Notam={
+   notamFilter: "/notam/filters",
+   notamList:"/notam/list"
+}

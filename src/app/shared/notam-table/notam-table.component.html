@@ -60,25 +60,25 @@
     </tr>
   </thead>
     <tbody>
-      <tr *ngFor="let entry of filteredNotamData| paginate: { itemsPerPage: 2, currentPage: p, totalItems: total }">
-        <td>{{ entry.sn }}</td>
+      <tr *ngFor="let entry of (filteredNotamData | paginate: { itemsPerPage: 2, currentPage: p, totalItems: total }); let index = index">
+        <td>{{ index+1}}</td>
         <td>
-          <div class="dflex" (click)="showPopup(entry.notamNumber,entry.flag)">
-          <mat-icon class="flag" [ngClass]="{'red': entry.flag === 'red','green': entry.flag === 'green','yellow': entry.flag === 'yellow'}">play_arrow</mat-icon> <span>{{ entry.notamNumber }}</span>  <mat-icon>keyboard_arrow_down</mat-icon> 
+          <div class="dflex" (click)="showPopup(entry.notam_id,entry.flag)">
+          <mat-icon class="flag" [ngClass]="{'red': entry.flag === 'red','green': entry.flag === 'green','yellow': entry.flag === 'yellow'}">play_arrow</mat-icon> <span>{{ entry.notam_id }}</span>  <mat-icon>keyboard_arrow_down</mat-icon> 
         </div>
         </td>
         <td>{{ entry.status }}</td>
         <td>{{ entry.airport }}</td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
+        <td>{{ entry.fir }}</td>
+        <td>{{ entry.airSpace }}</td>
+        <td>{{ entry.qualifier1 }}</td>
+        <td>{{ entry.qualifier2 }}</td>
         <td>{{ entry.traffic }}</td>
         <td>{{ entry.purpose }}</td>
         <td>{{ entry.scope }}</td>
         <td>{{ entry.series }}</td>
         <td>{{ entry.type }}</td>
-        <td>{{ entry.type }}</td>
+        <td>{{ entry.permanent }}</td>
       </tr>
     </tbody>
     

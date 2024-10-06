@@ -9,7 +9,7 @@
             <mat-icon (click)="toggleSidebar()" class="tgbtn"*ngIf="isCollapsed">chevron_right</mat-icon>
         </div>
     
-        <ng-container *ngIf="!isMultiMapView && !isNotamTable && !isminNotam">
+        <ng-container *ngIf="!isMultiMapView && !isNotamTable && !isminNotam && activeTab==='ADM'">
         <div class="sub-option" [ngClass]="{'active': selectedTab==='PANS-OPS'}"  (click)="navigateToFullMap()">
             <mat-icon class="maticon">dataset</mat-icon>
             <span>PANS-OPS</span>
@@ -24,7 +24,24 @@
         </div>
     </ng-container>
     
-    <ng-container *ngIf="isMultiMapView && !isCollapsed && !isNotamTable && !isminNotam">
+
+    <ng-container *ngIf="activeTab==='WxM' && weatherSelectedTab===' '">
+      <div class="sub-option" [ngClass]="{'active': selectedTab==='PANS-OPS'}"  (click)="navigateToWeatherModule()">
+          <mat-icon class="maticon">dataset</mat-icon>
+          <span>PANS-OPS</span>
+      </div>
+      <div class="sub-option" [ngClass]="{'active': selectedTab==='ENR'}"  (click)="selectedTab='ENR'">
+          <mat-icon class="maticon">dataset</mat-icon>
+          <span>Enroute</span>
+      </div>
+      <div class="sub-option" [ngClass]="{'active': selectedTab==='AIRPORT'}"  (click)="selectedTab='AIRPORT'">
+          <mat-icon class="maticon">flight_takeoff</mat-icon>
+          <span>Terminal</span>
+      </div>
+  </ng-container>
+
+
+    <ng-container *ngIf="isMultiMapView && !isCollapsed && !isNotamTable && !isminNotam&& activeTab==='ADM'">
 
         <app-adm-sidebar (AIXM)="onToggleChange($event)"></app-adm-sidebar>
     
@@ -35,6 +52,12 @@
       <app-notam-sidebar></app-notam-sidebar>
       
     </ng-container>
+
+      <!-- For Notam Table  -->
+      <ng-container *ngIf="weatherSelectedTab==='PANS-OPS'">
+        <app-weather-sidebar></app-weather-sidebar>
+        
+      </ng-container>
 
     </div>
     

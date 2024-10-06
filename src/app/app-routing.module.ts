@@ -10,6 +10,7 @@ import { OpsManagerComponent } from './airlineopsmanager/opsmanager.component';
 import { MultimapComponent } from './shared/multimap/multimap.component';
 import { VideoClipComponent } from './airlineopsmanager/videoclip/clip.component';
 import { PansOpsComponent } from './shared/pans-ops/pans-ops.component';
+import { WeatherComponent } from './weather/weather.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
@@ -22,6 +23,7 @@ const routes: Routes = [
   { path: 'mapview', component: MapViewerComponent, canActivate: [AuthGuard] },
   { path: 'header', component: HeaderComponent },
   { path: 'opsmanager', component:OpsManagerComponent},
+  {path:'weather',component:MapComponent, children: [{ path: 'PANS-OPS', component: MapComponent }]},
   {path: 'ADM', component:MultimapComponent , children: [{ path: 'PANS-OPS', component: MapComponent }]},
   { path: 'videoclip', component: VideoClipComponent},
   { path: 'pansop/:id', component: PansOpsComponent}

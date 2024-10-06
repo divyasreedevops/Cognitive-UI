@@ -1,4 +1,6 @@
 import { Component, HostListener } from '@angular/core';
+import { NotamService } from 'src/app/service/Notam/notam.service';
+import { SharedService } from 'src/app/service/Notam/shared.service';
 
 @Component({
   selector: 'app-notam-sidebar',
@@ -13,9 +15,6 @@ export class NotamSidebarComponent {
       allOptionsChecked: false,
       isOpen: false, // To track dropdown open/close
       options: [
-        { name: 'Option 1', checked: false },
-        { name: 'Option 2', checked: false },
-        { name: 'Option 3', checked: false },
       ],
       fliterSelectedOptions: [],
     },
@@ -24,9 +23,6 @@ export class NotamSidebarComponent {
       allOptionsChecked: false,
       isOpen: false,
       options: [
-        { name: 'Option 1', checked: false },
-        { name: 'Option 2', checked: false },
-        { name: 'Option 3', checked: false },
       ],
       fliterSelectedOptions: [],
     },
@@ -35,9 +31,8 @@ export class NotamSidebarComponent {
       allOptionsChecked: false,
       isOpen: false,
       options: [
-        { name: 'Option 1', checked: false },
-        { name: 'Option 2', checked: false },
-        { name: 'Option 3', checked: false },
+        { name: 'Airport Closure', checked: false},
+        { name: 'Enroute Clouser', checked: false },
       ],
       fliterSelectedOptions: [],
     },
@@ -67,13 +62,34 @@ export class NotamSidebarComponent {
 
   ];
 
+
+  constructor(private notamservice: NotamService,private sharedService:SharedService){
+   this.notamservice.getNotamFilterOptions().subscribe((response:any)=>{
+    response.fir.forEach((element:any) => {
+      this.filters[0].options?.push({ name: element, checked: false })
+    });
+
+    response.airportFir.forEach((element:any) => {
+      this.filters[1].options?.push({ name: element, checked: false })
+    });
+
+
+   })
+  }
+
+  
+
+
+
   selectAllOption(field: any) {
     field.allOptionsChecked = !field.allOptionsChecked
     for (let element in field.options) {
       field.options[element]['checked'] = field.allOptionsChecked;
     }
     if (field.allOptionsChecked) {
-      field.fliterSelectedOptions = ['Option 1', 'Option 2', 'Option 3']
+      field.options.forEach((ele:any)=>{
+        field.fliterSelectedOptions.push(ele.name)
+      })
     } else {
       field.fliterSelectedOptions = []
     }
@@ -96,18 +112,30 @@ export class NotamSidebarComponent {
 
   submit() {
     const selectedFilters: any = {};
-  
-    // Iterate over the filters and build the object structure
     this.filters.forEach(filter => {
       if (filter.options) {
-        // If there are options, collect selected ones
         selectedFilters[filter.name.toLowerCase().replace(/\s+/g, '')] = filter.fliterSelectedOptions;
       } else {
-        // For boolean values (without options), collect checked status
         selectedFilters[filter.name.toLowerCase().replace(/\s+/g, '')] = filter.allOptionsChecked;
       }
     });
-  
+    
+    const payload={
+      "pageNo":0,
+      "dataFilters":{
+        "fir":selectedFilters.fir,
+        "airport":selectedFilters.airports,
+        "airSpaceEnr":selectedFilters['airspace/enr'],
+        "airPortClosure":selectedFilters.closure.includes('Airport Closure'),
+        "airSpaceClosure":selectedFilters.closure.includes('Enroute Clouser')
+       }
+    }
+
+    this.sharedService.updateFormValues(selectedFilters);
+    // this.notamservice.getNotamList(payload).subscribe((response:any)=>{
+        
+    // })
+
     console.log('Selected Filters:', selectedFilters);
   }
 

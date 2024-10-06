@@ -43,6 +43,9 @@ import { NotamTableComponent } from './shared/notam-table/notam-table.component'
 import { NgxPaginationModule } from 'ngx-pagination'; 
 import { AdmSidebarComponent } from './shared/all-sidebar/adm-sidebar/adm-sidebar.component';
 import { NotamSidebarComponent } from './shared/all-sidebar/notam-sidebar/notam-sidebar.component';
+import { WeatherComponent } from './weather/weather.component';
+import { WeatherSidebarComponent } from './shared/all-sidebar/weather-sidebar/weather-sidebar.component';
+
 @NgModule({
     declarations: [
         AppComponent,
@@ -62,7 +65,9 @@ import { NotamSidebarComponent } from './shared/all-sidebar/notam-sidebar/notam-
         VideoClipComponent,
         NotamTableComponent,
         AdmSidebarComponent,
-        NotamSidebarComponent
+        NotamSidebarComponent,
+        WeatherSidebarComponent,
+        WeatherComponent
     ],
   
     imports: [
