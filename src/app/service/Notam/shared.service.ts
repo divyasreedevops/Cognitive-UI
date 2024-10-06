@@ -16,4 +16,11 @@ export class SharedService {
     this.formValuesSubject.next(values);
   }
 
+  private notamDataSubject = new BehaviorSubject<any>(null);
+  notamData$ = this.notamDataSubject.asObservable();
+
+  notamDataList(values: any) {
+    this.notamDataSubject.next(values);
+  }
+
 }

@@ -31,6 +31,8 @@ export class NotamTableComponent implements OnInit {
         this.notamservice.getNotamList(payload).subscribe((res:any)=>{
           this.notamData=res.data;
           this.filteredNotamData=[...this.notamData]
+          
+this.sharedService.notamDataList(res.data);
         })
       }
     
@@ -50,6 +52,8 @@ export class NotamTableComponent implements OnInit {
     this.notamservice.getNotamList(payload).subscribe((res:any)=>{
       this.notamData=res.data;
       this.filteredNotamData=[...this.notamData]
+      
+this.sharedService.notamDataList(res.data);
     })
   }
 
