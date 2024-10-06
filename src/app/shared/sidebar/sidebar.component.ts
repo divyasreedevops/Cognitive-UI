@@ -88,7 +88,8 @@ export class SidebarComponent {
   ];
   optionRunway: { value: any; label: any }[] = [];
   optionProviderType: { value: any; label: any }[] = [];
-
+   activeTab = localStorage.getItem('activeNav');
+   
   isCompare = false;
 
   isDropdownVisible = false;
@@ -100,7 +101,9 @@ export class SidebarComponent {
     private router: Router,
     private formbuilder: FormBuilder,
     private pansopsService: PansopsService
-  ) {}
+  ) {
+    console.log(this.activeTab,"&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&")
+  }
 
   obj1: any = {
     title: 'AKTIM 7A',
@@ -739,6 +742,7 @@ export class SidebarComponent {
   isExpanded: boolean = true;
 
   isAIXM = false;
+  weatherSelectedTab=' ';
 
   toggleSidebar() {
     this.isCollapsed = !this.isCollapsed;
@@ -750,6 +754,11 @@ export class SidebarComponent {
     this.isMultiMapView = false;
     this.isAIXM = false;
     this.selectedTab = '';
+  }
+
+  navigateToWeatherModule() {
+    this.weatherSelectedTab = 'PANS-OPS';
+    this.router.navigate(['weather','PANS-OPS']);
   }
 
   navigateToFullMap() {

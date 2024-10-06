@@ -23,7 +23,7 @@ const routes: Routes = [
   { path: 'mapview', component: MapViewerComponent, canActivate: [AuthGuard] },
   { path: 'header', component: HeaderComponent },
   { path: 'opsmanager', component:OpsManagerComponent},
-  {path:'weather',component:WeatherComponent},
+  {path:'weather',component:MapComponent, children: [{ path: 'PANS-OPS', component: MapComponent }]},
   {path: 'ADM', component:MultimapComponent , children: [{ path: 'PANS-OPS', component: MapComponent }]},
   { path: 'videoclip', component: VideoClipComponent},
   { path: 'pansop/:id', component: PansOpsComponent}

@@ -44,6 +44,7 @@ import { NgxPaginationModule } from 'ngx-pagination';
 import { AdmSidebarComponent } from './shared/all-sidebar/adm-sidebar/adm-sidebar.component';
 import { NotamSidebarComponent } from './shared/all-sidebar/notam-sidebar/notam-sidebar.component';
 import { WeatherComponent } from './weather/weather.component';
+import { WeatherSidebarComponent } from './shared/all-sidebar/weather-sidebar/weather-sidebar.component';
 
 @NgModule({
     declarations: [
@@ -65,6 +66,7 @@ import { WeatherComponent } from './weather/weather.component';
         NotamTableComponent,
         AdmSidebarComponent,
         NotamSidebarComponent,
+        WeatherSidebarComponent,
         WeatherComponent
     ],
   
