@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Subject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -7,6 +7,16 @@ import { BehaviorSubject } from 'rxjs';
 export class SharedService {
  
   constructor() { }
+
+  private showCirclesSource = new Subject<any>();
+
+  // Observable to subscribe to
+  showCircles$ = this.showCirclesSource.asObservable();
+
+  // Method to emit circle data
+  emitCircleData(circleData: any): void {
+    this.showCirclesSource.next(circleData);
+  }
 
 
   private formValuesSubject = new BehaviorSubject<any>(null);

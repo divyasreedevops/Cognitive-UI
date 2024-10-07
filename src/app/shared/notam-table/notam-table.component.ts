@@ -14,8 +14,9 @@ export class NotamTableComponent implements OnInit {
    notamData:any = [
   ];
   filteredNotamData: any[] = [];
+  @Output() showCircles: EventEmitter<any> = new EventEmitter<any>();
 
-  constructor(private notamservice: NotamService,private sharedService:SharedService){
+  constructor(private notamservice: NotamService,private sharedService:SharedService, private mapService: SharedService){
     this.sharedService.formValues$.subscribe((response:any)=>{
       if(response){
         const payload={
@@ -38,6 +39,9 @@ this.sharedService.notamDataList(res.data);
     
     })
   }
+
+
+  
   ngOnInit(): void {
     const payload={
       "pageNo":this.pageNo,
@@ -117,6 +121,14 @@ this.sharedService.notamDataList(res.data);
 
   close(){
     this.isMinimize.emit({status:0})
+    const circleData = {
+      val: true,       // Trigger to show circles
+      status: 1,       // You can add other status or relevant information
+      mapType: 'dark', // Example of another value, like the map type
+      radius: 100000   // Example radius value to control the size of circles
+    };
+  
+    this.mapService.emitCircleData(circleData);
   }
 
   filterByFlag(flagColor: string) {

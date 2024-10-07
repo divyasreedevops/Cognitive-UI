@@ -11,6 +11,9 @@ import { Flight, Plane } from '../target';
 import {  Subscription } from 'rxjs';
 import * as GeoJSON from 'geojson';
 import { SharedService } from '../service/shared.service';
+import { SharedService as NotamSharedService} from '../service/Notam/shared.service';
+
+
 import { PansopsService } from '../service/Adm/Pansops/pansops.service';
 declare module 'leaflet' {
   interface MarkerOptions {
@@ -139,6 +142,7 @@ export class MapComponent implements OnInit {
   selectedAirac:any;
   airacs:any;
   multipleProcedure:any;
+  private showCirclesSubscription: Subscription | null = null;
   toggleSearchBar() {
     this.isExpanded = !this.isExpanded;
     if (this.isExpanded) {
@@ -150,7 +154,7 @@ export class MapComponent implements OnInit {
       }, 0);
     }
   }
-  constructor(private pansopsService: PansopsService,changeDetectorRef: ChangeDetectorRef, private flightService: StreamServiceService, media: MediaMatcher, private formbuilder: FormBuilder, private authService: AuthService, private router: Router, private route: ActivatedRoute,private sharedService: SharedService) {
+  constructor(private pansopsService: PansopsService,changeDetectorRef: ChangeDetectorRef, private flightService: StreamServiceService, media: MediaMatcher, private formbuilder: FormBuilder, private authService: AuthService, private router: Router, private route: ActivatedRoute,private sharedService: SharedService,private notamSharedService:NotamSharedService) {
     this.mobileQuery = media.matchMedia('(max-width: 600px)');
     this._mobileQueryListener = () => changeDetectorRef.detectChanges();
     this.mobileQuery.addListener(this._mobileQueryListener);
@@ -183,7 +187,12 @@ export class MapComponent implements OnInit {
       this.runways = runwaysRes;
     });
 
-   
+    this.showCirclesSubscription = this.notamSharedService.showCircles$.subscribe((circleData) => {
+      console.log('circleData', circleData)
+      if (circleData.val) {
+        this.addCircles(circleData.radius); // Use the passed radius
+      }
+    });
    
 
 
@@ -226,37 +235,34 @@ export class MapComponent implements OnInit {
   
 
   }
-  notamData(){
-    var map = L.map('map').setView([20.5937, 78.9629], 5);
-    var circles = [
-      { lat: 19.0760, lng: 72.8777, radius: 100000, fillColor: 'red', fillOpacity: 0.4 },   // Mumbai
-      { lat: 18.5204, lng: 73.8567, radius: 100000, fillColor: 'yellow', fillOpacity: 0.4 }, // Pune
-      { lat: 21.1702, lng: 72.8311, radius: 100000, fillColor: 'orange', fillOpacity: 0.4 }, // Surat
-      { lat: 21.1458, lng: 79.0882, radius: 100000, fillColor: 'green', fillOpacity: 0.4 },  // Nagpur
-      { lat: 28.7041, lng: 77.1025, radius: 100000, fillColor: 'blue', fillOpacity: 0.4 },   // Delhi
-      { lat: 13.0827, lng: 80.2707, radius: 100000, fillColor: 'purple', fillOpacity: 0.4 }, // Chennai
-      { lat: 22.5726, lng: 88.3639, radius: 100000, fillColor: 'pink', fillOpacity: 0.4 },   // Kolkata
-      { lat: 23.0225, lng: 72.5714, radius: 100000, fillColor: 'cyan', fillOpacity: 0.4 },   // Ahmedabad
-      { lat: 26.8467, lng: 80.9462, radius: 100000, fillColor: 'magenta', fillOpacity: 0.4 },// Lucknow
-      { lat: 12.9716, lng: 77.5946, radius: 100000, fillColor: 'lime', fillOpacity: 0.4 },   // Bangalore
-      { lat: 15.2993, lng: 74.1240, radius: 100000, fillColor: 'teal', fillOpacity: 0.4 },   // Goa
-      { lat: 17.3850, lng: 78.4867, radius: 100000, fillColor: 'brown', fillOpacity: 0.4 },  // Hyderabad
-      { lat: 9.9312, lng: 76.2673, radius: 100000, fillColor: 'olive', fillOpacity: 0.4 },   // Kochi
-      { lat: 10.8505, lng: 76.2711, radius: 100000, fillColor: 'gold', fillOpacity: 0.4 },   // Kerala
-      { lat: 11.0168, lng: 76.9558, radius: 100000, fillColor: 'coral', fillOpacity: 0.4 },  // Coimbatore
-      { lat: 19.7515, lng: 75.7139, radius: 100000, fillColor: 'salmon', fillOpacity: 0.4 }, // Aurangabad
-      { lat: 27.1767, lng: 78.0081, radius: 100000, fillColor: 'violet', fillOpacity: 0.4 }, // Agra
-      { lat: 25.3176, lng: 82.9739, radius: 100000, fillColor: 'indigo', fillOpacity: 0.4 }, // Varanasi
-      { lat: 24.5854, lng: 73.7125, radius: 100000, fillColor: 'navy', fillOpacity: 0.4 }    // Udaipur
-  ];
-  circles.forEach(function(circle) {
-    L.circle([circle.lat, circle.lng], {
+
+
+  addCircles(radius: number): void {
+    const circles = [
+      { lat: 19.0760, lng: 72.8777, radius: 100000, fillColor: 'red', fillOpacity: 0.4 },
+      // { lat: 19.0760, lng: 72.8777, radius, fillColor: 'red', fillOpacity: 0.4 },   // Mumbai
+      { lat: 18.5204, lng: 73.8567, radius, fillColor: 'yellow', fillOpacity: 0.4 }, // Pune
+      // Additional circles...
+    ];
+
+    circles.forEach(circle => {
+      L.circle([circle.lat, circle.lng], {
         radius: circle.radius,
         fillColor: circle.fillColor,
-        fillOpacity: circle.fillOpacity
-    }).addTo(map);
-});
+        fillOpacity: circle.fillOpacity,
+        // color: this.getLighterBorderColor(circle.fillColor) // Lighter border color
+        weight: 0
+      }).addTo(this.map);
+    });
+    // circles.forEach(circle => {
+    //   L.circle([circle.lat, circle.lng], {
+    //       radius: circle.radius,
+    //       fillColor: circle.fillColor,
+    //       fillOpacity: circle.fillOpacity
+    //   }).addTo(this.map);
+    // })
   }
+ 
 
 
   fetchFlightData(): void {
