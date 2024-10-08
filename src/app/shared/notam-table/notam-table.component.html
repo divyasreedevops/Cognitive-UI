@@ -17,13 +17,13 @@
             </div>
 
             <div class="dflex" style="gap: 5px; font-weight: 501;">
-                <div class="dflex border" (click)="filterByFlag('green')">
+                <div class="dflex border" (click)="filterByFlag('normal')">
                     <mat-icon class="flag green">play_arrow</mat-icon> Normal
                 </div>
-                <div class="dflex border" (click)="filterByFlag('yellow')">
+                <div class="dflex border" (click)="filterByFlag('warning')">
                     <mat-icon class="flag yellow">play_arrow</mat-icon> Warning
                 </div>
-                <div class="dflex border" (click)="filterByFlag('red')">
+                <div class="dflex border" (click)="filterByFlag('critical')">
                     <mat-icon class="flag red">play_arrow</mat-icon> Critical
                 </div>
             </div>
@@ -60,10 +60,10 @@
     </tr>
   </thead>
     <tbody>
-      <tr *ngFor="let entry of (filteredNotamData | paginate: { itemsPerPage: 2, currentPage: p, totalItems: total }); let index = index">
+      <tr *ngFor="let entry of (filteredNotamData | paginate: { itemsPerPage: 10, currentPage: p, totalItems: total }); let index = index">
         <td>{{ index+1}}</td>
         <td>
-          <div class="dflex" (click)="showPopup(entry.notam_id,entry.flag)">
+          <div class="dflex" (click)="showPopup(entry.notam_id,entry.flag,entry)">
           <mat-icon class="flag" [ngClass]="{'red': entry.flag === 'red','green': entry.flag === 'green','yellow': entry.flag === 'yellow'}">play_arrow</mat-icon> <span>{{ entry.notam_id }}</span>  <mat-icon>keyboard_arrow_down</mat-icon> 
         </div>
         </td>
@@ -94,7 +94,7 @@
       <div style="display: flex; align-items: center;">
         <mat-icon class="flag" style="font-size: 68px;width: 4rem;height: 4rem;" [ngClass]="{'red': flag === 'red','green': flag === 'green','yellow': flag === 'yellow'}">play_arrow</mat-icon><span style="font-size: 1.5rem;font-weight: 501;">{{notemanNumber}}</span></div>
       <span>
-        Q) VECF/QPICH/I/BO/A/000/999/2239N08826E005 A) VECC B) 2408020034 C) 2409042359E) [US DODPROCEDURAL NOTAM] INSTRUMENT APPROACH PROCEDURE CHANGEDCAT CD CIRCLING MINIMA CHANGED TO880-4000M 860 (900-4000M) FOR THE FOLLOWING PROCEDURES: ILS RWY 19R; ILS RWY 01R; ILS Z (CAT I)RWY 19L; VOR RWY 01L; VOR RWY 19R;VOR RWY 19LCREATED: 02 Aug 2024 00:34:00SOURCE: PPAA
+        {{selectedNotam.notam}}
       </span>
 
       <mat-icon class="closebtn" (click)="isShowPopup=false">close</mat-icon>
