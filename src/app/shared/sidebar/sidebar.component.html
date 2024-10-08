@@ -1,7 +1,7 @@
 <div class="outer-hold">
     <div class="side-container" [ngClass]="{'collapsed': isCollapsed}">
-        <div class="tab-toggel" [ngClass]="{'displayEnd': !isMultiMapView || isCollapsed , 'displayBetween': isMultiMapView && !isCollapsed }">
-            <div class="arrow-hold" *ngIf="!isCollapsed && isMultiMapView">
+        <div class="tab-toggel" [ngClass]="{'displayEnd': !isMultiMapView || isCollapsed, 'displayBetween': isMultiMapView && !isCollapsed}">
+            <div class="arrow-hold" *ngIf="!isCollapsed && isMultiMapView && weatherSelectedTab==='PANS-OPS'">
                 <mat-icon (click)="navigateToMultiMap()">west</mat-icon>
                 <mat-icon>east</mat-icon>
             </div>
@@ -54,7 +54,7 @@
     </ng-container>
 
       <!-- For Notam Table  -->
-      <ng-container *ngIf="weatherSelectedTab==='PANS-OPS'">
+      <ng-container *ngIf="weatherSelectedTab==='PANS-OPS' && !isCollapsed">
         <app-weather-sidebar></app-weather-sidebar>
         
       </ng-container>
