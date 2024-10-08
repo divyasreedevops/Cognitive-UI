@@ -77,9 +77,6 @@ export class NotamSidebarComponent {
    })
   }
 
-  
-
-
 
   selectAllOption(field: any) {
     field.allOptionsChecked = !field.allOptionsChecked
@@ -119,35 +116,13 @@ export class NotamSidebarComponent {
         selectedFilters[filter.name.toLowerCase().replace(/\s+/g, '')] = filter.allOptionsChecked;
       }
     });
-
-    console.log(selectedFilters,"selectedFiltersselectedFiltersselectedFiltersselectedFilters")
-    
-    const payload={
-      "pageNo":0,
-      "dataFilters":{
-        "fir":selectedFilters.fir,
-        "airport":selectedFilters.airports,
-        "airSpaceEnr":selectedFilters['airspace/enr'],
-        "facilityDownGrade":selectedFilters['facilitydowngrade'],
-        "airPortClosure":selectedFilters.closure.includes('Airport Closure'),
-        "airSpaceClosure":selectedFilters.closure.includes('Enroute Clouser')
-       }
-    }
-
     this.sharedService.updateFormValues(selectedFilters);
-    // this.notamservice.getNotamList(payload).subscribe((response:any)=>{
-        
-    // })
-
-    console.log('Selected Filters:', selectedFilters);
   }
 
   @HostListener('document:click', ['$event'])
   onDocumentClick(event: MouseEvent) {
     const target = event.target as HTMLElement;
-
     this.filters.forEach(filter => {
-      // If the dropdown is open and the click was outside it
       if (filter.isOpen && !target.closest('.dropdown')) {
         filter.isOpen = false; // Close the dropdown
       }

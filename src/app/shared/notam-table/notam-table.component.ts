@@ -18,27 +18,6 @@ export class NotamTableComponent implements OnInit {
   p: number = 1;
   total: number =0;
   constructor(private notamservice: NotamService,private sharedService:SharedService, private mapService: SharedService){
-    this.sharedService.formValues$.subscribe((response:any)=>{
-      if(response){
-        const payload={
-          "pageNo":this.pageNo,
-          "dataFilters":{
-            "fir":response.fir,
-            "airport":response.airports,
-            "airSpaceEnr":response['airspace/enr'],
-            "airPortClosure":response.closure.includes('Airport Closure'),
-            "airSpaceClosure":response.closure.includes('Enroute Clouser')
-           }
-        }
-        this.notamservice.getNotamList(payload).subscribe((res:any)=>{
-          this.notamData=res.data;
-          this.filteredNotamData=[...this.notamData]
-          
-this.sharedService.notamDataList(res.data);
-        })
-      }
-    
-    })
   }
 
   selectedFilters:any;
@@ -56,20 +35,28 @@ this.sharedService.notamDataList(res.data);
       if(data){
         this.p=1;
         this.selectedFilters=data;
-        const payload={
-          "pageNo":this.p-1,
-          "dataFilters":{
-            "fir":data.fir,
-            "airport":data.airports,
-            "airSpaceEnr":data['airspace/enr'],
-            "facilityDownGrade":data['facilitydowngrade'],
-            "airPortClosure":data.closure.includes('Airport Closure'),
-            "airSpaceClosure":data.closure.includes('Enroute Clouser')
-           }
-        }
-        this.getTableData(payload)
+   
+//           const dataFilters={
+//             "fir":data.fir,
+//             "airport":data['airports'],
+//             "airSpaceEnr":data['airspace/enr'],
+//             "facilityDownGrade":data['facilitydowngrade'],
+//             "airPortClosure":data.closure.includes('Airport Closure'),
+//             "airSpaceClosure":data.closure.includes('Enroute Clouser')
+//            }
+
+// const filteredDataFilters = Object.fromEntries(
+//   Object.entries(dataFilters).filter(([key, value]) => {
+//       return !Array.isArray(value) || value.length > 0;
+//   })
+// );
+        
+//       const payload={
+//         "pageNo":this.p-1,
+//         "dataFilters":filteredDataFilters
+//       }
+        this.constructPayload()
       }
-        console.log(data,"%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%")
     })
   }
 
@@ -80,7 +67,16 @@ this.sharedService.notamDataList(res.data);
       this.notamData=res.data;
       this.filteredNotamData=[...this.notamData]
       this.total=res.totalCount;
-   this.sharedService.notamDataList(res.data);
+        
+
+   Object.keys( res.filterData).forEach((element:any)=>{
+        const elementFound=  this.headers.find((ele)=>ele.mappingName===element);
+        if(elementFound){
+          elementFound.opt=res.filterData[element]
+        }
+      })
+console.log(this.headers,"sdcjdmh bdchj nbhjdgvhf")   
+      this.sharedService.notamDataList(res.data);
     })
   }
 
@@ -89,23 +85,23 @@ this.sharedService.notamDataList(res.data);
   flag:any="";
   @Output() isMinimize:any = new EventEmitter<string>();
 
- 
+  selectedNotam:any;
  
   headers = [
-    { label: 'S/N', isOpen: false, opt: [], selectedOptions: [] as string[] },  // Define selectedOptions as string[]
-    { label: 'NOTAM Number', isOpen: false, opt: [], selectedOptions: [] as string[] },
-    { label: 'Status', isOpen: false, opt: ['Option 1', 'Option 2', 'Option 3'], selectedOptions: [] as string[] },
-    { label: 'Airport', isOpen: false, opt: ['Option 1', 'Option 2', 'Option 3'], selectedOptions: [] as string[] },
-    { label: 'FIR Regions', isOpen: false, opt: ['Option 1', 'Option 2', 'Option 3'], selectedOptions: [] as string[] },
-    { label: 'Airspace/ENR', isOpen: false, opt: ['Option 1', 'Option 2', 'Option 3'], selectedOptions: [] as string[] },
-    { label: 'Qualifier 1', isOpen: false, opt: ['Option 1', 'Option 2', 'Option 3'], selectedOptions: [] as string[] },
-    { label: 'Qualifier 2', isOpen: false, opt: ['Option 1', 'Option 2', 'Option 3'], selectedOptions: [] as string[] },
-    { label: 'Traffic', isOpen: false, opt: ['Option 1', 'Option 2', 'Option 3'], selectedOptions: [] as string[] },
-    { label: 'Purpose', isOpen: false, opt: ['Option 1', 'Option 2', 'Option 3'], selectedOptions: [] as string[] },
-    { label: 'Scope', isOpen: false, opt: ['Option 1', 'Option 2', 'Option 3'], selectedOptions: [] as string[] },
-    { label: 'Series', isOpen: false, opt: ['Option 1', 'Option 2', 'Option 3'], selectedOptions: [] as string[] },
-    { label: 'Type', isOpen: false, opt: ['Option 1', 'Option 2', 'Option 3'], selectedOptions: [] as string[] },
-    { label: 'PERM/TEMP', isOpen: false, opt: ['Option 1', 'Option 2', 'Option 3'], selectedOptions: [] as string[] }
+    { label: 'S/N', isOpen: false, opt: [],mappingName:"", selectedOptions: [] as string[] },  // Define selectedOptions as string[]
+    { label: 'NOTAM Number', isOpen: false, opt: [],mappingName:"", selectedOptions: [] as string[] },
+    { label: 'Status', isOpen: false, opt: ['active','inactive'],mappingName:"status", selectedOptions: [] as string[] },
+    { label: 'Airport', isOpen: false, opt: ['Option 1', 'Option 2', 'Option 3'],mappingName:"airportFir", selectedOptions: [] as string[] },
+    { label: 'FIR Regions', isOpen: false, opt: ['Option 1', 'Option 2', 'Option 3'], mappingName:"fir",selectedOptions: [] as string[] },
+    { label: 'Airspace/ENR', isOpen: false, opt: ['Option 1', 'Option 2', 'Option 3'],mappingName:"airspaceEnr", selectedOptions: [] as string[] },
+    { label: 'Qualifier 1', isOpen: false, opt: ['Option 1', 'Option 2', 'Option 3'],mappingName:"qualifier1", selectedOptions: [] as string[] },
+    { label: 'Qualifier 2', isOpen: false, opt: ['Option 1', 'Option 2', 'Option 3'],mappingName:"qualifier2", selectedOptions: [] as string[] },
+    { label: 'Traffic', isOpen: false, opt: ['Option 1', 'Option 2', 'Option 3'], mappingName:"traffic",selectedOptions: [] as string[] },
+    { label: 'Purpose', isOpen: false, opt: ['Option 1', 'Option 2', 'Option 3'], mappingName:"purpose",selectedOptions: [] as string[] },
+    { label: 'Scope', isOpen: false, opt: ['Option 1', 'Option 2', 'Option 3'], mappingName:"scope",selectedOptions: [] as string[] },
+    { label: 'Series', isOpen: false, opt: ['Option 1', 'Option 2', 'Option 3'], mappingName:"series",selectedOptions: [] as string[] },
+    { label: 'Type', isOpen: false, opt: ['Option 1', 'Option 2', 'Option 3'], mappingName:"type",selectedOptions: [] as string[] },
+    { label: 'PERM/TEMP', isOpen: false, opt: ['Option 1', 'Option 2', 'Option 3'], mappingName:"",selectedOptions: [] as string[] }
   ];
 
   toggleDropdown(index: number) {
@@ -133,12 +129,64 @@ this.sharedService.notamDataList(res.data);
         header.selectedOptions.splice(index, 1);
       }
     }
+         this.p=1;
+       this.  constructPayload()
+  }
+
+  
+
+  constructPayload(filterByFlag:any=""){
+    const payload:any={
+      "pageNo":this.p-1,
+     
+    }
+
+var filteredDataFilters:any =[]
+if(this.selectedFilters){
+const dataFilters={
+"fir":this.selectedFilters.fir,
+"airport":this.selectedFilters['airports'],
+"airSpaceEnr":this.selectedFilters['airspace/enr'],
+"facilityDownGrade":this.selectedFilters['facilitydowngrade'],
+"airPortClosure":this.selectedFilters.closure.includes('Airport Closure'),
+"airSpaceClosure":this.selectedFilters.closure.includes('Enroute Clouser')
+}
+
+
+
+filteredDataFilters  = Object.fromEntries(
+Object.entries(dataFilters).filter(([key, value]) => {
+    return !Array.isArray(value) || value.length > 0;
+})
+);
+
+if(filterByFlag==="warning"){
+  delete filteredDataFilters['facilityDownGrade']
+  delete filteredDataFilters['airPortClosure']
+  delete filteredDataFilters['airSpaceClosure']
+}
+console.log(filteredDataFilters,"filteredDataFiltersfilteredDataFilters")
+payload['dataFilters']=filteredDataFilters;
+}
+
+
+var tableFilters:any={}
+
+this.headers.forEach((header:any)=>{
+if(header.selectedOptions.length>0) {
+tableFilters[header.mappingName]=header.selectedOptions
+} 
+})
+payload['tableFilters']=tableFilters;
+this.getTableData(payload)
   }
   
-  showPopup(noteNum:any,flag:any){
+  showPopup(noteNum:any,flag:any,entry:any){
+    console.log(entry)
     this.notemanNumber = noteNum;
     this.flag = flag;
     this.isShowPopup = true;
+    this.selectedNotam=entry;
   }
 
   close(){
@@ -154,7 +202,10 @@ this.sharedService.notamDataList(res.data);
   }
 
   filterByFlag(flagColor: string) {
-    this.filteredNotamData = this.notamData.filter((item:any) => item.flag === flagColor);
+    console.log("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&7",flagColor)
+    this.constructPayload(flagColor)
+    // this.filteredNotamData = this.notamData.filter((item:any) => item.flag === flagColor);
+    // console.log(this.headers,"sdjbmsdb dsh dnb dh fnb he ned jhdb dn jhshdssjhsbksjhd")
   }
 
   latest(){
@@ -169,14 +220,8 @@ this.sharedService.notamDataList(res.data);
   onPageChnage($event:any){
 
    this.p=$event;
-   const payload={
-    "pageNo":this.p-1,
-    "dataFilters":{
-      "airPortClosure":false,
-      "airSpaceClosure":false
-     }
-  }
-this.getTableData(payload)
+  
+this.constructPayload()
   }
 
  
