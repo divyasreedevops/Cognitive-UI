@@ -15,7 +15,8 @@ export class NotamTableComponent implements OnInit {
   ];
   filteredNotamData: any[] = [];
   @Output() showCircles: EventEmitter<any> = new EventEmitter<any>();
-
+  p: number = 1;
+  total: number =0;
   constructor(private notamservice: NotamService,private sharedService:SharedService, private mapService: SharedService){
     this.sharedService.formValues$.subscribe((response:any)=>{
       if(response){
@@ -43,21 +44,42 @@ this.sharedService.notamDataList(res.data);
 
   
   ngOnInit(): void {
-    const payload={
-      "pageNo":this.pageNo,
+    this.getTableData({
+      "pageNo":this.p-1,
       "dataFilters":{
-        "fir":"",
-        "airport":"",
-        "airSpaceEnr":"",
         "airPortClosure":false,
         "airSpaceClosure":false
        }
-    }
+    });
+
+    this.sharedService.formValues$.subscribe((data)=>{
+      if(data){
+        this.p=1;
+        const payload={
+          "pageNo":this.p-1,
+          "dataFilters":{
+            "fir":data.fir,
+            "airport":data.airports,
+            "airSpaceEnr":data['airspace/enr'],
+            "facilityDownGrade":data['facilitydowngrade'],
+            "airPortClosure":data.closure.includes('Airport Closure'),
+            "airSpaceClosure":data.closure.includes('Enroute Clouser')
+           }
+        }
+        this.getTableData(payload)
+      }
+        console.log(data,"%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%")
+    })
+  }
+
+
+  getTableData(payload:any){
+   
     this.notamservice.getNotamList(payload).subscribe((res:any)=>{
       this.notamData=res.data;
       this.filteredNotamData=[...this.notamData]
-      
-this.sharedService.notamDataList(res.data);
+      this.total=res.totalCount;
+   this.sharedService.notamDataList(res.data);
     })
   }
 
@@ -66,8 +88,7 @@ this.sharedService.notamDataList(res.data);
   flag:any="";
   @Output() isMinimize:any = new EventEmitter<string>();
 
-  p: number = 1;
-  total: number = 42;
+ 
  
   headers = [
     { label: 'S/N', isOpen: false, opt: [], selectedOptions: [] as string[] },  // Define selectedOptions as string[]
@@ -138,8 +159,28 @@ this.sharedService.notamDataList(res.data);
   latest(){
     this.filteredNotamData = [...this.notamData];
   }
+
   pageChangeEvent(event: number){
     this.p=event;
   }
+
+
+  onPageChnage($event:any){
+
+   this.p=$event;
+   const payload={
+    "pageNo":this.p-1,
+    "dataFilters":{
+      "fir":"",
+      "airport":"",
+      "airSpaceEnr":"",
+      "airPortClosure":false,
+      "airSpaceClosure":false
+     }
+  }
+this.getTableData(payload)
+  }
+
+ 
 
 }

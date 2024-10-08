@@ -41,9 +41,6 @@ export class NotamSidebarComponent {
       allOptionsChecked: false,
       isOpen: false,
       options: [
-        { name: 'Option 1', checked: false },
-        { name: 'Option 2', checked: false },
-        { name: 'Option 3', checked: false },
       ],
       fliterSelectedOptions: [],
     },
@@ -73,6 +70,9 @@ export class NotamSidebarComponent {
       this.filters[1].options?.push({ name: element, checked: false })
     });
 
+    response.facilityDownGrade.forEach((element:any) => {
+      this.filters[3].options?.push({ name: element, checked: false })
+    });
 
    })
   }
@@ -119,6 +119,8 @@ export class NotamSidebarComponent {
         selectedFilters[filter.name.toLowerCase().replace(/\s+/g, '')] = filter.allOptionsChecked;
       }
     });
+
+    console.log(selectedFilters,"selectedFiltersselectedFiltersselectedFiltersselectedFilters")
     
     const payload={
       "pageNo":0,
@@ -126,6 +128,7 @@ export class NotamSidebarComponent {
         "fir":selectedFilters.fir,
         "airport":selectedFilters.airports,
         "airSpaceEnr":selectedFilters['airspace/enr'],
+        "facilityDownGrade":selectedFilters['facilitydowngrade'],
         "airPortClosure":selectedFilters.closure.includes('Airport Closure'),
         "airSpaceClosure":selectedFilters.closure.includes('Enroute Clouser')
        }

@@ -87,7 +87,7 @@
     
   </div>
   <div class="notam-paginationContainer">
-    <pagination-controls  (pageChange)="p = $event"></pagination-controls>
+    <pagination-controls  (pageChange)="onPageChnage($event)"></pagination-controls>
 
   </div>
   <div class="popup" *ngIf="isShowPopup">
