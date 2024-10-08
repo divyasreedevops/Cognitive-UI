@@ -375,369 +375,40 @@ export class SidebarComponent {
         this.optionsAirport = transformedAirports;
       }
     });
-    this.compareObj = this.compareComplexObjects(this.obj1, this.obj2);
+    // this.compareObj = this.compareComplexObjects(this.obj1, this.obj2);
   }
 
-  compareComplexObjects(
-    obj1: ComplexObject,
-    obj2: ComplexObject
-  ): ComparedComplexObject {
+  compareComplexObjects(obj1: ComplexObject, obj2: ComplexObject): ComparedComplexObject {
     const comparedRows = obj1.rows.map((row1, index) => {
       const row2 = obj2.rows[index];
-      if (!row2) return this.transformRow(row1, row1);
+      if (!row2) {
+        return this.transformRow(row1, row1, true); // Pass 'true' to flag row as extra
+      }
       return this.transformRow(row1, row2);
     });
-
+  
     return {
       title: obj1.title,
       columns: obj1.columns,
-      rows: comparedRows,
+      rows: comparedRows
     };
   }
 
-  private transformRow(row1: RowItem, row2: RowItem): ComparedRowItem {
+  private transformRow(row1: RowItem, row2: RowItem, isExtra: boolean = false): ComparedRowItem {
     const newRow: ComparedRowItem = {};
+    
     for (const key in row1) {
       if (row1.hasOwnProperty(key)) {
         newRow[key] = {
           value: row1[key],
-          flag: row1[key] !== row2[key],
+          flag: isExtra || row1[key] !== row2[key] // If 'isExtra' is true, flag all fields as extra
         };
       }
     }
     return newRow;
   }
 
-  flightData = [
-    {
-      title: 'AKTIM 7A',
-      columns: [
-        'Waypoint Identifier',
-        'Path Descriptor',
-        'Fly Over',
-        'Course Angle °M(°T)',
-        'Turn Direction',
-        'Upper Limit Altitude ft',
-        'Lower Limit Altitude ft',
-        'Speed Limit kt',
-        'TM DST NM',
-        'VA',
-        'Navigation specification',
-      ],
-      rows: [
-        {
-          waypointIdentifier: '-',
-          pathDescriptor: 'VA',
-          flyOver: '-',
-          courseAngle: '272°',
-          turnDirection: '-',
-          upperLimitAltitude: '-',
-          lowerLimitAltitude: '-',
-          speedLimit: '-',
-          tmDst: '3.32',
-          va: '-',
-          navigationSpecification: 'RNAV1',
-        },
-        {
-          waypointIdentifier: 'DER27',
-          pathDescriptor: 'DF',
-          flyOver: '-',
-          courseAngle: '-',
-          turnDirection: '-',
-          upperLimitAltitude: '-',
-          lowerLimitAltitude: '-',
-          speedLimit: '-',
-          tmDst: '3.32',
-          va: '-',
-          navigationSpecification: 'RNAV1',
-        },
-        {
-          waypointIdentifier: 'WYPT1',
-          pathDescriptor: 'TF',
-          flyOver: '-',
-          courseAngle: '272°',
-          turnDirection: '-',
-          upperLimitAltitude: '-',
-          lowerLimitAltitude: '-',
-          speedLimit: '-',
-          tmDst: '7.59',
-          va: '-',
-          navigationSpecification: 'RNAV1',
-        },
-        {
-          waypointIdentifier: 'WYPT2',
-          pathDescriptor: 'TF',
-          flyOver: '-',
-          courseAngle: '280°',
-          turnDirection: 'R',
-          upperLimitAltitude: '-',
-          lowerLimitAltitude: '+6000.00',
-          speedLimit: '-',
-          tmDst: '2.57',
-          va: '-',
-          navigationSpecification: 'RNAV1',
-        },
-        {
-          waypointIdentifier: 'WYPT3',
-          pathDescriptor: 'TF',
-          flyOver: '-',
-          courseAngle: '356°',
-          turnDirection: 'L',
-          upperLimitAltitude: '-8000',
-          lowerLimitAltitude: '-',
-          speedLimit: '230',
-          tmDst: '3.48',
-          va: '-',
-          navigationSpecification: 'RNAV1',
-        },
-        {
-          waypointIdentifier: 'WYPT4',
-          pathDescriptor: 'TF',
-          flyOver: '-',
-          courseAngle: '281°',
-          turnDirection: 'L',
-          upperLimitAltitude: '-',
-          lowerLimitAltitude: '-',
-          speedLimit: '-',
-          tmDst: '1.56',
-          va: '-',
-          navigationSpecification: 'RNAV1',
-        },
-        {
-          waypointIdentifier: 'WYPT5',
-          pathDescriptor: 'TF',
-          flyOver: '-',
-          courseAngle: '190°',
-          turnDirection: '-',
-          upperLimitAltitude: '-',
-          lowerLimitAltitude: '-FL110',
-          speedLimit: '-',
-          tmDst: '1.59',
-          va: '-',
-          navigationSpecification: 'RNAV1',
-        },
-      ],
-    },
-    {
-      title: 'AKTIM 7A',
-      columns: [
-        'Waypoint Identifier',
-        'Path Descriptor',
-        'Fly Over',
-        'Course Angle °M(°T)',
-        'Turn Direction',
-        'Upper Limit Altitude ft',
-        'Lower Limit Altitude ft',
-        'Speed Limit kt',
-        'TM DST NM',
-        'VA',
-        'Navigation specification',
-      ],
-      rows: [
-        {
-          waypointIdentifier: '-',
-          pathDescriptor: 'VA',
-          flyOver: '-',
-          courseAngle: '272°',
-          turnDirection: '-',
-          upperLimitAltitude: '-',
-          lowerLimitAltitude: '-',
-          speedLimit: '-',
-          tmDst: '3.32',
-          va: '-',
-          navigationSpecification: 'RNAV1',
-        },
-        {
-          waypointIdentifier: 'DER27',
-          pathDescriptor: 'DF',
-          flyOver: '-',
-          courseAngle: '-',
-          turnDirection: '-',
-          upperLimitAltitude: '-',
-          lowerLimitAltitude: '-',
-          speedLimit: '-',
-          tmDst: '3.32',
-          va: '-',
-          navigationSpecification: 'RNAV1',
-        },
-        {
-          waypointIdentifier: 'WYPT1',
-          pathDescriptor: 'TF',
-          flyOver: '-',
-          courseAngle: '272°',
-          turnDirection: '-',
-          upperLimitAltitude: '-',
-          lowerLimitAltitude: '-',
-          speedLimit: '-',
-          tmDst: '7.59',
-          va: '-',
-          navigationSpecification: 'RNAV1',
-        },
-        {
-          waypointIdentifier: 'WYPT2',
-          pathDescriptor: 'TF',
-          flyOver: '-',
-          courseAngle: '280°',
-          turnDirection: 'R',
-          upperLimitAltitude: '-',
-          lowerLimitAltitude: '+6000.00',
-          speedLimit: '-',
-          tmDst: '2.57',
-          va: '-',
-          navigationSpecification: 'RNAV1',
-        },
-        {
-          waypointIdentifier: 'WYPT3',
-          pathDescriptor: 'TF',
-          flyOver: '-',
-          courseAngle: '356°',
-          turnDirection: 'L',
-          upperLimitAltitude: '-8000',
-          lowerLimitAltitude: '-',
-          speedLimit: '230',
-          tmDst: '3.48',
-          va: '-',
-          navigationSpecification: 'RNAV1',
-        },
-        {
-          waypointIdentifier: 'WYPT4',
-          pathDescriptor: 'TF',
-          flyOver: '-',
-          courseAngle: '281°',
-          turnDirection: 'L',
-          upperLimitAltitude: '-',
-          lowerLimitAltitude: '-',
-          speedLimit: '-',
-          tmDst: '1.56',
-          va: '-',
-          navigationSpecification: 'RNAV1',
-        },
-        {
-          waypointIdentifier: 'WYPT5',
-          pathDescriptor: 'TF',
-          flyOver: '-',
-          courseAngle: '190°',
-          turnDirection: '-',
-          upperLimitAltitude: '-',
-          lowerLimitAltitude: '-FL110',
-          speedLimit: '-',
-          tmDst: '1.59',
-          va: '-',
-          navigationSpecification: 'RNAV1',
-        },
-      ],
-    },
-    {
-      title: 'AKTIM 7A',
-      columns: [
-        'Waypoint Identifier',
-        'Path Descriptor',
-        'Fly Over',
-        'Course Angle °M(°T)',
-        'Turn Direction',
-        'Upper Limit Altitude ft',
-        'Lower Limit Altitude ft',
-        'Speed Limit kt',
-        'TM DST NM',
-        'VA',
-        'Navigation specification',
-      ],
-      rows: [
-        {
-          waypointIdentifier: '-',
-          pathDescriptor: 'VA',
-          flyOver: '-',
-          courseAngle: '272°',
-          turnDirection: '-',
-          upperLimitAltitude: '-',
-          lowerLimitAltitude: '-',
-          speedLimit: '-',
-          tmDst: '3.32',
-          va: '-',
-          navigationSpecification: 'RNAV1',
-        },
-        {
-          waypointIdentifier: 'DER27',
-          pathDescriptor: 'DF',
-          flyOver: '-',
-          courseAngle: '-',
-          turnDirection: '-',
-          upperLimitAltitude: '-',
-          lowerLimitAltitude: '-',
-          speedLimit: '-',
-          tmDst: '3.32',
-          va: '-',
-          navigationSpecification: 'RNAV1',
-        },
-        {
-          waypointIdentifier: 'WYPT1',
-          pathDescriptor: 'TF',
-          flyOver: '-',
-          courseAngle: '272°',
-          turnDirection: '-',
-          upperLimitAltitude: '-',
-          lowerLimitAltitude: '-',
-          speedLimit: '-',
-          tmDst: '7.59',
-          va: '-',
-          navigationSpecification: 'RNAV1',
-        },
-        {
-          waypointIdentifier: 'WYPT2',
-          pathDescriptor: 'TF',
-          flyOver: '-',
-          courseAngle: '280°',
-          turnDirection: 'R',
-          upperLimitAltitude: '-',
-          lowerLimitAltitude: '+6000.00',
-          speedLimit: '-',
-          tmDst: '2.57',
-          va: '-',
-          navigationSpecification: 'RNAV1',
-        },
-        {
-          waypointIdentifier: 'WYPT3',
-          pathDescriptor: 'TF',
-          flyOver: '-',
-          courseAngle: '356°',
-          turnDirection: 'L',
-          upperLimitAltitude: '-8000',
-          lowerLimitAltitude: '-',
-          speedLimit: '230',
-          tmDst: '3.48',
-          va: '-',
-          navigationSpecification: 'RNAV1',
-        },
-        {
-          waypointIdentifier: 'WYPT4',
-          pathDescriptor: 'TF',
-          flyOver: '-',
-          courseAngle: '281°',
-          turnDirection: 'L',
-          upperLimitAltitude: '-',
-          lowerLimitAltitude: '-',
-          speedLimit: '-',
-          tmDst: '1.56',
-          va: '-',
-          navigationSpecification: 'RNAV1',
-        },
-        {
-          waypointIdentifier: 'WYPT5',
-          pathDescriptor: 'TF',
-          flyOver: '-',
-          courseAngle: '190°',
-          turnDirection: '-',
-          upperLimitAltitude: '-',
-          lowerLimitAltitude: '-FL110',
-          speedLimit: '-',
-          tmDst: '1.59',
-          va: '-',
-          navigationSpecification: 'RNAV1',
-        },
-      ],
-    },
-  ];
-
+  flightData:any = [];
   cropData: any = [this.flightData[0]];
 
   isExpanded: boolean = true;
@@ -790,10 +461,26 @@ export class SidebarComponent {
     console.log(this.isMultiMapView)
   }
 
+  // onToggleChange(event: any) {
+  //   if (event.E.target.checked) {
+  //     this.isAIXM = true;
+  //     this.procedureAixmTable(event.res);
+  //   } else {
+  //     this.isAIXM = false;
+  //   }
+  // }
   onToggleChange(event: any) {
     if (event.E.target.checked) {
       this.isAIXM = true;
       this.procedureAixmTable(event.res);
+      if (Object.keys(event.res).length === 2){
+        this.obj1 = this.flightData[0];
+        this.obj2 = this.flightData[1];
+        this.compareObj = this.compareComplexObjects(this.obj1, this.obj2);
+        }
+        else{
+         this.isCompare = false
+        }
     } else {
       this.isAIXM = false;
     }
