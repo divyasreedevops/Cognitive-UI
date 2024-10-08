@@ -339,7 +339,8 @@ export class SidebarComponent {
       this.selectedAirac = res;
     });
 
-    if (route === '/ADM/PANS-OPS') {
+    if (route === '/ADM/PANS-OPS' || route === '/weather/PANS-OPS') {
+      console.log('route--->> ',route);
       this.isMultiMapView = true;
     } else {
       this.isMultiMapView = false;
@@ -750,21 +751,43 @@ export class SidebarComponent {
   }
 
   navigateToMultiMap() {
-    this.router.navigate(['/ADM']);
-    this.isMultiMapView = false;
-    this.isAIXM = false;
-    this.selectedTab = '';
+    const route = localStorage.getItem('currentRoute');
+    if(route === '/ADM/PANS-OPS'){
+      this.router.navigate(['/ADM']);
+      this.isMultiMapView = false;
+      this.isAIXM = false;
+      this.selectedTab = '';
+    }else if(route === '/weather/PANS-OPS'){
+      this.router.navigate(['/weather']);
+      this.weatherSelectedTab=' ';
+    }
+
   }
 
   navigateToWeatherModule() {
     this.weatherSelectedTab = 'PANS-OPS';
     this.router.navigate(['weather','PANS-OPS']);
+    console.log('click...');
+    this.isMultiMapView = true;
   }
 
   navigateToFullMap() {
     this.selectedTab = 'PANS-OPS';
     this.sharedService.updateSidebarContent({ status: 1 });
     this.isMultiMapView = true;
+  }
+
+  navigate(){
+    console.log('navv');
+    const route = localStorage.getItem('currentRoute');
+    console.log(route);
+    if (route === '/ADM/PANS-OPS' || route === '/weather/PANS-OPS') {
+      console.log('route--->> ',route);
+      this.isMultiMapView = true;
+    } else {
+      this.isMultiMapView = false;
+    }
+    console.log(this.isMultiMapView)
   }
 
   onToggleChange(event: any) {

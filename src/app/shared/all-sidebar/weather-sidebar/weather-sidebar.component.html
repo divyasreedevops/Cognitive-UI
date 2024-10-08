@@ -1,8 +1,10 @@
 <div >
 
-<ng-container class="container">
+<div class="container">
   <div class="options-background top">
-    <form [formGroup]="Airform" autocomplete="on" novalidate>
+    <form [formGroup]="Airform" autocomplete="on" novalidate style="    display: flex;
+    flex-direction: column;
+    gap: 10px;">
       <!--Select Airport -->
       <div class="select">
           <label for="selectedAirport">Airport</label>
@@ -25,7 +27,6 @@
       </div>
   
     
-    
       <div class="select">
         <label for="selectedTypeofProcedure">Type of Procedure</label>
         <div style="position: relative;">
@@ -40,7 +41,16 @@
           placeholder="Select Procedure Type" 
           readonly>
       
-        
+          <!-- Checkbox options -->
+          <div class="checkkarea" *ngIf="isProcedureType">
+            <ng-container *ngFor="let option of optionProviderType">
+              <div class="checkoption" (click)="toggleCheckbox(option.value, 'typeOfProcedure')">
+                <!-- Bind each checkbox to form using the change event to track selections -->
+                <input class="checkbox-show" type="checkbox" [value]="option.value" (change)="onValueChange($event,'typeOfProcedure')" [checked]="isChecked(option.value)">
+                <span>{{ option.label }}</span>
+              </div>
+            </ng-container>
+          </div>
           <mat-icon style="position: absolute;right: -3px;
           top: 5px;
           font-size: 21px;
@@ -48,7 +58,8 @@
         </div>
       </div>
   
-      <div class="select" >
+  
+  <div class="select">
         <label for="selectedTypeofProcedure">Procedure Name</label>
         <div style="position: relative;">
           <!-- Textbox showing the selected options, comma-separated -->
@@ -80,7 +91,7 @@
       </div>
   </form>
   <div>
-    <button class="button">Submit</button>
+    <button class="button" (click)="onsubmit()">Submit</button>
   </div>
   </div>
   <div class="bottom">
@@ -94,5 +105,5 @@
   
 
 
-</ng-container>
+</div>
 </div>
