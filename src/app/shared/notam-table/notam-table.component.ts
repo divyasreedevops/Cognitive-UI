@@ -20,7 +20,9 @@ export class NotamTableComponent implements OnInit {
   constructor(private notamservice: NotamService,private sharedService:SharedService, private mapService: SharedService){
   }
 
+  searchText:string=""
   selectedFilters:any;
+  latest:boolean=false;
   
   ngOnInit(): void {
     this.getTableData({
@@ -135,13 +137,16 @@ console.log(this.headers,"sdcjdmh bdchj nbhjdgvhf")
 
   
 
-  constructPayload(filterByFlag:any=""){
+  constructPayload(filterByFlag:any="",latest:any=undefined,searchStatus:boolean=false){
+
+
     const payload:any={
       "pageNo":this.p-1,
      
     }
 
 var filteredDataFilters:any =[]
+var tableFilters:any={}
 if(this.selectedFilters){
 const dataFilters={
 "fir":this.selectedFilters.fir,
@@ -165,12 +170,24 @@ if(filterByFlag==="warning"){
   delete filteredDataFilters['airPortClosure']
   delete filteredDataFilters['airSpaceClosure']
 }
-console.log(filteredDataFilters,"filteredDataFiltersfilteredDataFilters")
 payload['dataFilters']=filteredDataFilters;
 }
 
+// if(latest){
+//   tableFilters['category']=filterByFlag
+// }
 
-var tableFilters:any={}
+
+if(filterByFlag!==""){
+ tableFilters['category']=filterByFlag
+}
+if(latest!==undefined){
+  tableFilters['latest']=latest
+}
+if(searchStatus)
+{
+  tableFilters['searchTerm']=this.searchText;
+}
 
 this.headers.forEach((header:any)=>{
 if(header.selectedOptions.length>0) {
@@ -180,6 +197,11 @@ tableFilters[header.mappingName]=header.selectedOptions
 payload['tableFilters']=tableFilters;
 this.getTableData(payload)
   }
+
+  onSearchClick(){
+    this.p=1;
+   this.constructPayload("",undefined,true)
+  } 
   
   showPopup(noteNum:any,flag:any,entry:any){
     console.log(entry)
@@ -208,8 +230,10 @@ this.getTableData(payload)
     // console.log(this.headers,"sdjbmsdb dsh dnb dh fnb he ned jhdb dn jhshdssjhsbksjhd")
   }
 
-  latest(){
-    this.filteredNotamData = [...this.notamData];
+  onLatestClick(){
+    this.p=1;
+     this.constructPayload("",!this.latest)
+     this.latest=!this.latest
   }
 
   pageChangeEvent(event: number){
