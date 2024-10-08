@@ -41,7 +41,7 @@ this.sharedService.notamDataList(res.data);
     })
   }
 
-
+  selectedFilters:any;
   
   ngOnInit(): void {
     this.getTableData({
@@ -55,6 +55,7 @@ this.sharedService.notamDataList(res.data);
     this.sharedService.formValues$.subscribe((data)=>{
       if(data){
         this.p=1;
+        this.selectedFilters=data;
         const payload={
           "pageNo":this.p-1,
           "dataFilters":{
@@ -171,9 +172,6 @@ this.sharedService.notamDataList(res.data);
    const payload={
     "pageNo":this.p-1,
     "dataFilters":{
-      "fir":"",
-      "airport":"",
-      "airSpaceEnr":"",
       "airPortClosure":false,
       "airSpaceClosure":false
      }
