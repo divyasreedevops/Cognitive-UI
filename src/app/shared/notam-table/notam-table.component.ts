@@ -189,16 +189,51 @@ this.getTableData(payload)
     this.selectedNotam=entry;
   }
 
-  close(){
-    this.isMinimize.emit({status:0})
-    const circleData = {
-      val: true,       // Trigger to show circles
-      status: 1,       // You can add other status or relevant information
-      mapType: 'dark', // Example of another value, like the map type
-      radius: 100000   // Example radius value to control the size of circles
+  close() {
+    this.isMinimize.emit({ status: 0 });
+  
+    let payload = {
+      "pageNo": 0 // Start with the first page
+    };
+    
+    // Recursive function to handle pagination and data accumulation
+    const fetchNotamData = (payload: any) => {
+      this.notamservice.getNotamList(payload).subscribe((res: any) => {
+        console.log('DATA ', res);
+        // Process the current page data
+        let tempList = []
+        console.log('payload:', payload)
+        for (let i = 0; i < res.data.length; i++) {
+          const obj = res.data[i];
+          let temp = {
+            "lat": obj.lat,
+            "lon": obj.lon,
+            "radius": obj.radius,
+            "category": obj.category,
+            "notam":obj.notam,  
+          };
+          tempList.push(temp);
+        }
+  
+        // Emit the circle data after each page is processed
+        this.mapService.emitCircleData(tempList);
+  
+        // Handle pagination, check if nextPage exists
+        if (res.nextPage) {
+          console.log('Next Page exists: ', res.nextPage);
+          payload.pageNo = res.nextPage; // Update payload with the next page number
+  
+          // Fetch the next page of data
+          fetchNotamData(payload);
+        } else {
+          // No more pages, finalize the process and emit the final data
+          this.sharedService.notamDataList(res.data);
+        }
+      });
     };
   
-    this.mapService.emitCircleData(circleData);
+    // Call the recursive function with the initial payload
+    fetchNotamData(payload);
   }
 
   filterByFlag(flagColor: string) {
