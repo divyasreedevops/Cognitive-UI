@@ -84,6 +84,18 @@ export class MapComponent implements OnInit {
   mode: 'static' | 'animation' = 'static';
   animationIndex: number = 0;
   animationInterval: any;
+  notamTitle: string = 'A1379/24 NOTAMN';
+  notamDetails: string = 'VECF/QMPXX/IV/NBO/A/000/999/2239N08827E005 A) VECC B) 2408010000 C) 2409302359';
+  notamDescription: string = '180 DEG TURN NOT ALLOWED FOR PWR IN PUSH BACK PRKG STAND DUE SAFETY CONCERN. ACFT TO CARRY THEIR TOW BAR FOR PUSHBACK.';
+  createdAt: string = '25 Jul 2024 06:56:00';
+  source: string = 'VECCYNYX';
+  redCircleIcon = L.icon({
+    iconUrl: 'assets/icons/1.png', // Set the path to your icon
+    iconSize: [25, 25], // Adjust icon size
+    iconAnchor: [12, 12], // Point of the icon which will correspond to marker's location
+    popupAnchor: [0, -20] // Point from which the popup should open relative to the iconAnchor
+  });
+  
 
 
   toggleMenu() {
@@ -188,10 +200,11 @@ export class MapComponent implements OnInit {
     });
 
     this.showCirclesSubscription = this.notamSharedService.showCircles$.subscribe((circleData) => {
-      console.log('circleData', circleData)
-      if (circleData.val) {
-        this.addCircles(circleData.radius); // Use the passed radius
+      if (circleData) {
+        this.addCircles(circleData); // Use the passed radius
       }
+      console.log('EEEEEEEEEEEE',this.circleData.length)
+      console.log('this.circleData', this.circleData)
     });
    
 
@@ -237,32 +250,106 @@ export class MapComponent implements OnInit {
   }
 
 
-  addCircles(radius: number): void {
-    const circles = [
-      { lat: 19.0760, lng: 72.8777, radius: 100000, fillColor: 'red', fillOpacity: 0.4 },
-      // { lat: 19.0760, lng: 72.8777, radius, fillColor: 'red', fillOpacity: 0.4 },   // Mumbai
-      { lat: 18.5204, lng: 73.8567, radius, fillColor: 'yellow', fillOpacity: 0.4 }, // Pune
-      // Additional circles...
-    ];
+  circleData:any = []
+addCircles(circles: any): void {
+  this.circleData = this.circleData.concat(circles);
+  circles.forEach((circle: { lat: any; lon: any; radius: any; notam: any; category: any }) => {
+      if (circle.lat === null || circle.lon === null || circle.radius === null) {
+          console.warn('Skipping circle due to null values:', circle);
+          return; // Skip this iteration if any value is null
+      }
 
-    circles.forEach(circle => {
-      L.circle([circle.lat, circle.lng], {
-        radius: circle.radius,
-        fillColor: circle.fillColor,
-        fillOpacity: circle.fillOpacity,
-        // color: this.getLighterBorderColor(circle.fillColor) // Lighter border color
-        weight: 0
-      }).addTo(this.map);
-    });
-    // circles.forEach(circle => {
-    //   L.circle([circle.lat, circle.lng], {
-    //       radius: circle.radius,
-    //       fillColor: circle.fillColor,
-    //       fillOpacity: circle.fillOpacity
-    //   }).addTo(this.map);
-    // })
-  }
- 
+      const latitude = this.convertDMSToDD(circle.lat);
+      const longitude = this.convertDMSToDD(circle.lon);
+      const radius = parseFloat(circle.radius) * 1000;
+      // const notamDetails = ;
+      const category = circle.category;
+      // const notamTitle = notamDetails.split('\n')[0];
+      const [notamTitle, ...remainingDetails] = circle.notam.split('\n');
+
+      // Join the remaining details back into a single string
+      const notamDetails = remainingDetails.join('\n');
+      
+
+      if (!isNaN(radius) && !isNaN(latitude) && !isNaN(longitude)) {
+          let leafletCircle: any;
+          console.log('category', category)
+
+          if (category === 'critical') {
+              // Create red circle for critical category
+              leafletCircle = L.circle([latitude, longitude], {
+                  radius: radius,
+                  fillColor: 'red',
+                  fillOpacity: 0.1,
+                  weight: 0,
+                  color: 'red'
+              }).addTo(this.map);
+
+              // Bind the popup content only for critical circles
+              const popupContent = `
+                <div style="font-size: 12px; font-weight: bold; width: 300px; height: 200px; overflow: auto;">
+                  <div style="display: flex; align-items: center;">
+                    <!-- Red Triangle -->
+                    <div style="width: 0; border-radius: 1px, height: 0; border-left: 10px solid transparent; border-right: 10px solid transparent; border-bottom: 15px solid red; margin-right: 10px;"></div>
+                    <!-- Title -->
+                    <div style="font-weight: 900; color: black;">${notamTitle}</div>
+                  </div>
+                  <div>${notamDetails}</div>
+                </div>
+              `;
+              leafletCircle.bindPopup(popupContent);
+
+              // Open popup on circle click
+              leafletCircle.on('click', function () {
+                  leafletCircle.openPopup();
+              });
+
+              // Add red icon to the critical circle
+              const redCircleMarker = L.marker([latitude, longitude], { icon: this.redCircleIcon }).addTo(this.map);
+              redCircleMarker.bindPopup(popupContent);
+
+          } else {
+              // Create green circle for non-critical category, no popup or icon
+              leafletCircle = L.circle([latitude, longitude], {
+                  radius: radius,
+                  fillColor: 'green', // Or another color for different types
+                  fillOpacity: 0.1,
+                  weight: 0,
+                  color: 'green'
+              }).addTo(this.map);
+          }
+
+      } else {
+          console.error('Invalid LatLng or radius:', { latitude, longitude, radius });
+      }
+  });
+}
+
+  
+  
+  convertDMSToDD(coordinate: string): number {
+    const direction = coordinate.slice(-1);  // Get the direction (N, S, E, W)
+    const numericPart = coordinate.slice(0, -1);  // Get the numeric part (e.g., "1906" or "07252")
+    let degrees: number, minutes: number;
+    if (numericPart.length === 4) {
+        // For 4-digit latitude (e.g., "1906N")
+        degrees = parseInt(numericPart.slice(0, 2), 10);  // First two digits are degrees
+        minutes = parseInt(numericPart.slice(2), 10);     // Last two digits are minutes
+    } else if (numericPart.length === 5) {
+        // For 5-digit longitude (e.g., "07252E")
+        degrees = parseInt(numericPart.slice(0, 3), 10);  // First three digits are degrees
+        minutes = parseInt(numericPart.slice(3), 10);     // Last two digits are minutes
+    } else {
+        throw new Error("Invalid coordinate format");
+    }
+    // Convert minutes to decimal and add to degrees
+    let decimalDegrees = degrees + (minutes / 60);
+    // Adjust sign based on the direction
+    if (direction === 'S' || direction === 'W') {
+        decimalDegrees = -decimalDegrees;
+    }
+    return decimalDegrees;
+}
 
 
   fetchFlightData(): void {
