@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { PansopsService } from 'src/app/service/Adm/Pansops/pansops.service';
 import { SharedService } from 'src/app/service/shared.service';
 import { WeatherService } from 'src/app/service/Weather/weather.service';
+import { SharedService as wxmSharedService } from 'src/app/service/Weather/shared.service';
 interface RowItem {
   [key: string]: string;
 }
@@ -47,6 +48,7 @@ interface ComparedComplexObject {
 })
 export class EnroteSidebarComponent {
   @Output() AIXM: EventEmitter<any> = new EventEmitter();
+  @Output() wxm: EventEmitter<any> = new EventEmitter();
 
   isCollapsed = false;
   selectedTab='';
@@ -89,7 +91,8 @@ export class EnroteSidebarComponent {
     private router: Router,
     private formbuilder: FormBuilder,
     private weatherService: WeatherService,
-    private pansopsService: PansopsService
+    private pansopsService: PansopsService,
+    private wxmSharedService:wxmSharedService
   ){
 
   }
@@ -473,9 +476,9 @@ onToggle(event:any){
 }
 
 onsubmit(){
-  console.log('form=========');
-   console.log(this.Airform.value);
- //  const formValues = this.Airform.value;
-  // this.sharedService.updateFormValues(formValues);
+    this.wxm.emit({status:1});
+    setTimeout(() => {
+      this.wxmSharedService.updateEnrouteSidebar(this.Airform.value);
+    }, 100); 
 }
 }

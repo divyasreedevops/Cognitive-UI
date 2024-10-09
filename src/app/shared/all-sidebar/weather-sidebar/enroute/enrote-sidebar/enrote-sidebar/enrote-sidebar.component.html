@@ -14,9 +14,9 @@
               name="selectedOptions" 
               id="selectedOptions" 
               class="multi-select-container" 
-              [value]="selectedProcedureNameShow.length > 0 ? selectedProcedureNameShow.join(', ') : 'Select Procedure Name'"  
+              [value]="selectedProcedureNameShow.length > 0 ? selectedProcedureNameShow.join(', ') : 'Select ICAO Code'"  
               (click)="toggledropdown($event,'name')" 
-              placeholder="Select Procedure Name" 
+              placeholder="Select ICAO Code" 
               readonly>
           
               <!-- Checkbox options -->
@@ -38,48 +38,48 @@
           </div>
 
           <div class="checkhold">
-            <label for="" class="checklabel">METARs</label>
-            <input formControlName="selectedMETARs" class="checkbox-show" type="checkbox">
+            <label for="selectedMETARs" class="checklabel">METARs</label>
+            <input id="selectedMETARs" formControlName="selectedMETARs" class="checkbox-show" type="checkbox">
           </div>
           <div class="checkhold">
-            <label for="" class="checklabel">TAFs</label>
-            <input formControlName="TAFs" class="checkbox-show" type="checkbox">
+            <label for="TAFs" class="checklabel">TAFs</label>
+            <input id="TAFs" formControlName="TAFs" class="checkbox-show" type="checkbox">
           </div>
           <div class="checkhold">
-            <label for="" class="checklabel">SIGMETs</label>
-            <input formControlName="SIGMETs" class="checkbox-show" type="checkbox">
+            <label for="SIGMETs" class="checklabel">SIGMETs</label>
+            <input id="SIGMETs" formControlName="SIGMETs" class="checkbox-show" type="checkbox">
           </div>
           <div class="checkhold">
-            <label for="" class="checklabel">SPECI</label>
-            <input formControlName="SPECI" class="checkbox-show" type="checkbox">
+            <label for="SPECI" class="checklabel">SPECI</label>
+            <input id="SPECI" formControlName="SPECI" class="checkbox-show" type="checkbox">
           </div>
           <div class="checkhold">
-            <label for="" class="checklabel">AIRMETs</label>
-            <input formControlName="AIRMETs" class="checkbox-show" type="checkbox">
+            <label for="AIRMETs" class="checklabel">AIRMETs</label>
+            <input id="AIRMETs" formControlName="AIRMETs" class="checkbox-show" type="checkbox">
           </div>
           <div class="checkhold">
-            <label for="" class="checklabel">Turbulence</label>
-            <input formControlName="Turbulence" class="checkbox-show" type="checkbox">
+            <label for="Turbulence" class="checklabel">Turbulence</label>
+            <input id="Turbulence" formControlName="Turbulence" class="checkbox-show" type="checkbox">
           </div>
           <div class="checkhold">
-            <label for="" class="checklabel">Wind Shear</label>
-            <input formControlName="WindShear" class="checkbox-show" type="checkbox">
+            <label for="WindShear" class="checklabel">Wind Shear</label>
+            <input id="WindShear" formControlName="WindShear" class="checkbox-show" type="checkbox">
           </div>
           <div class="checkhold">
-            <label for="" class="checklabel">AD Warning</label>
-            <input formControlName="ADWarning" class="checkbox-show" type="checkbox">
+            <label for="ADWarning" class="checklabel">AD Warning</label>
+            <input id="ADWarning" formControlName="ADWarning" class="checkbox-show" type="checkbox">
           </div>
           <div class="checkhold">
             <label for="" class="checklabel">Potential Icing</label>
             <input formControlName="PotentialIcing" class="checkbox-show" type="checkbox">
           </div>
           <div class="checkhold">
-            <label for="" class="checklabel">GRF NOTAMs</label>
-            <input formControlName="GRFNOTAMs" class="checkbox-show" type="checkbox">
+            <label for="PotentialIcing" class="checklabel">GRF NOTAMs</label>
+            <input id="PotentialIcing" formControlName="GRFNOTAMs" class="checkbox-show" type="checkbox">
           </div>
           <div class="checkhold">
-            <label for="" class="checklabel">Category</label>
-            <input formControlName="Category" class="checkbox-show" type="checkbox">
+            <label for="Category" class="checklabel">Category</label>
+            <input id="Category" formControlName="Category" class="checkbox-show" type="checkbox">
           </div>
       </form>
       <div>

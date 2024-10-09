@@ -11,6 +11,7 @@ import {
 } from '@angular/animations';
 import { PansopsService } from 'src/app/service/Adm/Pansops/pansops.service';
 import { combineLatest } from 'rxjs';
+import { SharedService as wxmSharedService } from 'src/app/service/Weather/shared.service';
 interface RowItem {
   [key: string]: string;
 }
@@ -95,12 +96,15 @@ export class SidebarComponent {
   isDropdownVisible = false;
   isNotamTable = false;
   isminNotam = false;
+  isEnrouteTable=false;
+  isminEnroute=false
 
   constructor(
     private sharedService: SharedService,
     private router: Router,
     private formbuilder: FormBuilder,
-    private pansopsService: PansopsService
+    private pansopsService: PansopsService,
+    private wxmSharedService: wxmSharedService
   ) {
     console.log(this.activeTab,"&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&")
   }
@@ -431,6 +435,8 @@ export class SidebarComponent {
     }else if(route === '/weather/PANS-OPS'){
       this.router.navigate(['/weather']);
       this.weatherSelectedTab=' ';
+      this.isEnrouteTable=false;
+      this.selectedTab = '';
     }
 
   }
@@ -565,8 +571,17 @@ export class SidebarComponent {
     this.isExpanded = !this.isExpanded;
   }
 
-  minimize(event: any) {
-    this.isNotamTable = !this.isNotamTable;
-    this.isminNotam = !this.isminNotam;
+  minimize(event: any,tab:any) {
+    switch(tab){
+      case "notam":
+        this.isNotamTable = !this.isNotamTable;
+        this.isminNotam = !this.isminNotam;
+        break;
+      case "wxm":
+        this.isEnrouteTable = !this.isEnrouteTable;
+        this.isminEnroute = !this.isminEnroute;
+    }
+    
   }
+
 }
