@@ -435,10 +435,9 @@ export class SidebarComponent {
 
   }
 
-  navigateToWeatherModule() {
-    this.weatherSelectedTab = 'PANS-OPS';
+  navigateToWeatherModule(tab:any) {
+    this.weatherSelectedTab = tab;
     this.router.navigate(['weather','PANS-OPS']);
-    console.log('click...');
     this.isMultiMapView = true;
   }
 

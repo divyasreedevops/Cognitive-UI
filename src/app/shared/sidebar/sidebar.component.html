@@ -26,11 +26,11 @@
     
 
     <ng-container *ngIf="activeTab==='WxM' && weatherSelectedTab===' '">
-      <div class="sub-option" [ngClass]="{'active': selectedTab==='PANS-OPS'}"  (click)="navigateToWeatherModule()">
+      <div class="sub-option" [ngClass]="{'active': selectedTab==='PANS-OPS'}"  (click)="navigateToWeatherModule('PANS-OPS')">
           <mat-icon class="maticon">dataset</mat-icon>
           <span>PANS-OPS</span>
       </div>
-      <div class="sub-option" [ngClass]="{'active': selectedTab==='ENR'}"  (click)="selectedTab='ENR'">
+      <div class="sub-option" [ngClass]="{'active': selectedTab==='ENR'}"  (click)="selectedTab='ENR'" (click)="navigateToWeatherModule('ENR')">
           <mat-icon class="maticon">dataset</mat-icon>
           <span>Enroute</span>
       </div>
@@ -56,6 +56,10 @@
       <!-- For Notam Table  -->
       <ng-container *ngIf="weatherSelectedTab==='PANS-OPS' && !isCollapsed">
         <app-weather-sidebar></app-weather-sidebar>
+        
+      </ng-container>
+      <ng-container *ngIf="weatherSelectedTab==='ENR' && !isCollapsed">
+       <app-enrote-sidebar></app-enrote-sidebar>
         
       </ng-container>
 
