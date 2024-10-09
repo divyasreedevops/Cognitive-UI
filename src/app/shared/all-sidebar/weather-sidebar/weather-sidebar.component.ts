@@ -210,7 +210,7 @@ export class WeatherSidebarComponent {
         case 'typeOfProcedure':{
           this.selectedOptionstoshow=[];
           const selectedOptions = this.Airform.get('selectedTypeofProcedure')?.value || [];
-    
+       console.log(selectedOptions,"typeOfProcedure")
       if (target.checked) {
         // Add selected value
         selectedOptions.push(target.value);
