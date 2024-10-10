@@ -21,5 +21,10 @@ export class NotamService {
     return this.http.post<any>(`${this.apiUrl}${Notam.notamList}`,data,{headers});
    }
 
+   getAtsData(data:any){
+    const headers = new HttpHeaders({'Content-Type': 'application/json'});
+    return this.http.post<any>(`${this.apiUrl}${Notam.atsData}`,data,{headers});
+   }
+
 
 }

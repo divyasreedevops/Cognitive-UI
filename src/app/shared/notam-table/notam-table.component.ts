@@ -57,6 +57,7 @@ export class NotamTableComponent implements OnInit {
 //         "pageNo":this.p-1,
 //         "dataFilters":filteredDataFilters
 //       }
+
         this.constructPayload()
       }
     })
@@ -214,15 +215,28 @@ this.getTableData(payload)
   close() {
     this.isMinimize.emit({ status: 0 });
   
-    let payload = {
+    let payload:any = {
       "pageNo": 0 // Start with the first page
     };
-    
+      if(this.selectedFilters){
+        const dataFilters={
+          "fir":this.selectedFilters.fir,
+          "airport":this.selectedFilters['airports'],
+          "airSpaceEnr":this.selectedFilters['airspace/enr'],
+          "facilityDownGrade":this.selectedFilters['facilitydowngrade'],
+          "airPortClosure":this.selectedFilters.closure.includes('Airport Closure'),
+          "airSpaceClosure":this.selectedFilters.closure.includes('Enroute Clouser')
+          }
+          const filteredDataFilters  = Object.fromEntries(
+            Object.entries(dataFilters).filter(([key, value]) => {
+                return !Array.isArray(value) || value.length > 0;
+            })
+            );
+            payload['dataFilters']=filteredDataFilters;
+      }
     // Recursive function to handle pagination and data accumulation
     const fetchNotamData = (payload: any) => {
       this.notamservice.getNotamList(payload).subscribe((res: any) => {
-        console.log('DATA ', res);
-        // Process the current page data
         let tempList = []
         console.log('payload:', payload)
         for (let i = 0; i < res.data.length; i++) {
@@ -237,6 +251,8 @@ this.getTableData(payload)
           tempList.push(temp);
         }
   
+
+        console.log(tempList,"tempListtempListtempListtempListtempListtempList")
         // Emit the circle data after each page is processed
         this.mapService.emitCircleData(tempList);
   
@@ -244,7 +260,6 @@ this.getTableData(payload)
         if (res.nextPage) {
           console.log('Next Page exists: ', res.nextPage);
           payload.pageNo = res.nextPage; // Update payload with the next page number
-  
           // Fetch the next page of data
           fetchNotamData(payload);
         } else {
@@ -256,6 +271,13 @@ this.getTableData(payload)
   
     // Call the recursive function with the initial payload
     fetchNotamData(payload);
+
+    this.notamservice.getAtsData({
+      "points":"VABB-G208-ISRIS-DOSTO-APANO-G461-VAAH"
+  }).subscribe((data:any)=>{
+      this.sharedService.atsDataList(data)
+  })
+
   }
 
   filterByFlag(flagColor: string) {

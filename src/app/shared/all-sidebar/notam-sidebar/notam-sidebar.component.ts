@@ -54,7 +54,7 @@ export class NotamSidebarComponent {
     },
     {
       name: 'Enter Your ATS Plan',
-      allOptionsChecked: false
+      allOptionsChecked: false,
     }
 
   ];

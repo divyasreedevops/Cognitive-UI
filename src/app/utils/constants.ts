@@ -14,5 +14,6 @@ export const Adm={
 
 export const Notam={
    notamFilter: "/notam/filters",
-   notamList:"/notam/list"
+   notamList:"/notam/list",
+   atsData:"/caom/route"
 }
