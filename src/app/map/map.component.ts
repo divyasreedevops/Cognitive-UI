@@ -1019,6 +1019,20 @@ plotAtsProcedures(atsdata:any){
        
       }
 
+
+      if(ats.type==='navid'){
+        if(featureCollection.features.length>0){
+          var distance=null;
+          if(airway){
+               distance=airwayName
+               airway=false;
+          }
+          lineJson.features.push({ "type": "Feature", "properties": { "Name":  ats.code,"Distance":distance, "Bearing": null}, "geometry":
+            { "type": "MultiLineString", "coordinates": [ [ featureCollection.features[featureCollection.features.length-1].geometry.coordinates,ats.geometry.coordinates] ] } },)
+         }
+        featureCollection.features.push( { "type": "Feature", "properties": { "Name": ats.code,type:ats.type,  "Speed": "", "Altitude": "" }, "geometry": { "type": "Point", "coordinates":ats.geometry.coordinates } });
+       
+      }
       if(ats.type==='airway'){
         console.log("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&")
         airway=true;
