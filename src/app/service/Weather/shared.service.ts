@@ -14,4 +14,11 @@ export class SharedService {
   updateEnrouteSidebar(content: any) {
     this.enrouteSidebar.next(content);
   }
+
+  private atsSidebar = new Subject<any>();
+  atsSidebar$ = this.atsSidebar.asObservable();
+
+  updateatsSidebar(content: any) {
+    this.atsSidebar.next(content);
+  }
 }

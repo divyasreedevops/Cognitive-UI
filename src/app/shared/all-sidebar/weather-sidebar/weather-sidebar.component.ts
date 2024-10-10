@@ -313,7 +313,7 @@ export class WeatherSidebarComponent {
       if (this.isProcedureName) {
         this.isProcedureName = false; 
         if(!this.areArraysEqual(this.selectedProcedureName, this.previousSelectedProcedure)){
-        this.getProcedure();
+        //this.getProcedure();
         this.previousSelectedProcedure = [...this.selectedProcedureName];
         // const formValues = this.Airform.value;
         // this.sharedService.updateFormValues(formValues);
@@ -465,5 +465,6 @@ onsubmit(){
    console.log(this.Airform.value);
    const formValues = this.Airform.value;
    this.sharedService.updateFormValues(formValues);
+   this.getProcedure();
 }
 }

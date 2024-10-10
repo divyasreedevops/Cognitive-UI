@@ -56,28 +56,7 @@ export class EnroteSidebarComponent {
   procedureResponse=[];
   multipart1: ListItem[] = [];
   multipart2: ListItem[] = [];
-  selectFormat=[
-    {
-      label:'Airports',
-      options: ['VOBL/Bengaluru (KIA)', 'Airport 2', 'Airport 3']
-    },
-    {
-      label:'Runways',
-      options: ['Runway 1', 'Runway 2', 'Runway 3']
-    },
-    {
-      label:'Type of Procedures',
-      options: ['Procedure 1', 'Procedure 2', 'Procedure 3']
-    },
-    {
-      label:'Procedure Names',
-      options: ['Procedure Name 1', 'Procedure Name 2', 'Procedure Name 3']
-    },
-    {
-      label:'Chart Views',
-      options: ['Chart View 1', 'Chart View 2', 'Chart View 3']
-    },
-  ]
+
 
   // airports = ['Airport 1', 'Airport 2', 'Airport 3'];
   // runways = ['Runway 1', 'Runway 2', 'Runway 3'];
@@ -85,7 +64,20 @@ export class EnroteSidebarComponent {
   // procedureNames = ['Procedure Name 1', 'Procedure Name 2', 'Procedure Name 3'];
   // chartViews = ['Chart View 1', 'Chart View 2', 'Chart View 3'];
   Airform !: FormGroup;
-
+  checkboxes = [
+    { id: 'selectedMETARs', label: 'METARs', formControlName: 'selectedMETARs' },
+    { id: 'TAFs', label: 'TAFs', formControlName: 'TAFs' },
+    { id: 'SIGMETs', label: 'SIGMETs', formControlName: 'SIGMETs' },
+    { id: 'SPECI', label: 'SPECI', formControlName: 'SPECI' },
+    { id: 'AIRMETs', label: 'AIRMETs', formControlName: 'AIRMETs' },
+    { id: 'Turbulence', label: 'Turbulence', formControlName: 'Turbulence' },
+    { id: 'WindShear', label: 'Wind Shear', formControlName: 'WindShear' },
+    { id: 'ADWarning', label: 'AD Warning', formControlName: 'ADWarning' },
+    { id: '', label: 'Potential Icing', formControlName: 'PotentialIcing' },
+    { id: 'GRFNOTAMs', label: 'GRF NOTAMs', formControlName: 'GRFNOTAMs' },
+    { id: 'Category', label: 'Category', formControlName: 'Category' }
+  ];
+  
   constructor(
     private sharedService: SharedService,
     private router: Router,

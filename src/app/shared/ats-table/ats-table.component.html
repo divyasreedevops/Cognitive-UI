@@ -1,0 +1,107 @@
+<div class="navhold">
+    <div class="innerhold">
+            <div class="dflex" style="gap: 9px; font-weight: 501;">
+                <span>Map View</span>
+                <div class="toggle-container" (change)="close()">
+                    <label class="toggle-label">
+                      <input type="checkbox" >
+                      <span class="toggle-switch"></span>
+                    </label>
+                  </div>
+            </div>
+
+            <div class="dflex" style="font-weight: 501; cursor: pointer;" (click)="onLatestClick()">
+                <span>Latest</span>
+                <mat-icon style="height: 31px;font-size: 2rem;">swap_vert</mat-icon>
+            </div>
+
+            <div class="dflex" style="gap: 5px; font-weight: 501;">
+                <div class="dflex border" (click)="filterByFlag('normal')">
+                    <mat-icon class="flag green">play_arrow</mat-icon> Normal
+                </div>
+                <div class="dflex border" (click)="filterByFlag('warning')">
+                    <mat-icon class="flag yellow">play_arrow</mat-icon> Warning
+                </div>
+                <div class="dflex border" (click)="filterByFlag('critical')">
+                    <mat-icon class="flag red">play_arrow</mat-icon> Critical
+                </div>
+            </div>
+
+            <div class="dflex" style="gap: 5px;">
+                <input type="text" style="text-align: center; font-weight: 501;" [(ngModel)]="searchText" placeholder="Search NOTAMs" name="" id="">
+                <mat-icon (click)="onSearchClick()">search</mat-icon>
+            </div>
+    </div>
+ </div>
+
+ <div class="weather-table">
+    <div style="position: relative;" *ngFor="let table of tables; let idx = index">
+      <h3 class="table-title">{{ table.title }}</h3>
+      <table class="table" [id]="table.id">
+        <thead>
+          <tr>
+            <th>S/N</th>
+            <th>ICAO Code</th>
+            <th>Status</th>
+            <th>Valid From</th>
+            <th>Valid Till</th>
+            <th>Wind Direction</th>
+            <th>Wind Speed</th>
+            <th>Wind Gust</th>
+            <th>Visibility</th>
+            <th>RVR</th>
+            <th>RWY_ID</th>
+            <th>Weather</th>
+            <th>Clouds</th>
+            <th>Temp.</th>
+            <th>Dew Point</th>
+            <th>Pressure</th>
+            <th>Ceiling</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let data of table.data; let i = index">
+            <td>{{ i + 1 }}.</td>
+            <td>
+              <span [ngClass]="data.statusColor" class="circle"></span>
+              {{ data.icaoCode }}
+              <!-- Add popup-trigger class to toggle button -->
+              <mat-icon class="popup-trigger" (click)="togglePopup(idx, i, data)">keyboard_arrow_down</mat-icon>
+            </td>
+            <td>{{ data.status }}</td>
+            <td>{{ data.validFrom }}</td>
+            <td>{{ data.validTill }}</td>
+            <td>{{ data.windDirection }}</td>
+            <td>{{ data.windSpeed }}</td>
+            <td>{{ data.windGust }}</td>
+            <td>{{ data.visibility }}</td>
+            <td>{{ data.rvr }}</td>
+            <td>{{ data.rwyId }}</td>
+            <td>{{ data.weather }}</td>
+            <td>{{ data.clouds }}</td>
+            <td>{{ data.temp }}</td>
+            <td>{{ data.dewPoint }}</td>
+            <td>{{ data.pressure }}</td>
+            <td>{{ data.ceiling }}</td>
+  
+            <!-- Popup now spans all columns -->
+            <td colspan="17">
+              <div class="popup" *ngIf="isPopupVisible[idx]?.[i]">
+                <div style="display: flex; align-items: center;">
+                  <mat-icon class="flag" style="font-size: 68px;width: 4rem;height: 4rem;" [ngClass]="{'red': flag === 'red','green': flag === 'green','yellow': flag === 'yellow'}">play_arrow</mat-icon>
+                  <span style="font-size: 1.5rem;font-weight: 501;">{{ selectedRowData?.icaoCode }}</span>
+                </div>
+                <span>
+                  {{ selectedRowData?.weather }}<br>
+                  Wind: {{ selectedRowData?.windDirection }} / {{ selectedRowData?.windSpeed }}<br>
+                  Temperature: {{ selectedRowData?.temp }}°C<br>
+                  Dew Point: {{ selectedRowData?.dewPoint }}°C
+                </span>
+                <mat-icon class="closebtn" (click)="closePopup(idx, i)">close</mat-icon>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>

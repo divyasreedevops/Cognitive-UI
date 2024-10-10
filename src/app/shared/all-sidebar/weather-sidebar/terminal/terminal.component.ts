@@ -57,34 +57,19 @@ export class TerminalComponent {
   procedureResponse=[];
   multipart1: ListItem[] = [];
   multipart2: ListItem[] = [];
-  selectFormat=[
-    {
-      label:'Airports',
-      options: ['VOBL/Bengaluru (KIA)', 'Airport 2', 'Airport 3']
-    },
-    {
-      label:'Runways',
-      options: ['Runway 1', 'Runway 2', 'Runway 3']
-    },
-    {
-      label:'Type of Procedures',
-      options: ['Procedure 1', 'Procedure 2', 'Procedure 3']
-    },
-    {
-      label:'Procedure Names',
-      options: ['Procedure Name 1', 'Procedure Name 2', 'Procedure Name 3']
-    },
-    {
-      label:'Chart Views',
-      options: ['Chart View 1', 'Chart View 2', 'Chart View 3']
-    },
-  ]
-
-  // airports = ['Airport 1', 'Airport 2', 'Airport 3'];
-  // runways = ['Runway 1', 'Runway 2', 'Runway 3'];
-  // procedures = ['Procedure 1', 'Procedure 2', 'Procedure 3'];
-  // procedureNames = ['Procedure Name 1', 'Procedure Name 2', 'Procedure Name 3'];
-  // chartViews = ['Chart View 1', 'Chart View 2', 'Chart View 3'];
+  checkboxes = [
+    { id: 'selectedMETARs', label: 'METARs', formControlName: 'selectedMETARs' },
+    { id: 'TAFs', label: 'TAFs', formControlName: 'TAFs' },
+    { id: 'SIGMETs', label: 'SIGMETs', formControlName: 'SIGMETs' },
+    { id: 'Cyclone', label: 'Cyclone', formControlName: 'SPECI' },
+    { id: 'AIRMETs', label: 'AIRMETs', formControlName: 'AIRMETs' },
+    { id: 'Turbulence', label: 'Turbulence', formControlName: 'Turbulence' },
+    { id: 'WindShear', label: 'Wind Shear', formControlName: 'WindShear' },
+    { id: 'VolcanicAsh', label: 'Volcanic Ash', formControlName: 'ADWarning' },
+    { id: '', label: 'Icing Level', formControlName: 'PotentialIcing' },
+    { id: 'SEGChart', label: 'SEG Chart', formControlName: 'GRFNOTAMs' },
+    { id: 'Category', label: 'Temp. Chart', formControlName: 'Category' }
+  ];
   Airform !: FormGroup;
 
   constructor(
@@ -476,7 +461,7 @@ onToggle(event:any){
 onsubmit(){
     this.wxm.emit({status:1});
     setTimeout(() => {
-      this.wxmSharedService.updateEnrouteSidebar(this.Airform.value);
+      this.wxmSharedService.updateatsSidebar(this.Airform.value);
     }, 100); 
 }
 }

@@ -97,7 +97,9 @@ export class SidebarComponent {
   isNotamTable = false;
   isminNotam = false;
   isEnrouteTable=false;
-  isminEnroute=false
+  isminEnroute=false;
+  isairportTable=false;
+  isminairport=false;
 
   constructor(
     private sharedService: SharedService,
@@ -345,6 +347,10 @@ export class SidebarComponent {
 
     if (route === '/ADM/PANS-OPS' || route === '/weather/PANS-OPS') {
       console.log('route--->> ',route);
+      const tab = localStorage.getItem("wxmTab");
+      if(tab){
+        this.weatherSelectedTab = tab;
+      }
       this.isMultiMapView = true;
     } else {
       this.isMultiMapView = false;
@@ -437,12 +443,14 @@ export class SidebarComponent {
       this.weatherSelectedTab=' ';
       this.isEnrouteTable=false;
       this.selectedTab = '';
+      this.isairportTable=false;
     }
 
   }
 
   navigateToWeatherModule(tab:any) {
     this.weatherSelectedTab = tab;
+    localStorage.setItem("wxmTab",this.weatherSelectedTab);
     this.router.navigate(['weather','PANS-OPS']);
     this.isMultiMapView = true;
   }
@@ -580,6 +588,11 @@ export class SidebarComponent {
       case "wxm":
         this.isEnrouteTable = !this.isEnrouteTable;
         this.isminEnroute = !this.isminEnroute;
+        break;
+      case "ats":
+        this.isairportTable = !this.isairportTable;
+        this.isminairport = !this.isminairport;
+        break;
     }
     
   }

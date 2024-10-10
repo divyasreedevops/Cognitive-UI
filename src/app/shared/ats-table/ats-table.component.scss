@@ -1,0 +1,276 @@
+.notam-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    position: relative;
+  
+    th, td {
+        border: 1px solid black;
+       padding: 8px;
+       text-align: left;
+    
+    }
+
+    th {
+      background-color: #f2f2f2;
+      font-weight: bold;
+      position: relative;
+      overflow: unset;
+    }
+  
+    tr:nth-child(even) {
+      background-color: #f9f9f9;
+    }
+  
+    .status-icon {
+      display: inline-block;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      margin-right: 5px;
+  
+      &.red {
+        background-color: red;
+      }
+  
+      &.green {
+        background-color: green;
+      }
+  
+      &.yellow {
+        background-color: yellow;
+      }
+    }
+
+    
+
+  }
+
+  ::ng-deep .ngx-pagination{
+    margin-top: 10px;
+  }
+
+.red {
+    color: red;
+  }
+
+  .green {
+    color: green;
+  }
+
+  .yellow {
+    color: yellow;
+  }
+
+   ::ng-deep .ngx-pagination .current {
+    padding: 2px 4px;
+    background: black !important;
+    color: #fefefe;
+    cursor: default;
+    border-radius: 22px;
+}
+
+::ng-deep a{
+  text-decoration: none !important;
+}
+
+
+
+  .dflex{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  
+  }
+
+.navhold{
+    height: 3rem;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    margin-bottom: 10px;
+}
+
+.innerhold{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+}
+
+.toggle-container {
+    display: inline-block;
+    position: relative;
+  }
+  .toggle-label {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+  }
+  .toggle-switch {
+    position: relative;
+    display: inline-block;
+    width: 40px;
+    height: 20px;
+    background-color: black;
+    border-radius: 10px;
+    transition: background-color 0.3s;
+    z-index: -1;
+  }
+  .toggle-switch::before {
+    content: '';
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    top: 2px;
+    left: 2px;
+    background-color: white;
+    transition: transform 0.3s;
+  }
+  input[type="checkbox"] {
+    display: none;
+  }
+  input[type="checkbox"]:checked + .toggle-switch {
+    background-color: #2196F3;
+  }
+  input[type="checkbox"]:checked + .toggle-switch::before {
+    transform: translateX(20px);
+  }
+
+  .flag{
+    transform: rotate(270deg);
+}
+
+.border{
+    border: 1px solid black !important;
+    padding-right: 7px;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+.nowrap{
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.dropdown {
+  position: absolute;
+  /* width: 6rem; */
+  padding: 7px;
+  z-index: 1;
+  border-radius: 5px;
+  /* border: 1px solid gray; */
+  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+  background-color: white;
+  display: flex;
+  gap: 7px;
+  padding: 11px;
+  flex-direction: column;
+  font-weight: 0 !important;
+
+  span{
+    width: auto;
+    display: flex;
+    gap: 7px;
+    align-items: center;
+    font-weight: 100;
+  }
+
+}
+
+.checkbox-show {
+  display: block !important;
+  height: 1rem;
+}
+
+.popup{
+  position: absolute;
+  width: 100%;
+  
+  top: 47px;
+  left: 9px;
+  padding: 30px;
+  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+  border-radius: 6px;
+  background-color: white;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+
+  span{
+    font-size: 1.1rem;
+    line-height: 1.6rem;
+  }
+
+  .closebtn{
+    position: absolute;
+    right: 18px;
+    top: 16px;
+    background-color: red;
+    color: white;
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+}
+
+.notam-paginationContainer{
+  display: flex;
+  justify-content: flex-end;
+}
+
+/* Weather Table Styles */
+.weather-table {
+    width: 100%; /* Ensures the table takes full width */
+    border-collapse: collapse; /* Combine borders for a cleaner look */
+    }
+    
+    .weather-table {
+    text-align: center;
+    // font-weight: bold;
+    margin-bottom: 10px;
+    // border: 1px solid black;
+    }
+    
+    .table-title {
+      text-align: center;
+      font-weight: bold;
+      margin-bottom: 10px;
+      border: 1px solid black;
+      margin-bottom: 0;
+      text-decoration: underline;
+      }
+    
+    .weather-table th,
+    .weather-table td {
+    border: 1px solid black; /* Border for cells */
+    padding: 8px; /* Padding for cells */
+    }
+    
+    .weather-table .circle {
+    height: 15px; /* Height of status circle */
+    width: 15px; /* Width of status circle */
+    display: inline-block; /* Inline block for circles */
+    border-radius: 50%; /* Circular shape */
+    margin-right: 8px; /* Space between circle and text */
+    }
+    
+    .weather-table .green {
+    background-color: #00CC33; /* Green status circle */
+    }
+    
+    .weather-table .yellow {
+    background-color: #FFCC00; /* Yellow status circle */
+    }
+    
+    .weather-table th {
+    background-color: #f2f2f2; /* Header background */
+    // font-weight: bold; /* Header font weight */
+    }

@@ -2,11 +2,11 @@ import { Component, EventEmitter, HostListener, Output } from '@angular/core';
 import { SharedService } from 'src/app/service/Weather/shared.service';
 
 @Component({
-  selector: 'app-weather-table',
-  templateUrl: './weather-table.component.html',
-  styleUrl: './weather-table.component.scss'
+  selector: 'app-ats-table',
+  templateUrl: './ats-table.component.html',
+  styleUrl: './ats-table.component.scss'
 })
-export class WeatherTableComponent {
+export class AtsTableComponent {
   searchText:string=""
   p: number = 1;
   notemanNumber:any="";
@@ -116,7 +116,7 @@ constructor(
 }
 
 ngOnInit(){
-  this.sharedService.enrouteSidebar$.subscribe((wxm:any) => {
+  this.sharedService.atsSidebar$.subscribe((wxm:any) => {
     this.weatherData = wxm;
     console.log('playy-=-=-=-=');
     console.log(this.weatherData);

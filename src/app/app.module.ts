@@ -48,6 +48,7 @@ import { WeatherSidebarComponent } from './shared/all-sidebar/weather-sidebar/we
 import { EnroteSidebarComponent } from './shared/all-sidebar/weather-sidebar/enroute/enrote-sidebar/enrote-sidebar/enrote-sidebar.component';
 import { WeatherTableComponent } from './shared/weather-table/weather-table.component';
 import { TerminalComponent } from './shared/all-sidebar/weather-sidebar/terminal/terminal.component';
+import { AtsTableComponent } from './shared/ats-table/ats-table.component';
 
 @NgModule({
     declarations: [
@@ -73,7 +74,8 @@ import { TerminalComponent } from './shared/all-sidebar/weather-sidebar/terminal
         WeatherComponent,
         EnroteSidebarComponent,
         WeatherTableComponent,
-        TerminalComponent
+        TerminalComponent,
+        AtsTableComponent
     ],
   
     imports: [

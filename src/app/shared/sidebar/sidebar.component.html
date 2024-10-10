@@ -63,7 +63,7 @@
         
       </ng-container>
       <ng-container *ngIf="weatherSelectedTab==='AIRPORT' && !isCollapsed">
-       <app-terminal></app-terminal>
+       <app-terminal (wxm)="isairportTable=true"></app-terminal>
         
       </ng-container>
 
@@ -189,7 +189,7 @@
      <app-notam-table (isMinimize)="minimize($event,'notam')"></app-notam-table>
   </div>
 
-  <div class="tab" *ngIf="isminNotam || isminEnroute">
+  <div class="tab" *ngIf="isminNotam || isminEnroute || isminairport">
     <div class="min-tab">
 
       <div class="dflex" style="gap: 5px; font-weight: 501;">
@@ -204,7 +204,7 @@
         </div>
     </div>
 
-    <div class="dflex border" (click)="minimize($event,isminEnroute===true?'wxm':'notam')">
+    <div class="dflex border" (click)="minimize($event, isminEnroute ? 'wxm' : isminNotam ? 'notam' : 'ats')">
       Close Map
   </div>
     </div>
@@ -212,5 +212,8 @@
 
   <div class="tab tab-style" style="pointer-events: auto;" [hidden]="!isEnrouteTable">
     <app-weather-table (isMinimize)="minimize($event,'wxm')" ></app-weather-table>
+ </div>
+  <div class="tab tab-style" style="pointer-events: auto;" [hidden]="!isairportTable">
+     <app-ats-table (isMinimize)="minimize($event,'ats')"></app-ats-table>
  </div>
 </div>

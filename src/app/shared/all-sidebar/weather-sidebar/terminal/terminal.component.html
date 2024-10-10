@@ -11,50 +11,11 @@
             <textarea name="" formControlName="ATSPlan" id="" placeholder=""></textarea>
           </div>
 
-          <div class="checkhold">
-            <label for="selectedMETARs" class="checklabel">METARs</label>
-            <input id="selectedMETARs" formControlName="selectedMETARs" class="checkbox-show" type="checkbox">
+          <div *ngFor="let item of checkboxes" class="checkhold">
+            <label [for]="item.id" class="checklabel">{{ item.label }}</label>
+            <input [id]="item.id" [formControlName]="item.formControlName" class="checkbox-show" type="checkbox">
           </div>
-          <div class="checkhold">
-            <label for="TAFs" class="checklabel">TAFs</label>
-            <input id="TAFs" formControlName="TAFs" class="checkbox-show" type="checkbox">
-          </div>
-          <div class="checkhold">
-            <label for="SIGMETs" class="checklabel">SIGMETs</label>
-            <input id="SIGMETs" formControlName="SIGMETs" class="checkbox-show" type="checkbox">
-          </div>
-          <div class="checkhold">
-            <label for="SPECI" class="checklabel">Cyclone</label>
-            <input id="SPECI" formControlName="SPECI" class="checkbox-show" type="checkbox">
-          </div>
-          <div class="checkhold">
-            <label for="AIRMETs" class="checklabel">AIRMETs</label>
-            <input id="AIRMETs" formControlName="AIRMETs" class="checkbox-show" type="checkbox">
-          </div>
-          <div class="checkhold">
-            <label for="Turbulence" class="checklabel">Turbulence</label>
-            <input id="Turbulence" formControlName="Turbulence" class="checkbox-show" type="checkbox">
-          </div>
-          <div class="checkhold">
-            <label for="WindShear" class="checklabel">Wind Shear</label>
-            <input id="WindShear" formControlName="WindShear" class="checkbox-show" type="checkbox">
-          </div>
-          <div class="checkhold">
-            <label for="ADWarning" class="checklabel">Volcanic Ash</label>
-            <input id="ADWarning" formControlName="ADWarning" class="checkbox-show" type="checkbox">
-          </div>
-          <div class="checkhold">
-            <label for="" class="checklabel">Icing Level</label>
-            <input formControlName="PotentialIcing" class="checkbox-show" type="checkbox">
-          </div>
-          <div class="checkhold">
-            <label for="PotentialIcing" class="checklabel">SEG Chart</label>
-            <input id="PotentialIcing" formControlName="GRFNOTAMs" class="checkbox-show" type="checkbox">
-          </div>
-          <div class="checkhold">
-            <label for="Category" class="checklabel">Temp. Chart</label>
-            <input id="Category" formControlName="Category" class="checkbox-show" type="checkbox">
-          </div>
+          
       </form>
       <div>
         <button class="button" (click)="onsubmit()">Submit</button>
