@@ -15,6 +15,7 @@ import { SharedService as NotamSharedService} from '../service/Notam/shared.serv
 
 
 import { PansopsService } from '../service/Adm/Pansops/pansops.service';
+import { NotamService } from '../service/Notam/notam.service';
 declare module 'leaflet' {
   interface MarkerOptions {
     rotationAngle?: number;
@@ -166,7 +167,7 @@ export class MapComponent implements OnInit {
       }, 0);
     }
   }
-  constructor(private pansopsService: PansopsService,changeDetectorRef: ChangeDetectorRef, private flightService: StreamServiceService, media: MediaMatcher, private formbuilder: FormBuilder, private authService: AuthService, private router: Router, private route: ActivatedRoute,private sharedService: SharedService,private notamSharedService:NotamSharedService) {
+  constructor(private pansopsService: PansopsService,changeDetectorRef: ChangeDetectorRef,private notamService:NotamService, private flightService: StreamServiceService, media: MediaMatcher, private formbuilder: FormBuilder, private authService: AuthService, private router: Router, private route: ActivatedRoute,private sharedService: SharedService,private notamSharedService:NotamSharedService) {
     this.mobileQuery = media.matchMedia('(max-width: 600px)');
     this._mobileQueryListener = () => changeDetectorRef.detectChanges();
     this.mobileQuery.addListener(this._mobileQueryListener);
@@ -188,7 +189,6 @@ export class MapComponent implements OnInit {
     this.sharedService.sidebar$.subscribe(sidebarRes => {
       this.selectedAirac = sidebarRes;
       this.airportLayerGroup.clearLayers();
-      console.log(this.selectedAirac,"HHHHHHHHHHHHHHHHHHHHh")
     });
 
     this.sharedService.airport$.subscribe(airportsRes => {
@@ -201,10 +201,10 @@ export class MapComponent implements OnInit {
 
     this.showCirclesSubscription = this.notamSharedService.showCircles$.subscribe((circleData) => {
       if (circleData) {
+        console.log(circleData,"mdcndjjbcnedhbcmwbcuhedvcfj")
         this.addCircles(circleData); // Use the passed radius
       }
-      console.log('EEEEEEEEEEEE',this.circleData.length)
-      console.log('this.circleData', this.circleData)
+    
     });
    
 
@@ -244,6 +244,12 @@ export class MapComponent implements OnInit {
       }
     });
 
+    this.notamSharedService.atsData$.subscribe(atsData=>{
+      if(atsData){
+        this.plotAtsProcedures(atsData)
+      }
+    })
+
 
   
 
@@ -253,6 +259,7 @@ export class MapComponent implements OnInit {
   circleData:any = []
 addCircles(circles: any): void {
   this.circleData = this.circleData.concat(circles);
+  console.log(circles,"**************************************")
   circles.forEach((circle: { lat: any; lon: any; radius: any; notam: any; category: any }) => {
       if (circle.lat === null || circle.lon === null || circle.radius === null) {
           console.warn('Skipping circle due to null values:', circle);
@@ -812,10 +819,6 @@ const thresholdValues=   this.runways.find((ele:any)=>ele.designation===this.Air
 featureCollection.features.push( { "type": "Feature", "properties": { "Name": "",  "Speed": "", "Altitude": "" }, "geometry": { "type": "Point", "coordinates":thresholdValues } });
 
         }
-
-
-        console.log(procedures,"kjsdbcnsdbhdnejehuiervrb")
-        
             procedures.waypoints.map((ele:any,index:number)=>{
               var coordinates:number[];
                 if(ele.path_descriptor==='VA' || ele.path_descriptor==='CA' || ele.path_descriptor==='FA')
@@ -855,8 +858,9 @@ featureCollection.features.push( { "type": "Feature", "properties": { "Name": ""
 
   updateLayers(): void {
   // Clear existing layers
-
+   
   this.airportLayerGroup.clearLayers();
+
     const loadSIDProcedure = async (procedureName: string[])=>{
       if(this.Airform.get('selectedRunway')?.value.length!==0){
            const selectedRunwyInfo=  this.runways.find((runway:any)=>runway.designation=== this.Airform.get('selectedRunway')?.value);
@@ -967,6 +971,171 @@ featureCollection.features.push( { "type": "Feature", "properties": { "Name": ""
 
 }
 
+
+plotAtsProcedures(atsdata:any){
+
+  var  featureCollection: GeoJSON.FeatureCollection<GeoJSON.Point>= {
+    "type": "FeatureCollection",
+    "features": [
+    ]
+    }
+
+
+    var lineJson:GeoJSON.FeatureCollection<GeoJSON.MultiLineString>  ={
+      "type": "FeatureCollection",
+      "features": [
+       ]
+      }
+
+      var airportlineJson:any='';
+      var airwaysLineJson:any='';
+      var waypointJson:any='';
+     var airway=false;
+     var airwayName="";
+  atsdata.forEach((ats:any)=>{
+      if(ats.type==='airport'){
+        if(featureCollection.features.length>0){
+          var distance=null;
+           if(airway){
+                distance=airwayName
+                airway=false;
+           }
+          lineJson.features.push({ "type": "Feature", "properties": { "Name":  ats.code,"Distance":distance, "Bearing": null}, "geometry":
+            { "type": "MultiLineString", "coordinates": [ [ featureCollection.features[featureCollection.features.length-1].geometry.coordinates,ats.geometry.coordinates] ] } },)
+         }
+        featureCollection.features.push( { "type": "Feature", "properties": { "Name": ats.code, type:ats.type,  "Speed": "", "Altitude": "" }, "geometry": { "type": "Point", "coordinates":ats.geometry.coordinates } });
+      }
+       if(ats.type==='waypoint'){
+        if(featureCollection.features.length>0){
+          var distance=null;
+          if(airway){
+               distance=airwayName
+               airway=false;
+          }
+          lineJson.features.push({ "type": "Feature", "properties": { "Name":  ats.code,"Distance":distance, "Bearing": null}, "geometry":
+            { "type": "MultiLineString", "coordinates": [ [ featureCollection.features[featureCollection.features.length-1].geometry.coordinates,ats.geometry.coordinates] ] } },)
+         }
+        featureCollection.features.push( { "type": "Feature", "properties": { "Name": ats.code,type:ats.type,  "Speed": "", "Altitude": "" }, "geometry": { "type": "Point", "coordinates":ats.geometry.coordinates } });
+       
+      }
+
+      if(ats.type==='airway'){
+        console.log("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&")
+        airway=true;
+        airwayName=ats.code
+      }
+
+      
+  })
+
+  console.log(lineJson,"lineJsonlineJsonlineJson")
+
+  const aitportIcon = L.icon({
+    iconUrl: 'assets/AKTIM_7A/Fly-by.png',
+    iconSize: [40, 40],
+    popupAnchor: [-3, -76],
+  });
+
+  const waypointIcon = L.icon({
+    iconUrl: 'assets/AKTIM_7A/penta1.png',
+    iconSize: [40, 40],
+    popupAnchor: [-3, -76],
+  });
+
+  const geoJsonLayer = L.geoJSON(featureCollection, {
+     pointToLayer: (feature, latlng) => {
+      var marker:any ="";
+        if(feature.properties.type==='waypoint'){
+          marker = L.marker(latlng, { icon: waypointIcon });
+        }else{
+         marker = L.marker(latlng, { icon: aitportIcon });
+
+        }
+   
+       // Set up the permanent tooltip content
+       let tooltipContent = '';
+       if (feature.properties.Name) {
+         tooltipContent += `<b>${feature.properties.Name}</b><br>`;
+       }
+       if (feature.properties.Altitude) {
+         tooltipContent += `${feature.properties.Altitude}<br>`;
+       }
+       if (feature.properties.Speed) {
+         tooltipContent += `${feature.properties.Speed}<br>`;
+       }
+       if (feature.properties.Speed1) {
+         tooltipContent += `${feature.properties.Speed1}`;
+       }
+   
+       // Bind the permanent tooltip to the marker
+       if (tooltipContent !== '') {
+         marker.bindTooltip(tooltipContent, {
+           permanent: true,
+           direction: 'bottom',
+           className: 'labelstyle',
+           offset: L.point(25, 0),
+         });
+       }
+   
+       return marker;
+     },
+   
+   });
+   // Add the layer to your map
+   geoJsonLayer.addTo(this.map);
+   const lineFeatures = lineJson.features; // Assuming lineData is your GeoJSON data
+
+   this.lineGeoJsonLayer = L.geoJSON(lineJson,
+     {
+       style: {
+           color:  "red", // Set line color
+           weight: 2 // Set line weight
+       },
+       onEachFeature: (feature: GeoJSON.Feature<GeoJSON.MultiLineString>, layer) => {
+        const currentIndex = lineFeatures.indexOf(feature as GeoJSON.Feature<GeoJSON.MultiLineString>);
+
+        if (feature.properties && feature.properties['Distance']!==null) {
+            const coordinates = feature.geometry.coordinates[0];
+            const start = coordinates[0];
+            const end = coordinates[1];
+
+            // Calculate the midpoint
+            const midpoint = [
+                (start[0] + end[0]) / 2,
+                (start[1] + end[1]) / 2
+            ];
+
+            // Create and add the direction icon
+            const directionIcon = L.icon({
+                iconUrl: 'assets/AKTIM_7A/penta1.png', // Replace with your icon path
+                iconSize: [44, 36],
+                iconAnchor: [22, 18]
+            });
+
+            const marker = L.marker(L.latLng(midpoint[1], midpoint[0]), {
+                icon: directionIcon,
+                rotationAngle: feature.properties['Bearing'] || 0 // Default to 0 if not available
+            }).addTo(this.airportLayerGroup);
+        }
+    }
+     
+   });
+
+
+ 
+
+// Function to flatten LatLng coordinates
+const flattenLatLngs = (latLngs: L.LatLng | L.LatLng[] | L.LatLng[][] | L.LatLng[][][]): L.LatLng[] => {
+    if (Array.isArray(latLngs)) {
+        return latLngs.flatMap(flattenLatLngs); // Recursively flatten
+    }
+    return [latLngs]; // Wrap a single LatLng in an array
+};
+
+   
+   this.airportLayerGroup.addLayer(this.lineGeoJsonLayer);
+
+  }
 
 
  plotProcedures(ele:any,geoLayer:any,color='black'){

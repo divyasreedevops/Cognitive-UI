@@ -33,4 +33,11 @@ export class SharedService {
     this.notamDataSubject.next(values);
   }
 
+  private atsSubject = new BehaviorSubject<any>(null);
+  atsData$ = this.atsSubject.asObservable();
+
+  atsDataList(values: any) {
+    this.atsSubject.next(values);
+  }
+
 }
