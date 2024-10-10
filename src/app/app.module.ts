@@ -45,6 +45,10 @@ import { AdmSidebarComponent } from './shared/all-sidebar/adm-sidebar/adm-sideba
 import { NotamSidebarComponent } from './shared/all-sidebar/notam-sidebar/notam-sidebar.component';
 import { WeatherComponent } from './weather/weather.component';
 import { WeatherSidebarComponent } from './shared/all-sidebar/weather-sidebar/weather-sidebar.component';
+import { EnroteSidebarComponent } from './shared/all-sidebar/weather-sidebar/enroute/enrote-sidebar/enrote-sidebar/enrote-sidebar.component';
+import { WeatherTableComponent } from './shared/weather-table/weather-table.component';
+import { TerminalComponent } from './shared/all-sidebar/weather-sidebar/terminal/terminal.component';
+import { AtsTableComponent } from './shared/ats-table/ats-table.component';
 
 @NgModule({
     declarations: [
@@ -67,7 +71,11 @@ import { WeatherSidebarComponent } from './shared/all-sidebar/weather-sidebar/we
         AdmSidebarComponent,
         NotamSidebarComponent,
         WeatherSidebarComponent,
-        WeatherComponent
+        WeatherComponent,
+        EnroteSidebarComponent,
+        WeatherTableComponent,
+        TerminalComponent,
+        AtsTableComponent
     ],
   
     imports: [

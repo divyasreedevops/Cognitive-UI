@@ -1,7 +1,7 @@
 <div class="outer-hold">
     <div class="side-container" [ngClass]="{'collapsed': isCollapsed}">
         <div class="tab-toggel" [ngClass]="{'displayEnd': !isMultiMapView || isCollapsed, 'displayBetween': isMultiMapView && !isCollapsed}">
-            <div class="arrow-hold" *ngIf="!isCollapsed && isMultiMapView && weatherSelectedTab==='PANS-OPS'">
+            <div class="arrow-hold" *ngIf="!isCollapsed && isMultiMapView && (weatherSelectedTab==='PANS-OPS' || weatherSelectedTab==='ENR' || weatherSelectedTab==='AIRPORT')">
                 <mat-icon (click)="navigateToMultiMap()">west</mat-icon>
                 <mat-icon>east</mat-icon>
             </div>
@@ -26,15 +26,15 @@
     
 
     <ng-container *ngIf="activeTab==='WxM' && weatherSelectedTab===' '">
-      <div class="sub-option" [ngClass]="{'active': selectedTab==='PANS-OPS'}"  (click)="navigateToWeatherModule()">
+      <div class="sub-option" [ngClass]="{'active': selectedTab==='PANS-OPS'}"  (click)="navigateToWeatherModule('PANS-OPS')">
           <mat-icon class="maticon">dataset</mat-icon>
           <span>PANS-OPS</span>
       </div>
-      <div class="sub-option" [ngClass]="{'active': selectedTab==='ENR'}"  (click)="selectedTab='ENR'">
+      <div class="sub-option" [ngClass]="{'active': selectedTab==='ENR'}"  (click)="selectedTab='ENR'" (click)="navigateToWeatherModule('ENR')">
           <mat-icon class="maticon">dataset</mat-icon>
           <span>Enroute</span>
       </div>
-      <div class="sub-option" [ngClass]="{'active': selectedTab==='AIRPORT'}"  (click)="selectedTab='AIRPORT'">
+      <div class="sub-option" [ngClass]="{'active': selectedTab==='AIRPORT'}"  (click)="selectedTab='AIRPORT'" (click)="navigateToWeatherModule('AIRPORT')">
           <mat-icon class="maticon">flight_takeoff</mat-icon>
           <span>Terminal</span>
       </div>
@@ -56,6 +56,14 @@
       <!-- For Notam Table  -->
       <ng-container *ngIf="weatherSelectedTab==='PANS-OPS' && !isCollapsed">
         <app-weather-sidebar></app-weather-sidebar>
+        
+      </ng-container>
+      <ng-container *ngIf="weatherSelectedTab==='ENR' && !isCollapsed">
+       <app-enrote-sidebar (wxm)="isEnrouteTable=true"></app-enrote-sidebar>
+        
+      </ng-container>
+      <ng-container *ngIf="weatherSelectedTab==='AIRPORT' && !isCollapsed">
+       <app-terminal (wxm)="isairportTable=true"></app-terminal>
         
       </ng-container>
 
@@ -178,10 +186,10 @@
   <!-- Noatm Table -->
 
   <div class="tab tab-style" style="pointer-events: auto;" *ngIf="isNotamTable">
-     <app-notam-table (isMinimize)="minimize($event)"></app-notam-table>
+     <app-notam-table (isMinimize)="minimize($event,'notam')"></app-notam-table>
   </div>
 
-  <div class="tab" *ngIf="isminNotam">
+  <div class="tab" *ngIf="isminNotam || isminEnroute || isminairport">
     <div class="min-tab">
 
       <div class="dflex" style="gap: 5px; font-weight: 501;">
@@ -196,10 +204,16 @@
         </div>
     </div>
 
-    <div class="dflex border" (click)="minimize($event)">
+    <div class="dflex border" (click)="minimize($event, isminEnroute ? 'wxm' : isminNotam ? 'notam' : 'ats')">
       Close Map
   </div>
     </div>
   </div>
 
+  <div class="tab tab-style" style="pointer-events: auto;" [hidden]="!isEnrouteTable">
+    <app-weather-table (isMinimize)="minimize($event,'wxm')" ></app-weather-table>
+ </div>
+  <div class="tab tab-style" style="pointer-events: auto;" [hidden]="!isairportTable">
+     <app-ats-table (isMinimize)="minimize($event,'ats')"></app-ats-table>
+ </div>
 </div>

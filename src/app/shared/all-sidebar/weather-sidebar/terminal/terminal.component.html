@@ -1,1 +1,37 @@
-<p>terminal works!</p>
+<div >
+
+    <div class="container">
+      <div class="options-background top">
+        <form [formGroup]="Airform" autocomplete="on" novalidate style="    display: flex;
+        flex-direction: column;
+        gap: 10px;">
+
+      <div class="select">
+            <label>Enter Your ATS Plan</label>
+            <textarea name="" formControlName="ATSPlan" id="" placeholder=""></textarea>
+          </div>
+
+          <div *ngFor="let item of checkboxes" class="checkhold">
+            <label [for]="item.id" class="checklabel">{{ item.label }}</label>
+            <input [id]="item.id" [formControlName]="item.formControlName" class="checkbox-show" type="checkbox">
+          </div>
+          
+      </form>
+      <div>
+        <button class="button" (click)="onsubmit()">Submit</button>
+      </div>
+      </div>
+      <div class="bottom">
+        <div>
+          <button class="button buttomButtons">View Analysis</button>
+        </div>
+        <div>
+          <button class="button buttomButtons">Generate Report</button>
+        </div>
+      </div>
+      
+    
+    
+    </div>
+    </div>
+    

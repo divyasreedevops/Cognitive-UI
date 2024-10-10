@@ -11,6 +11,7 @@ import {
 } from '@angular/animations';
 import { PansopsService } from 'src/app/service/Adm/Pansops/pansops.service';
 import { combineLatest } from 'rxjs';
+import { SharedService as wxmSharedService } from 'src/app/service/Weather/shared.service';
 interface RowItem {
   [key: string]: string;
 }
@@ -95,12 +96,17 @@ export class SidebarComponent {
   isDropdownVisible = false;
   isNotamTable = false;
   isminNotam = false;
+  isEnrouteTable=false;
+  isminEnroute=false;
+  isairportTable=false;
+  isminairport=false;
 
   constructor(
     private sharedService: SharedService,
     private router: Router,
     private formbuilder: FormBuilder,
-    private pansopsService: PansopsService
+    private pansopsService: PansopsService,
+    private wxmSharedService: wxmSharedService
   ) {
     console.log(this.activeTab,"&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&")
   }
@@ -341,6 +347,10 @@ export class SidebarComponent {
 
     if (route === '/ADM/PANS-OPS' || route === '/weather/PANS-OPS') {
       console.log('route--->> ',route);
+      const tab = localStorage.getItem("wxmTab");
+      if(tab){
+        this.weatherSelectedTab = tab;
+      }
       this.isMultiMapView = true;
     } else {
       this.isMultiMapView = false;
@@ -431,14 +441,17 @@ export class SidebarComponent {
     }else if(route === '/weather/PANS-OPS'){
       this.router.navigate(['/weather']);
       this.weatherSelectedTab=' ';
+      this.isEnrouteTable=false;
+      this.selectedTab = '';
+      this.isairportTable=false;
     }
 
   }
 
-  navigateToWeatherModule() {
-    this.weatherSelectedTab = 'PANS-OPS';
+  navigateToWeatherModule(tab:any) {
+    this.weatherSelectedTab = tab;
+    localStorage.setItem("wxmTab",this.weatherSelectedTab);
     this.router.navigate(['weather','PANS-OPS']);
-    console.log('click...');
     this.isMultiMapView = true;
   }
 
@@ -566,8 +579,22 @@ export class SidebarComponent {
     this.isExpanded = !this.isExpanded;
   }
 
-  minimize(event: any) {
-    this.isNotamTable = !this.isNotamTable;
-    this.isminNotam = !this.isminNotam;
+  minimize(event: any,tab:any) {
+    switch(tab){
+      case "notam":
+        this.isNotamTable = !this.isNotamTable;
+        this.isminNotam = !this.isminNotam;
+        break;
+      case "wxm":
+        this.isEnrouteTable = !this.isEnrouteTable;
+        this.isminEnroute = !this.isminEnroute;
+        break;
+      case "ats":
+        this.isairportTable = !this.isairportTable;
+        this.isminairport = !this.isminairport;
+        break;
+    }
+    
   }
+
 }

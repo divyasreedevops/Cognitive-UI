@@ -1,0 +1,63 @@
+<div >
+
+    <div class="container">
+      <div class="options-background top">
+        <form [formGroup]="Airform" autocomplete="on" novalidate style="    display: flex;
+        flex-direction: column;
+        gap: 10px;">
+
+      <div class="select">
+            <label for="selectedTypeofProcedure">Enter ICAO Code</label>
+            <div style="position: relative;">
+              <!-- Textbox showing the selected options, comma-separated -->
+              <input type="text" 
+              name="selectedOptions" 
+              id="selectedOptions" 
+              class="multi-select-container" 
+              [value]="selectedProcedureNameShow.length > 0 ? selectedProcedureNameShow.join(', ') : 'Select ICAO Code'"  
+              (click)="toggledropdown($event,'name')" 
+              placeholder="Select ICAO Code" 
+              readonly>
+          
+              <!-- Checkbox options -->
+              <div class="checkkarea" *ngIf="isProcedureName">
+                <ng-container *ngFor="let option of optionsAirport">
+                  <div class="checkoption" (click)="toggleCheckbox(option.value.toString(), 'procedureName')">
+                    <!-- Bind each checkbox to form using the change event to track selections -->
+                    <input class="checkbox-show" type="checkbox" [value]="option.value"  [checked]="isChecked2(option.value.toString())">
+                    <span>{{ option.label }}</span>
+                  </div>
+                </ng-container>
+              </div>
+      
+              <mat-icon style="position: absolute;right: -3px;
+              top: 5px;
+              font-size: 21px;
+              font-weight: 555;">keyboard_arrow_down</mat-icon>
+            </div>
+          </div>
+
+          <div *ngFor="let item of checkboxes" class="checkhold">
+            <label [for]="item.id" class="checklabel">{{ item.label }}</label>
+            <input [id]="item.id" [formControlName]="item.formControlName" class="checkbox-show" type="checkbox">
+          </div>
+          
+      </form>
+      <div>
+        <button class="button" (click)="onsubmit()">Submit</button>
+      </div>
+      </div>
+      <div class="bottom">
+        <div>
+          <button class="button buttomButtons">View Analysis</button>
+        </div>
+        <div>
+          <button class="button buttomButtons">Generate Report</button>
+        </div>
+      </div>
+      
+    
+    
+    </div>
+    </div>
+    
