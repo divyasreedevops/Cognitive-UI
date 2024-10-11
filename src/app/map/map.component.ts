@@ -298,7 +298,7 @@ addCircles(circles: any): void {
           }else{
             isCurrentBetween = false
             isExactlyTwoHoursAfter = false
-            isGrey = false
+            isGrey = true
           }
           let leafletCircle: any;
           // console.log('category', category)
