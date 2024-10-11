@@ -21,4 +21,12 @@ export class SharedService {
   updateatsSidebar(content: any) {
     this.atsSidebar.next(content);
   }
+
+  private resetmap = new Subject<any>();
+  resetmap$ = this.resetmap.asObservable();
+
+  updatemap(content: any) {
+    this.resetmap.next(content);
+  }
+
 }
