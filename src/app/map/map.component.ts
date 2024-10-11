@@ -12,7 +12,7 @@ import {  Subscription } from 'rxjs';
 import * as GeoJSON from 'geojson';
 import { SharedService } from '../service/shared.service';
 import { SharedService as NotamSharedService} from '../service/Notam/shared.service';
-
+import { SharedService as wxmshared } from '../service/Weather/shared.service';
 
 import { PansopsService } from '../service/Adm/Pansops/pansops.service';
 import { NotamService } from '../service/Notam/notam.service';
@@ -167,7 +167,7 @@ export class MapComponent implements OnInit {
       }, 0);
     }
   }
-  constructor(private pansopsService: PansopsService,changeDetectorRef: ChangeDetectorRef,private notamService:NotamService, private flightService: StreamServiceService, media: MediaMatcher, private formbuilder: FormBuilder, private authService: AuthService, private router: Router, private route: ActivatedRoute,private sharedService: SharedService,private notamSharedService:NotamSharedService) {
+  constructor(private pansopsService: PansopsService,changeDetectorRef: ChangeDetectorRef,private notamService:NotamService, private flightService: StreamServiceService, media: MediaMatcher, private formbuilder: FormBuilder, private authService: AuthService, private router: Router, private route: ActivatedRoute,private sharedService: SharedService,private notamSharedService:NotamSharedService,private wxmshared:wxmshared) {
     this.mobileQuery = media.matchMedia('(max-width: 600px)');
     this._mobileQueryListener = () => changeDetectorRef.detectChanges();
     this.mobileQuery.addListener(this._mobileQueryListener);
@@ -248,6 +248,16 @@ export class MapComponent implements OnInit {
       }
     })
 
+    this.wxmshared.resetmap$.subscribe(data=>{
+      this.Airform.reset({
+        selectedAirport: [],
+        selectedRunway: [],
+        selectedTypeofProcedure: [],
+        selectedProcedureName: [],
+      });
+      this.Airform.setValue(this.Airform.value);
+      this.airportLayerGroup.clearLayers();
+    })
 
   
 
