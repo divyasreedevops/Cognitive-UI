@@ -16,6 +16,7 @@ import { SharedService as wxmshared } from '../service/Weather/shared.service';
 
 import { PansopsService } from '../service/Adm/Pansops/pansops.service';
 import { NotamService } from '../service/Notam/notam.service';
+import moment from 'moment';
 declare module 'leaflet' {
   interface MarkerOptions {
     rotationAngle?: number;
@@ -265,28 +266,57 @@ export class MapComponent implements OnInit {
 
 
   circleData:any = []
+  circleGroups: any = {};
 addCircles(circles: any): void {
-  this.circleData = this.circleData.concat(circles);
-  circles.forEach((circle: { lat: any; lon: any; radius: any; notam: any; category: any }) => {
+  this.circleData = this.circleData.concat(circles[0]);
+  const currentDate = moment();
+  console.log('currentDate', currentDate)
+  circles[0].forEach((circle: { lat: any; lon: any; radius: any; notam: any; category: any; start_date: any; end_date: any }) => {
       if (circle.lat === null || circle.lon === null || circle.radius === null) {
+          console.warn('Skipping circle due to null values:', circle);
           return; // Skip this iteration if any value is null
       }
-
       const latitude = this.convertDMSToDD(circle.lat);
       const longitude = this.convertDMSToDD(circle.lon);
       const radius = parseFloat(circle.radius) * 1000;
-      // const notamDetails = ;
-      const category = circle.category;
-      // const notamTitle = notamDetails.split('\n')[0];
-      const [notamTitle, ...remainingDetails] = circle.notam.split('\n');
-
-      // Join the remaining details back into a single string
-      const notamDetails = remainingDetails.join('\n');
-      
-
       if (!isNaN(radius) && !isNaN(latitude) && !isNaN(longitude)) {
+          const category = circle.category;
+          let isCurrentBetween;
+          let isExactlyTwoHoursAfter;
+          let isGrey;
+          if(circle.end_date !=="PERM"){
+            const startDate = moment(circle.start_date, 'YYYY-MM-DD HH:mm:ss');
+            const endDate = moment(circle.end_date, 'YYYY-MM-DD HH:mm:ss');
+            isCurrentBetween = currentDate.isBetween(startDate, endDate);
+            isExactlyTwoHoursAfter = startDate.isSame(currentDate.add(2, 'hours'))
+            if (!isCurrentBetween && !isExactlyTwoHoursAfter){
+              isGrey = true
+            }
+            else{
+              isGrey = false
+            }
+          }else{
+            isCurrentBetween = false
+            isExactlyTwoHoursAfter = false
+            isGrey = true
+          }
           let leafletCircle: any;
-          if (category === 'critical') {
+          // console.log('category', category)
+          if (isCurrentBetween) {
+            let isIcon = false
+            const latLonRadiusKey = `${latitude},${longitude},${radius}`;
+            if (!this.circleGroups[latLonRadiusKey]) {
+                this.circleGroups[latLonRadiusKey] = [];
+                isIcon = true
+            }
+            this.circleGroups[latLonRadiusKey].push({
+              latitude,
+              longitude,
+              radius,
+              notam: circle.notam,
+              category: circle.category,
+              isBetween: isCurrentBetween
+          });
               // Create red circle for critical category
               leafletCircle = L.circle([latitude, longitude], {
                   radius: radius,
@@ -295,46 +325,78 @@ addCircles(circles: any): void {
                   weight: 0,
                   color: 'red'
               }).addTo(this.map);
-
-              // Bind the popup content only for critical circles
-              const popupContent = `
-                <div style="font-size: 12px; font-weight: bold; width: 300px; height: 200px; overflow: auto;">
-                  <div style="display: flex; align-items: center;">
-                    <!-- Red Triangle -->
-                    <div style="width: 0; border-radius: 1px, height: 0; border-left: 10px solid transparent; border-right: 10px solid transparent; border-bottom: 15px solid red; margin-right: 10px;"></div>
-                    <!-- Title -->
-                    <div style="font-weight: 900; color: black;">${notamTitle}</div>
-                  </div>
-                  <div>${notamDetails}</div>
-                </div>
-              `;
-              leafletCircle.bindPopup(popupContent);
-
-              // Open popup on circle click
-              leafletCircle.on('click', function () {
-                  leafletCircle.openPopup();
-              });
-
-              // Add red icon to the critical circle
-              const redCircleMarker = L.marker([latitude, longitude], { icon: this.redCircleIcon }).addTo(this.map);
-              redCircleMarker.bindPopup(popupContent);
-
-          } else {
+      } else if(isExactlyTwoHoursAfter) {
+            // Create green circle for non-critical category, no popup or icon
+            leafletCircle = L.circle([latitude, longitude], {
+                radius: radius,
+                fillColor: 'yellow', // Or another color for different types
+                fillOpacity: 0.1,
+                weight: 0,
+                color: 'yellow'
+            }).addTo(this.map);
+        }
+          else if (isGrey){
               // Create green circle for non-critical category, no popup or icon
               leafletCircle = L.circle([latitude, longitude], {
                   radius: radius,
-                  fillColor: 'green', // Or another color for different types
+                  fillColor: 'gray', // Or another color for different types
                   fillOpacity: 0.1,
                   weight: 0,
-                  color: 'green'
+                  color: 'gray'
               }).addTo(this.map);
           }
-
       } else {
           console.error('Invalid LatLng or radius:', { latitude, longitude, radius });
       }
   });
-}
+  if (!circles[1]){
+    // Now handle all the grouped circles
+    Object.keys(this.circleGroups).forEach(latLonRadiusKey => {
+      const circlesAtLocation = this.circleGroups[latLonRadiusKey];
+      const latitude = circlesAtLocation[0].latitude;
+      const longitude = circlesAtLocation[0].longitude;
+      const radius = circlesAtLocation[0].radius;
+      let combinedPopupContent = '';
+      
+      circlesAtLocation.forEach((circle: { notam: any; category: any, isBetween: any }) => {
+          if (circle.isBetween) {
+              const [notamTitle, ...remainingDetails] = circle.notam.split('\n');
+              const notamDetails = remainingDetails.join('\n');
+              
+              combinedPopupContent += `
+                  <div style="font-size: 12px; font-weight: bold; width: 300px; height: 200px; overflow: auto;">
+                    <div style="display: flex; align-items: center;">
+                      <div style="width: 0; border-radius: 1px, height: 0; border-left: 10px solid transparent; border-right: 10px solid transparent; border-bottom: 15px solid red; margin-right: 10px;"></div>
+                      <div style="font-weight: 900; color: black;">${notamTitle}</div>
+                    </div>
+                    <div>${notamDetails}</div>
+                  </div>
+                  <hr>`;
+            }
+      });
+          // combinedPopupContent = `<div>${combinedPopupContent}</div>`;
+          combinedPopupContent = `
+            <div style="max-height: 200px; overflow-y: auto;">
+              ${combinedPopupContent}
+            </div>`;
+          const leafletCircle = L.circle([latitude, longitude], {
+            weight: 0,
+          }).addTo(this.map);
+          
+          leafletCircle.bindPopup(combinedPopupContent);
+          leafletCircle.on('click', function () {
+              leafletCircle.openPopup();
+          });
+          // Add red icon for the critical category
+          const redCircleMarker = L.marker([latitude, longitude], { icon: this.redCircleIcon }).addTo(this.map);
+          redCircleMarker.bindPopup(combinedPopupContent);
+          redCircleMarker.on('click', function () {
+              redCircleMarker.openPopup();
+          });
+
+        });
+      }
+  }
 
   
   
