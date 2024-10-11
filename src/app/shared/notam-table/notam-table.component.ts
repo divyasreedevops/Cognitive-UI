@@ -23,7 +23,7 @@ export class NotamTableComponent implements OnInit {
   searchText:string=""
   selectedFilters:any;
   latest:boolean=false;
-  
+  notamTableStatus:any=true;
   ngOnInit(): void {
     this.getTableData({
       "pageNo":this.p-1,
@@ -33,32 +33,27 @@ export class NotamTableComponent implements OnInit {
        }
     });
 
+    this.sharedService.notanTableStatus$.subscribe((data)=>{
+    
+      this.notamTableStatus=data
+    })
+
     this.sharedService.formValues$.subscribe((data)=>{
       if(data){
-        this.p=1;
         this.selectedFilters=data;
-   
-//           const dataFilters={
-//             "fir":data.fir,
-//             "airport":data['airports'],
-//             "airSpaceEnr":data['airspace/enr'],
-//             "facilityDownGrade":data['facilitydowngrade'],
-//             "airPortClosure":data.closure.includes('Airport Closure'),
-//             "airSpaceClosure":data.closure.includes('Enroute Clouser')
-//            }
+        if(this.notamTableStatus){
+          this.p=1;
+          this.constructPayload()
+        }
+        else{
+          this.close()
+        }
+      }
+    })
 
-// const filteredDataFilters = Object.fromEntries(
-//   Object.entries(dataFilters).filter(([key, value]) => {
-//       return !Array.isArray(value) || value.length > 0;
-//   })
-// );
-        
-//       const payload={
-//         "pageNo":this.p-1,
-//         "dataFilters":filteredDataFilters
-//       }
-
-        this.constructPayload()
+    this.sharedService.mapFiltersStatus$.subscribe((data)=>{
+      if(data){
+        this.close(data)
       }
     })
   }
@@ -78,7 +73,6 @@ export class NotamTableComponent implements OnInit {
           elementFound.opt=res.filterData[element]
         }
       })
-console.log(this.headers,"sdcjdmh bdchj nbhjdgvhf")   
       this.sharedService.notamDataList(res.data);
     })
   }
@@ -205,19 +199,21 @@ this.getTableData(payload)
   } 
   
   showPopup(noteNum:any,flag:any,entry:any){
-    console.log(entry)
     this.notemanNumber = noteNum;
     this.flag = flag;
     this.isShowPopup = true;
     this.selectedNotam=entry;
   }
 
-  close() {
+  close(filterByFlag:any=null) {
+    console.log(filterByFlag,"OOOOOOOOOOOOOOOOOOOOOOOOOOOOOo")
     this.isMinimize.emit({ status: 0 });
-  
+    var tableFilters:any={}
     let payload:any = {
       "pageNo": 0 // Start with the first page
     };
+
+  
       if(this.selectedFilters){
         const dataFilters={
           "fir":this.selectedFilters.fir,
@@ -232,13 +228,22 @@ this.getTableData(payload)
                 return !Array.isArray(value) || value.length > 0;
             })
             );
+            if(filterByFlag==="warning"){
+              delete filteredDataFilters['facilityDownGrade']
+              delete filteredDataFilters['airPortClosure']
+              delete filteredDataFilters['airSpaceClosure']
+            }
             payload['dataFilters']=filteredDataFilters;
       }
+
+      if(filterByFlag){
+        tableFilters['category']=filterByFlag
+       }
+       payload['tableFilters']=tableFilters;
     // Recursive function to handle pagination and data accumulation
     const fetchNotamData = (payload: any) => {
       this.notamservice.getNotamList(payload).subscribe((res: any) => {
         let tempList = []
-        console.log('payload:', payload)
         for (let i = 0; i < res.data.length; i++) {
           const obj = res.data[i];
           let temp = {
@@ -252,13 +257,11 @@ this.getTableData(payload)
         }
   
 
-        console.log(tempList,"tempListtempListtempListtempListtempListtempList")
         // Emit the circle data after each page is processed
         this.mapService.emitCircleData(tempList);
   
         // Handle pagination, check if nextPage exists
         if (res.nextPage) {
-          console.log('Next Page exists: ', res.nextPage);
           payload.pageNo = res.nextPage; // Update payload with the next page number
           // Fetch the next page of data
           fetchNotamData(payload);
@@ -281,10 +284,8 @@ this.getTableData(payload)
   }
 
   filterByFlag(flagColor: string) {
-    console.log("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&7",flagColor)
     this.constructPayload(flagColor)
     // this.filteredNotamData = this.notamData.filter((item:any) => item.flag === flagColor);
-    // console.log(this.headers,"sdjbmsdb dsh dnb dh fnb he ned jhdb dn jhshdssjhsbksjhd")
   }
 
   onLatestClick(){

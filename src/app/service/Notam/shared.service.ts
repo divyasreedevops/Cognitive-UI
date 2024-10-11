@@ -40,4 +40,20 @@ export class SharedService {
     this.atsSubject.next(values);
   }
 
+
+  private NotamTableStatusSubject = new BehaviorSubject<any>(null);
+  notanTableStatus$ = this.NotamTableStatusSubject.asObservable();
+
+  notamTableStatusUpdate(values: any) {
+    this.NotamTableStatusSubject.next(values);
+  }
+
+
+  private mapFiltersSubject = new BehaviorSubject<any>(null);
+  mapFiltersStatus$ = this.mapFiltersSubject.asObservable();
+
+  updateMapFilters(values: any) {
+    this.mapFiltersSubject.next(values);
+  }
+
 }

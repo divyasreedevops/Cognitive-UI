@@ -201,7 +201,6 @@ export class MapComponent implements OnInit {
 
     this.showCirclesSubscription = this.notamSharedService.showCircles$.subscribe((circleData) => {
       if (circleData) {
-        console.log(circleData,"mdcndjjbcnedhbcmwbcuhedvcfj")
         this.addCircles(circleData); // Use the passed radius
       }
     
@@ -233,7 +232,6 @@ export class MapComponent implements OnInit {
     this.updateLayers();
 
     this.sharedService.procedure$.subscribe(procedureRes => {
-      console.log(procedureRes,"procedureResprocedureRes")
       this.multipleProcedure = procedureRes;
       this.updateLayers()
     });
@@ -259,10 +257,8 @@ export class MapComponent implements OnInit {
   circleData:any = []
 addCircles(circles: any): void {
   this.circleData = this.circleData.concat(circles);
-  console.log(circles,"**************************************")
   circles.forEach((circle: { lat: any; lon: any; radius: any; notam: any; category: any }) => {
       if (circle.lat === null || circle.lon === null || circle.radius === null) {
-          console.warn('Skipping circle due to null values:', circle);
           return; // Skip this iteration if any value is null
       }
 
@@ -280,8 +276,6 @@ addCircles(circles: any): void {
 
       if (!isNaN(radius) && !isNaN(latitude) && !isNaN(longitude)) {
           let leafletCircle: any;
-          console.log('category', category)
-
           if (category === 'critical') {
               // Create red circle for critical category
               leafletCircle = L.circle([latitude, longitude], {
@@ -490,7 +484,6 @@ addCircles(circles: any): void {
     const planes = [...data.satellite, ...data.terrestrial];
 
     if (planes.length === 0) {
-      console.error('No valid plane data found', data);
       return;
     }
 
@@ -696,12 +689,9 @@ const regex = /THR:\s*(\d+)/;
 const match = text.match(regex);
 
 if (match) {
-    console.log(match[1],"&&&&&&&&&&&&&&&&&&&&&&&"); // Output: '702'
 } else {
-    console.log('No match found');
 }
     const distance =(((altitude-parseInt(match[1])-16)/200)*1852);
-    console.log(distance,"distancedistancedistance")
     return distance;
   }
 
@@ -795,8 +785,6 @@ if (match) {
 }
 
   createGeoJsonPointObject=(procedures:any,procedureName:any="sid")=>{
- console.log(procedures,"proceduresprocedures ")
-
     var  featureCollection: GeoJSON.FeatureCollection<GeoJSON.Point>= {
       "type": "FeatureCollection",
       "features": [
@@ -810,7 +798,6 @@ if (match) {
         }
 
         const selectedRunwayDetails= this.runways.find((ele:any)=>ele.designation===this.Airform.get('selectedRunway')?.value);
-      console.log(selectedRunwayDetails)
         if(procedures.type==="SID"){
 /**
            * @todo need to consider end point
@@ -896,13 +883,11 @@ featureCollection.features.push( { "type": "Feature", "properties": { "Name": ""
        
                  if (!isNaN(trueB)) {
                    const rotationAngle = trueB
-                   console.log(rotationAngle)
                    /**
                     * @todo add +180 degree to rotate
                     */
                    marker = L.marker(latlng, { icon: runwayIcon, rotationAngle: rotationAngle });
                  } else {
-                   console.error('Invalid True_B value:', feature.properties.True_B);
                    // Create a transparent marker as a fallback
                    marker = L.marker(latlng, { opacity: 0 });
                  }
@@ -910,9 +895,7 @@ featureCollection.features.push( { "type": "Feature", "properties": { "Name": ""
                }
              });
              const activeAirac=    this.airacs.find((ele:any)=>ele.status==="active");
-             console.log(this.Airform.get('selectedProcedureName')?.value,"this.Airform.get('selectedProcedureName')?.value")
              this.Airform.get('selectedProcedureName')?.value.map((ele:string)=>{
-              console.log(this.multipleProcedure,"this.multipleProcedure[ele]")
               if(this.multipleProcedure[ele]){
               if(this.multipleProcedure[ele].type==="APCH"){
                 const result = [];
@@ -1034,7 +1017,6 @@ plotAtsProcedures(atsdata:any){
        
       }
       if(ats.type==='airway'){
-        console.log("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&")
         airway=true;
         airwayName=ats.code
       }
@@ -1042,7 +1024,6 @@ plotAtsProcedures(atsdata:any){
       
   })
 
-  console.log(lineJson,"lineJsonlineJsonlineJson")
 
   const aitportIcon = L.icon({
     iconUrl: 'assets/AKTIM_7A/Fly-by.png',
@@ -1272,7 +1253,6 @@ const flattenLatLngs = (latLngs: L.LatLng | L.LatLng[] | L.LatLng[][] | L.LatLng
                  // Cast the layer to Polyline to access getLatLngs
                  const polyline = layer as L.Polyline;
                  const latLngs = polyline.getLatLngs();
-                 console.log(JSON.stringify(latLngs),"latLngslatLngs")
          
                // Function to flatten LatLng coordinates
                const flattenLatLngs = (latLngs: L.LatLng | L.LatLng[] | L.LatLng[][] | L.LatLng[][][]): L.LatLng[] => {
@@ -1391,7 +1371,6 @@ const flattenLatLngs = (latLngs: L.LatLng | L.LatLng[] | L.LatLng[][] | L.LatLng
 
 
     this.Airform.get('selectedAirport')?.valueChanges.subscribe((selectedAirport: string[]) => {
-      console.log('trigger');
       // Clear all runway and procedure options when the selected airport changes
       this.optionsBengaluruKIARunway = [];
       this.optionsVIJPJAIPURRunway = [];
@@ -1653,7 +1632,6 @@ const flattenLatLngs = (latLngs: L.LatLng | L.LatLng[] | L.LatLng[][] | L.LatLng
 
     this.Airform.get('selectedProcedureName')?.valueChanges.subscribe((selectedProcedureName: string) => {
       if(selectedProcedureName.length!==0){
-        console.log(selectedProcedureName,"sdjkndjk")
         this.selectedProcedureName=[selectedProcedureName];
         //  this.updateLayers();
       }

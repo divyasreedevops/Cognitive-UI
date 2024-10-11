@@ -12,6 +12,7 @@ import {
 import { PansopsService } from 'src/app/service/Adm/Pansops/pansops.service';
 import { combineLatest } from 'rxjs';
 import { SharedService as wxmSharedService } from 'src/app/service/Weather/shared.service';
+import { SharedService as NotamSharedService } from 'src/app/service/Notam/shared.service';
 interface RowItem {
   [key: string]: string;
 }
@@ -106,11 +107,18 @@ export class SidebarComponent {
     private router: Router,
     private formbuilder: FormBuilder,
     private pansopsService: PansopsService,
-    private wxmSharedService: wxmSharedService
+    private wxmSharedService: wxmSharedService,
+    private notamSharedService: NotamSharedService
   ) {
-    console.log(this.activeTab,"&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&")
   }
 
+
+  filterByFlag(status:any){
+     if(this.isminNotam){
+           this.notamSharedService.updateMapFilters(status)
+     }
+   
+  }
   obj1: any = {
     title: 'AKTIM 7A',
     columns: [
@@ -346,7 +354,6 @@ export class SidebarComponent {
     });
 
     if (route === '/ADM/PANS-OPS' || route === '/weather/PANS-OPS') {
-      console.log('route--->> ',route);
       const tab = localStorage.getItem("wxmTab");
       if(tab){
         this.weatherSelectedTab = tab;
@@ -358,8 +365,11 @@ export class SidebarComponent {
 
     if (route === '/NOTAM-Management') {
       this.isNotamTable = true;
+      this.notamSharedService.notamTableStatusUpdate(true)
     } else {
       this.isNotamTable = false;
+      this.notamSharedService.notamTableStatusUpdate(false)
+
     }
     this.isCompare = false;
     this.sharedService.sidebar$.subscribe((option: any) => {
@@ -462,16 +472,12 @@ export class SidebarComponent {
   }
 
   navigate(){
-    console.log('navv');
     const route = localStorage.getItem('currentRoute');
-    console.log(route);
     if (route === '/ADM/PANS-OPS' || route === '/weather/PANS-OPS') {
-      console.log('route--->> ',route);
       this.isMultiMapView = true;
     } else {
       this.isMultiMapView = false;
     }
-    console.log(this.isMultiMapView)
   }
 
   // onToggleChange(event: any) {
@@ -503,7 +509,6 @@ export class SidebarComponent {
     let flghtData = [];
     for (let key in resp) {
       if (resp.hasOwnProperty(key)) {
-        console.log(`Key: ${key}`);
         let row: any[] = [];
         for (let i = 0; i < resp[key]['waypoints'].length; i++) {
           const tempRow = resp[key]['waypoints'][i];
@@ -564,7 +569,6 @@ export class SidebarComponent {
         flghtData.push(tempObj);
       }
     }
-    // console.log('fffff', flghtData)
     this.flightData = flghtData;
     this.cropData = [this.flightData[0]];
   }
@@ -583,6 +587,7 @@ export class SidebarComponent {
     switch(tab){
       case "notam":
         this.isNotamTable = !this.isNotamTable;
+        this.notamSharedService.notamTableStatusUpdate( this.isNotamTable)
         this.isminNotam = !this.isminNotam;
         break;
       case "wxm":
