@@ -290,11 +290,13 @@ export class AdmSidebarComponent {
 
    this.sharedService.airport$.subscribe((response)=>{
     if(response){
+      this.sharedService.updateloader(true);
       const transformedAirports = response.map((airport:any) => ({
         value: airport.id,
         label: airport.airport_icao
     }));
     this.optionsAirport=transformedAirports;
+    this.sharedService.updateloader(false);
     }
    
    })
@@ -611,7 +613,7 @@ export class AdmSidebarComponent {
             selectedTypeofProcedure: [],
             selectedProcedureName: [],
           });
-
+          this.sharedService.updateloader(true);
           this.pansopsService.getRunways(this.selectedAirport.toString()).subscribe(response=>{
             const transformesRunways = response.map((runway:any) => ({
               value: runway.id,
@@ -619,6 +621,7 @@ export class AdmSidebarComponent {
           }));
           this.optionRunway=transformesRunways;
           this.sharedService.setRunwayData(response);
+          this.sharedService.updateloader(false);
          })
          const formValues = this.Airform.value;
           this.sharedService.updateFormValues(formValues);
@@ -638,12 +641,14 @@ export class AdmSidebarComponent {
             selectedTypeofProcedure: [],
             selectedProcedureName: [],
           });
+          this.sharedService.updateloader(true);
         this.pansopsService.getProcedureTypes(this.selectedAirport.toString(),this.selectedRunway.toString()).subscribe(response=>{
           const transformesType = response.map((type:any) => ({
             value: type,
             label: type
         }));
         this.optionProviderType=transformesType;
+        this.sharedService.updateloader(false);
        })
        const formValues = this.Airform.value;
       this.sharedService.updateFormValues(formValues);
@@ -906,6 +911,7 @@ isChecked2(optionValue: string): boolean {
 }
 
 getProcedureNames(){
+  this.sharedService.updateloader(true);
   this.pansopsService.getProcedureNames(this.selectedAirport.toString(),this.selectedRunway.toString(),this.selectedTypeofProcedure.toString(),{
     "airport_icao": this.Airform.get('selectedAirport')?.value,
        "rwy_dir":this.Airform.get('selectedRunway')?.value,
@@ -914,15 +920,18 @@ getProcedureNames(){
   response= this.convertToArray(response)
   
   this.procedureNames=response;
+  this.sharedService.updateloader(false);
  })
 }
 
 getProcedure(){
+  this.sharedService.updateloader(true);
   this.pansopsService.getProcedure({
     "procedure_id":this.Airform.get('selectedProcedureName')?.value
     }).subscribe(response=>{
         this.sharedService.setProcedureData(response)
        this.procedureResponse=response;
+       this.sharedService.updateloader(false);
     })
 }
 

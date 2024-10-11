@@ -69,4 +69,11 @@ export class SharedService {
   setCompareAiracInfo(data:any){
     this.CompareAiracSubject.next(data);
   }
+
+  private loader = new Subject<any>();
+  loader$ = this.loader.asObservable();
+
+  updateloader(content: any) {
+    this.loader.next(content);
+  }
 }

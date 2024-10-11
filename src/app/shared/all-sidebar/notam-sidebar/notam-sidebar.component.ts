@@ -1,6 +1,7 @@
 import { Component, HostListener } from '@angular/core';
 import { NotamService } from 'src/app/service/Notam/notam.service';
 import { SharedService } from 'src/app/service/Notam/shared.service';
+import { SharedService as loaderservice } from 'src/app/service/shared.service';
 
 @Component({
   selector: 'app-notam-sidebar',
@@ -60,7 +61,8 @@ export class NotamSidebarComponent {
   ];
 
 
-  constructor(private notamservice: NotamService,private sharedService:SharedService){
+  constructor(private notamservice: NotamService,private sharedService:SharedService,private loaderservice:loaderservice){
+    this.loaderservice.updateloader(true);
    this.notamservice.getNotamFilterOptions().subscribe((response:any)=>{
     response.fir.forEach((element:any) => {
       this.filters[0].options?.push({ name: element, checked: false })
@@ -73,7 +75,7 @@ export class NotamSidebarComponent {
     response.facilityDownGrade.forEach((element:any) => {
       this.filters[3].options?.push({ name: element, checked: false })
     });
-
+    this.loaderservice.updateloader(false);
    })
   }
 
@@ -108,6 +110,7 @@ export class NotamSidebarComponent {
   }
 
   submit() {
+    this.loaderservice.updateloader(true);
     const selectedFilters: any = {};
     this.filters.forEach(filter => {
       if (filter.options) {
@@ -117,6 +120,7 @@ export class NotamSidebarComponent {
       }
     });
     this.sharedService.updateFormValues(selectedFilters);
+    this.loaderservice.updateloader(false);
   }
 
   @HostListener('document:click', ['$event'])

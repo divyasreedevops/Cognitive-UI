@@ -11,6 +11,7 @@ import { AuthService } from '../service/Auth/auth.service';
 export class LoginComponent implements OnInit {
   LogInForm!: FormGroup;
   public showPassword: boolean = false;
+  isLoading: boolean = false;
 
   constructor(private formBuilder: FormBuilder, private router: Router, private authService: AuthService) { }
 
@@ -26,6 +27,8 @@ export class LoginComponent implements OnInit {
   }
 
   onsubmit() {
+    this.isLoading=true;
+    try {
       this.authService.login({
         "email":this.LogInForm.value.email,
         "password":this.LogInForm.value.password
@@ -33,5 +36,9 @@ export class LoginComponent implements OnInit {
       localStorage.setItem('token',data.token);
       this.router.navigate(['opsmanager']);
       })
+    } catch (error) {
+      this.isLoading=false;
+    }
+
   }
 }
