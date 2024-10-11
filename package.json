@@ -28,6 +28,7 @@
     "leaflet-routing-machine": "^3.2.12",
     "leaflet-textpath": "^1.2.3",
     "leaflet.icon.glyph": "^0.3.0",
+    "moment": "^2.30.1",
     "ngx-pagination": "^6.0.3",
     "ol": "^9.2.4",
     "pg": "^8.12.0",
