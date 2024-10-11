@@ -459,9 +459,11 @@ onToggle(event:any){
 }
 
 onsubmit(){
+  this.sharedService.updateloader(true);
     this.wxm.emit({status:1});
     setTimeout(() => {
       this.wxmSharedService.updateatsSidebar(this.Airform.value);
+      this.sharedService.updateloader(false);
     }, 100); 
 }
 }

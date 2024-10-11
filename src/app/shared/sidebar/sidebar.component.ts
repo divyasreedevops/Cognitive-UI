@@ -81,6 +81,7 @@ export class SidebarComponent {
   procedureResponse = [];
   multipart1: ListItem[] = [];
   multipart2: ListItem[] = [];
+  isshowloader=false;
 
 
   optionsAirport: { value: any; label: any }[] = [
@@ -396,6 +397,16 @@ export class SidebarComponent {
       }
     });
     // this.compareObj = this.compareComplexObjects(this.obj1, this.obj2);
+
+    this.sharedService.loader$.subscribe(status=>{
+      console.log('loader ',status);
+      if(status){
+        this.isshowloader=true;
+      }else{
+        this.isshowloader=false;
+      }
+  
+   })
   }
 
   compareComplexObjects(obj1: ComplexObject, obj2: ComplexObject): ComparedComplexObject {
