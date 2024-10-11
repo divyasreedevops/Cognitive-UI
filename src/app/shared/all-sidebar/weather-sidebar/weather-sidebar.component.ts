@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { PansopsService } from 'src/app/service/Adm/Pansops/pansops.service';
 import { SharedService } from 'src/app/service/shared.service';
 import { WeatherService } from 'src/app/service/Weather/weather.service';
+import { SharedService as wxmshared } from 'src/app/service/Weather/shared.service';
 interface RowItem {
   [key: string]: string;
 }
@@ -90,7 +91,8 @@ export class WeatherSidebarComponent {
     private router: Router,
     private formbuilder: FormBuilder,
     private weatherService: WeatherService,
-    private pansopsService: PansopsService
+    private pansopsService: PansopsService,
+    private wxmshared:wxmshared
   ){
 
   }
@@ -466,5 +468,17 @@ onsubmit(){
    const formValues = this.Airform.value;
    this.sharedService.updateFormValues(formValues);
    this.getProcedure();
+}
+
+ngOnDestroy(){
+  console.log('destroy..');
+  this.Airform.reset({
+    selectedAirport: [],
+    selectedRunway: [],
+    selectedTypeofProcedure: [],
+    selectedProcedureName: [],
+  });
+
+  this.wxmshared.updatemap(this.Airform.value);
 }
 }
