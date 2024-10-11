@@ -1,7 +1,7 @@
 <div class="outer-hold">
     <div class="side-container" [ngClass]="{'collapsed': isCollapsed}">
         <div class="tab-toggel" [ngClass]="{'displayEnd': !isMultiMapView || isCollapsed, 'displayBetween': isMultiMapView && !isCollapsed}">
-            <div class="arrow-hold" *ngIf="!isCollapsed && isMultiMapView && (weatherSelectedTab==='PANS-OPS' || weatherSelectedTab==='ENR' || weatherSelectedTab==='AIRPORT')">
+            <div class="arrow-hold" *ngIf="!isCollapsed && isMultiMapView || (weatherSelectedTab==='PANS-OPS' || weatherSelectedTab==='ENR' || weatherSelectedTab==='AIRPORT')">
                 <mat-icon (click)="navigateToMultiMap()">west</mat-icon>
                 <mat-icon>east</mat-icon>
             </div>
