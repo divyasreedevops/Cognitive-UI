@@ -348,6 +348,7 @@ export class SidebarComponent {
     const route = localStorage.getItem('currentRoute');
     this.sharedService.airac$.subscribe((airacRes) => {
       this.airacs = airacRes;
+      this.isAIXM = false;
     });
 
     this.sharedService.sidebar$.subscribe((res) => {
@@ -460,6 +461,7 @@ export class SidebarComponent {
       this.router.navigate(['/ADM']);
       this.isMultiMapView = false;
       this.isAIXM = false;
+      this.isCompare=false
       this.selectedTab = '';
     }else if(route === '/weather/PANS-OPS'){
       this.router.navigate(['/weather']);

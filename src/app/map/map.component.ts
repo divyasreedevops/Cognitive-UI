@@ -17,6 +17,7 @@ import { SharedService as wxmshared } from '../service/Weather/shared.service';
 import { PansopsService } from '../service/Adm/Pansops/pansops.service';
 import { NotamService } from '../service/Notam/notam.service';
 import moment from 'moment';
+import { reset } from 'ol/transform';
 declare module 'leaflet' {
   interface MarkerOptions {
     rotationAngle?: number;
@@ -258,6 +259,14 @@ export class MapComponent implements OnInit {
       });
       this.Airform.setValue(this.Airform.value);
       this.airportLayerGroup.clearLayers();
+      this.map.setView([20.5937, 78.9629], 5);
+      if (this.geoJsonLayer) {
+        this.map.removeLayer(this.geoJsonLayer);
+      }
+      if (this.lineGeoJsonLayer) {
+        this.map.removeLayer(this.lineGeoJsonLayer);
+      }
+      console.log('completed.;.;.;');
     })
 
   
@@ -1028,7 +1037,7 @@ featureCollection.features.push( { "type": "Feature", "properties": { "Name": ""
 
 
 plotAtsProcedures(atsdata:any){
-
+console.log('atsdata ',atsdata);
   var  featureCollection: GeoJSON.FeatureCollection<GeoJSON.Point>= {
     "type": "FeatureCollection",
     "features": [
