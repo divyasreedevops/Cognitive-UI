@@ -110,7 +110,6 @@ export class NotamSidebarComponent {
   }
 
   submit() {
-    this.loaderservice.updateloader(true);
     const selectedFilters: any = {};
     this.filters.forEach(filter => {
       if (filter.options) {
@@ -120,7 +119,6 @@ export class NotamSidebarComponent {
       }
     });
     this.sharedService.updateFormValues(selectedFilters);
-    this.loaderservice.updateloader(false);
   }
 
   @HostListener('document:click', ['$event'])

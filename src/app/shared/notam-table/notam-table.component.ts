@@ -3,6 +3,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { CommonModule } from '@angular/common';
 import { NotamService } from 'src/app/service/Notam/notam.service';
 import { SharedService } from 'src/app/service/Notam/shared.service';
+import {SharedService as CommonSharedService}  from 'src/app/service/shared.service';
 @Component({
   selector: 'app-notam-table',
   templateUrl: './notam-table.component.html',
@@ -17,7 +18,7 @@ export class NotamTableComponent implements OnInit {
   @Output() showCircles: EventEmitter<any> = new EventEmitter<any>();
   p: number = 1;
   total: number =0;
-  constructor(private notamservice: NotamService,private sharedService:SharedService, private mapService: SharedService){
+  constructor(private notamservice: NotamService,private sharedService:SharedService, private mapService: SharedService, private commonSharedService:CommonSharedService){
   }
 
   searchText:string=""
@@ -60,8 +61,9 @@ export class NotamTableComponent implements OnInit {
 
 
   getTableData(payload:any){
-   
+    this.commonSharedService.updateloader(true);
     this.notamservice.getNotamList(payload).subscribe((res:any)=>{
+      this.commonSharedService.updateloader(false);
       this.notamData=res.data;
       this.filteredNotamData=[...this.notamData]
       this.total=res.totalCount;
@@ -168,11 +170,6 @@ if(filterByFlag==="warning"){
 payload['dataFilters']=filteredDataFilters;
 }
 
-// if(latest){
-//   tableFilters['category']=filterByFlag
-// }
-
-
 if(filterByFlag!==""){
  tableFilters['category']=filterByFlag
 }
@@ -206,7 +203,6 @@ this.getTableData(payload)
   }
 
   close(filterByFlag:any=null) {
-    console.log(filterByFlag,"OOOOOOOOOOOOOOOOOOOOOOOOOOOOOo")
     this.isMinimize.emit({ status: 0 });
     var tableFilters:any={}
     let payload:any = {
@@ -256,7 +252,7 @@ this.getTableData(payload)
           tempList.push(temp);
         }
   
-
+     
         // Emit the circle data after each page is processed
         this.mapService.emitCircleData(tempList);
   
@@ -266,12 +262,13 @@ this.getTableData(payload)
           // Fetch the next page of data
           fetchNotamData(payload);
         } else {
+          this.commonSharedService.updateloader(false);
           // No more pages, finalize the process and emit the final data
           this.sharedService.notamDataList(res.data);
         }
       });
     };
-  
+    this.commonSharedService.updateloader(true);
     // Call the recursive function with the initial payload
     fetchNotamData(payload);
 
