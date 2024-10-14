@@ -30,6 +30,10 @@
         </div>
       </div>
     </div>
+    <div class="new-textbox">
+      <!-- <label class="titleLable">Additional Information</label> -->
+      <textarea [(ngModel)]="additionalInfo" placeholder="Enter additional info" class="textarea-expand" rows="1"></textarea>
+    </div>
     <div class="submitDiv">
       <button type="submit" class="submitButton" (click)="submit()">Submit</button>
     </div>

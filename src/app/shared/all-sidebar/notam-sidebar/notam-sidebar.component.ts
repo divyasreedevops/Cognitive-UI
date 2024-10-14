@@ -9,7 +9,7 @@ import { SharedService as loaderservice } from 'src/app/service/shared.service';
   styleUrl: './notam-sidebar.component.scss'
 })
 export class NotamSidebarComponent {
-
+  additionalInfo: string = '';
   filters = [
     {
       name: 'FIR',
@@ -80,17 +80,31 @@ export class NotamSidebarComponent {
   }
 
 
+  // {
+  //   name: 'FIR',
+  //   allOptionsChecked: false,
+  //   isOpen: false, // To track dropdown open/close
+  //   options: [
+  //   ],
+  //   fliterSelectedOptions: [],
+  // },
+
   selectAllOption(field: any) {
+    console.log('field.name', field.name)
     field.allOptionsChecked = !field.allOptionsChecked
-    for (let element in field.options) {
-      field.options[element]['checked'] = field.allOptionsChecked;
-    }
-    if (field.allOptionsChecked) {
-      field.options.forEach((ele:any)=>{
-        field.fliterSelectedOptions.push(ele.name)
-      })
-    } else {
+    if (field.options){
       field.fliterSelectedOptions = []
+      for (let element in field.options) {
+        field.options[element]['checked'] = field.allOptionsChecked;
+      }
+      if (field.allOptionsChecked) {
+        field.options.forEach((ele:any)=>{
+          field.fliterSelectedOptions.push(ele.name)
+        })
+      } else {
+        field.fliterSelectedOptions = []
+      }
+      console.log('field.fliterSelectedOptions', field.fliterSelectedOptions)
     }
   }
 
@@ -118,6 +132,8 @@ export class NotamSidebarComponent {
         selectedFilters[filter.name.toLowerCase().replace(/\s+/g, '')] = filter.allOptionsChecked;
       }
     });
+    selectedFilters['additionalInfo'] = this.additionalInfo;
+
     this.sharedService.updateFormValues(selectedFilters);
   }
 

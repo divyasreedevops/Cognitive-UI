@@ -241,20 +241,25 @@ this.getTableData(payload)
       this.notamservice.getNotamList(payload).subscribe((res: any) => {
         let tempList = []
         for (let i = 0; i < res.data.length; i++) {
-          const obj = res.data[i];
-          let temp = {
-            "lat": obj.lat,
-            "lon": obj.lon,
-            "radius": obj.radius,
-            "category": obj.category,
-            "notam":obj.notam,  
-          };
-          tempList.push(temp);
+          if (Object.keys(res.data[i]).length !== 0){
+            const obj:any = res.data[i];
+              let temp = {
+                "lat": obj.lat,
+                "lon": obj.lon,
+                "radius": obj.radius,
+                "category": obj.category,
+                "notam":obj.notam,
+                "end_date": obj.end_date,
+                "start_date": obj.start_date,
+              };
+              tempList.push(temp);
+            }
         }
   
      
         // Emit the circle data after each page is processed
-        this.mapService.emitCircleData(tempList);
+        console.log('tempList.length', tempList.length)
+        this.mapService.emitCircleData([tempList, res.nextPage]);
   
         // Handle pagination, check if nextPage exists
         if (res.nextPage) {

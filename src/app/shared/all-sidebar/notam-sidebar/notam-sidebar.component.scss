@@ -664,3 +664,15 @@
       color: white;
       border-radius: 3px;
     }
+
+    .textarea-expand {
+      width: 100%;
+      resize: none; /* Disable manual resize by the user */
+      overflow-y: hidden; /* Hide vertical scrollbar */
+      padding: 5px;
+      font-size: 14px;
+      border-radius: 4px;
+      border: 1px solid #eaedf0;
+      height: 60px;
+      background-color: #eaedf0;
+    }

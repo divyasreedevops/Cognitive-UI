@@ -356,6 +356,7 @@ export class SidebarComponent {
 
     if (route === '/ADM/PANS-OPS' || route === '/weather/PANS-OPS') {
       const tab = localStorage.getItem("wxmTab");
+      console.log('selected tab ',tab);
       if(tab){
         this.weatherSelectedTab = tab;
       }
@@ -407,6 +408,7 @@ export class SidebarComponent {
       }
   
    })
+   this.weatherSelectedTab=' ';
   }
 
   compareComplexObjects(obj1: ComplexObject, obj2: ComplexObject): ComparedComplexObject {
