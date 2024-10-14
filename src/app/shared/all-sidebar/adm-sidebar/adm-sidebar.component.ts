@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { PansopsService } from 'src/app/service/Adm/Pansops/pansops.service';
 import { SharedService } from 'src/app/service/shared.service';
+import { SharedService as wxmshared } from 'src/app/service/Weather/shared.service';
 
 interface RowItem {
   [key: string]: string;
@@ -92,7 +93,8 @@ export class AdmSidebarComponent {
     private sharedService: SharedService,
     private router: Router,
     private formbuilder: FormBuilder,
-    private pansopsService: PansopsService
+    private pansopsService: PansopsService,
+    private wxmshared:wxmshared
   ){
 
   }
@@ -211,7 +213,7 @@ export class AdmSidebarComponent {
    this.sharedService.sidebar$.subscribe((res)=>{
     console.log('res ===> ',res);
     this.selectedAirac=res;
-    
+    this.ngOnDestroy();
   
     })
 
@@ -991,5 +993,16 @@ toggleSelection(item: string, part: string, index: number, value: any): void {
 
 onToggle(event:any){
     this.AIXM.emit({E:event,res:this.procedureResponse});
+}
+
+ngOnDestroy(){
+  this.Airform.reset({
+    selectedAirport: [],
+    selectedRunway: [],
+    selectedTypeofProcedure: [],
+    selectedProcedureName: [],
+  });
+  this.sharedService.updateFormValues(this.Airform.value);
+  this.wxmshared.updatemap(this.Airform.value);
 }
 }

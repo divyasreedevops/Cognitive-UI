@@ -2,6 +2,7 @@ import { Component, HostListener } from '@angular/core';
 import { NotamService } from 'src/app/service/Notam/notam.service';
 import { SharedService } from 'src/app/service/Notam/shared.service';
 import { SharedService as loaderservice } from 'src/app/service/shared.service';
+import { SharedService as wxmshared } from 'src/app/service/Weather/shared.service';
 
 @Component({
   selector: 'app-notam-sidebar',
@@ -61,7 +62,7 @@ export class NotamSidebarComponent {
   ];
 
 
-  constructor(private notamservice: NotamService,private sharedService:SharedService,private loaderservice:loaderservice){
+  constructor(private notamservice: NotamService,private sharedService:SharedService,private loaderservice:loaderservice, private wxmshared:wxmshared){
     this.loaderservice.updateloader(true);
    this.notamservice.getNotamFilterOptions().subscribe((response:any)=>{
     response.fir.forEach((element:any) => {
@@ -145,5 +146,10 @@ export class NotamSidebarComponent {
         filter.isOpen = false; // Close the dropdown
       }
     });
+  }
+
+  ngOnDestroy(){
+
+    this.wxmshared.updatemap('this.Airform.value');
   }
 }
