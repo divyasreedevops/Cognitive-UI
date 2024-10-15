@@ -216,5 +216,7 @@
   <div class="tab tab-style" style="pointer-events: auto;" [hidden]="!isairportTable">
      <app-ats-table (isMinimize)="minimize($event,'ats')"></app-ats-table>
  </div>
+ <app-weather-popup *ngIf="activeTab==='WxM'"></app-weather-popup>
+
 </div>
 <app-loader [show]="isshowloader"></app-loader>

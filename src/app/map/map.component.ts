@@ -93,7 +93,7 @@ export class MapComponent implements OnInit {
   createdAt: string = '25 Jul 2024 06:56:00';
   source: string = 'VECCYNYX';
   redCircleIcon = L.icon({
-    iconUrl: 'assets/icons/1.png', // Set the path to your icon
+    iconUrl: 'assets/icons/17.png', // Set the path to your icon
     iconSize: [25, 25], // Adjust icon size
     iconAnchor: [12, 12], // Point of the icon which will correspond to marker's location
     popupAnchor: [0, -20] // Point from which the popup should open relative to the iconAnchor

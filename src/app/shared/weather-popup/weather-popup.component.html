@@ -1,0 +1,14 @@
+<div class="menu-container">
+    <div class="hamburger" (click)="togglePopup()">
+      <mat-icon class="listIcon">list</mat-icon>
+    </div>
+    <div class="popup-menu" [ngClass]="{'active': showPopup}">
+      <ul>
+        <li *ngFor="let item of menuItems" (click)="handleOptionClick(item)">
+          <mat-icon class="menu-icon">{{ item.icon }}</mat-icon>
+          <span>{{item.label}}</span>
+        </li>
+      </ul>
+    </div>
+  </div>
+  
