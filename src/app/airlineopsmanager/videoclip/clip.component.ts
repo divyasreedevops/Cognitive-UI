@@ -32,6 +32,11 @@ timeoutId:any;
             this.router.navigate(['/weather']);
           }, 3000);
           break;
+          case 'APM':
+          this.timeoutId = setTimeout(() => {
+            this.router.navigate(['/APM']);
+          }, 3000);
+          break;
       }
     }
   }

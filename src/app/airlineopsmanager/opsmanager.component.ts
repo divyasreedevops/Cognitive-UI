@@ -28,7 +28,7 @@ export class OpsManagerComponent {
           title: 'APM',
           description: 'Aircraft Performance Management module is engineered to optimize and monitor the performance of your fleet by providing detailed analytics and actionable insights, ensuring the highest standards of safety and reliability.',
           icon: '../../assets/icons/4.png', 
-          router: 'opsmanager',
+          router: '/videoclip',
         },
         {
           title: 'AIRWORTHINESS',

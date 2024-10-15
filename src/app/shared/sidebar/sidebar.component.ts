@@ -102,7 +102,8 @@ export class SidebarComponent {
   isminEnroute=false;
   isairportTable=false;
   isminairport=false;
-
+  isApmSidebar=true;
+  isAPMTable=false;
   constructor(
     private sharedService: SharedService,
     private router: Router,
@@ -372,7 +373,11 @@ export class SidebarComponent {
     } else {
       this.isNotamTable = false;
       this.notamSharedService.notamTableStatusUpdate(false)
-
+    }
+    if(route === '/APM'){
+      this.isAPMTable=true;
+    }else{
+      this.isAPMTable=false;
     }
     this.isCompare = false;
     this.sharedService.sidebar$.subscribe((option: any) => {

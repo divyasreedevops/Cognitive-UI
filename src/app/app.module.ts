@@ -51,6 +51,8 @@ import { TerminalComponent } from './shared/all-sidebar/weather-sidebar/terminal
 import { AtsTableComponent } from './shared/ats-table/ats-table.component';
 import { LoaderComponent } from './shared/loader/loader.component';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { ApmSidebarComponent } from './shared/all-sidebar/apm-sidebar/apm-sidebar.component';
+import { ApmTableComponent } from './shared/apm-table/apm-table.component';
 
 @NgModule({
     declarations: [
@@ -78,7 +80,9 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
         WeatherTableComponent,
         TerminalComponent,
         AtsTableComponent,
-        LoaderComponent
+        LoaderComponent,
+        ApmSidebarComponent,
+        ApmTableComponent
     ],
   
     imports: [

@@ -1,0 +1,50 @@
+.table-container {
+    margin: 20px;
+  }
+  
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  th, td {
+    padding: 10px;
+    text-align: left;
+    border: none;
+  }
+
+  th{
+    text-align: center;
+    background-color: #80808078;
+  }
+  
+  .city-pair {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid black;
+    text-align: center;
+    border-radius: 6px;
+  }
+  
+  .city-info {
+    display: flex;
+    justify-content: space-evenly;
+    padding: 1px 0;
+  }
+  
+  .city-info.highlighted {
+    background-color: red;
+    color: white;
+    font-weight: bold;
+  }
+  
+  .des{  
+    font-size: 1.2rem;
+    font-weight: 501;
+  }
+  .title{
+    font-size: 0.7rem;
+    color: gray;
+    font-weight: 501;
+    line-height: 13px;
+  }

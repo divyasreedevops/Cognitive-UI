@@ -67,6 +67,10 @@
         
       </ng-container>
 
+      <ng-container *ngIf="isApmSidebar && !isCollapsed">
+        <app-apm-sidebar></app-apm-sidebar>
+      </ng-container>
+
     </div>
     
     <!-- body content -->
@@ -216,5 +220,9 @@
   <div class="tab tab-style" style="pointer-events: auto;" [hidden]="!isairportTable">
      <app-ats-table (isMinimize)="minimize($event,'ats')"></app-ats-table>
  </div>
+
+ <div class="tab tab-style" style="pointer-events: auto;" *ngIf="isAPMTable">
+  <app-apm-table></app-apm-table>
+</div>
 </div>
 <app-loader [show]="isshowloader"></app-loader>

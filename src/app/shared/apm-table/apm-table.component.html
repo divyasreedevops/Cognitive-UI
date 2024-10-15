@@ -1,0 +1,33 @@
+<div class="table-container">
+    <table>
+      <thead>
+        <tr>
+          <th style="border-right: 4px solid white;">Reg No.</th>
+          <th style="border-right: 4px solid white;">Type</th>
+          <th colspan="10">City Pair</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let aircraft of aircraftData">
+          <!-- Registration and Type -->
+          <td style="white-space: nowrap;">{{ aircraft.regNo }}</td>
+          <td style="white-space: nowrap;">{{ aircraft.type }}</td>
+          <!-- City Pair Data -->
+          <td *ngFor="let city of aircraft.cityPairs">
+            <div class="city-pair">
+              <div class="city-info" [ngClass]="{'highlighted': city.isHighlighted}">
+                <span class="title">Departure Airport</span>
+                <span class="title">Destination Airport</span>
+              </div>
+              <div class="city-info" [ngClass]="{'highlighted': city.isHighlighted}"> 
+                <span class="des">{{ city.departure }}</span>
+                <mat-icon style="transform: rotate(90deg); color: blue;">flight</mat-icon>
+                <span class="des">{{ city.destination }}</span>
+              </div>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  
