@@ -215,11 +215,6 @@ export class MapComponent implements OnInit {
      * api call to fetch the airport details
      */
 
-    
-    
-    // this.route.params.subscribe(params => {
-    //   this.mapId = params['id'];
-    // });
     const selectedMap = localStorage.getItem('selectedMap');
     if(selectedMap){
       this.mapId = selectedMap;
@@ -451,9 +446,6 @@ addCircles(circles: any): void {
       const planeSVG = `
         <svg height="20" width="20" style="transition: transform 0.5s ease; transform: rotate(${flight.heading}deg); transform-origin: center; background: none; border: none;" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 46.876 46.876" xml:space="preserve" fill="#000000" stroke="#000000"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <g> <path style="fill:#e3b021;" d="M26.602,24.568l15.401,6.072l-0.389-4.902c-10.271-7.182-9.066-6.481-14.984-10.615V2.681 c0-1.809-1.604-2.701-3.191-2.681c-1.587-0.021-3.19,0.872-3.19,2.681v12.44c-5.918,4.134-4.714,3.434-14.985,10.615l-0.39,4.903 l15.401-6.072c0,0-0.042,15.343-0.006,15.581l-5.511,3.771v2.957l7.044-2.427h3.271l7.046,2.427V43.92l-5.513-3.771 C26.644,39.909,26.602,24.568,26.602,24.568z"></path> </g> </g></svg>
       `;
-
-
-      
       const icon = L.divIcon({
         html: planeSVG,
         iconSize: [30, 30],
@@ -480,70 +472,6 @@ addCircles(circles: any): void {
     this.mobileQuery.removeListener(this._mobileQueryListener);
   }
 
-
-
-
-  // all world data
-  // private updateMapWithPlaneData(data: { satellite: Plane[]; terrestrial: Plane[] }): void {
-  //   const planes = [...data.satellite, ...data.terrestrial];
-
-  //   if (planes.length === 0) {
-  //     console.error('No valid plane data found', data);
-  //     return;
-  //   }
-
-  //   planes.forEach((plane: any) => {
-  //     const target: Plane = {
-  //       icao_address: plane.icao_address,
-  //       callsign: plane.callsign,
-  //       origin_country: plane.origin_country || '',
-  //       time_position: plane.timestamp,
-  //       last_contact: plane.ingestion_time,
-  //       longitude: parseFloat(plane.longitude),
-  //       latitude: parseFloat(plane.latitude),
-  //       altitude_baro: parseFloat(plane.altitude_baro),
-  //       on_ground: plane.on_ground,
-  //       velocity: parseFloat(plane.speed),
-  //       heading: parseFloat(plane.heading),
-  //       vertical_rate: parseFloat(plane.vertical_rate),
-  //       sensors: plane.source || '',
-  //       geo_altitude: parseFloat(plane.altitude_baro),
-  //       squawk: plane.squawk,
-  //       spi: plane.on_ground,
-  //       position_source: 1,
-  //       collection_type: plane.collection_type,
-  //     };
-
-  //     if (isNaN(target.latitude) || isNaN(target.longitude)) {
-  //       console.error('Invalid coordinates for plane:', target);
-  //       return;
-  //     }
-
-  //     const planeSVG = `
-  //     <svg height="20" width="20" style="transform-origin: center; transform: rotate(${target.heading}deg);" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 46.876 46.876" xml:space="preserve" fill="#000000" stroke="#000000"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <g> <path style="fill:#e3b021;" d="M26.602,24.568l15.401,6.072l-0.389-4.902c-10.271-7.182-9.066-6.481-14.984-10.615V2.681 c0-1.809-1.604-2.701-3.191-2.681c-1.587-0.021-3.19,0.872-3.19,2.681v12.44c-5.918,4.134-4.714,3.434-14.985,10.615l-0.39,4.903 l15.401-6.072c0,0-0.042,15.343-0.006,15.581l-5.511,3.771v2.957l7.044-2.427h3.271l7.046,2.427V43.92l-5.513-3.771 C26.644,39.909,26.602,24.568,26.602,24.568z"></path> </g> </g></svg>
-  //   `;
-
-  //     const planeIcon = L.divIcon({
-  //       html: planeSVG,
-  //       className: 'custom-plane-icon',
-  //       iconSize: [20, 20],
-  //       iconAnchor: [10, 10],
-  //     });
-
-  //     if (this.markers[target.icao_address]) {
-  //       const marker = this.markers[target.icao_address];
-  //       marker.setLatLng([target.latitude, target.longitude]);
-  //       marker.setIcon(planeIcon);
-  //     } else {
-  //       const marker = L.marker([target.latitude, target.longitude], { icon: planeIcon });
-  //       marker.addTo(this.map).on('click', () => {
-  //         this.displayPlaneData(target);
-  //       });
-
-  //       this.markers[target.icao_address] = marker;
-  //     }
-  //   });
-  // }
 
   spiresAPI(): void {
     if (this.subscription) {
@@ -1035,8 +963,23 @@ featureCollection.features.push( { "type": "Feature", "properties": { "Name": ""
 
 }
 
+ calculateBearing(lat1: number, lon1: number, lat2: number, lon2: number): number {
+  const toRadians = (degrees: number) => degrees * (Math.PI / 180);
+  
+  const lat1Rad = toRadians(lat1);
+  const lat2Rad = toRadians(lat2);
+  const deltaLon = toRadians(lon2 - lon1);
+
+  const y = Math.sin(deltaLon) * Math.cos(lat2Rad);
+  const x = Math.cos(lat1Rad) * Math.sin(lat2Rad) - Math.sin(lat1Rad) * Math.cos(lat2Rad) * Math.cos(deltaLon);
+
+  const bearing = Math.atan2(y, x);
+  return (bearing * (180 / Math.PI) + 360) % 360; // Convert to degrees and normalize
+}
+
 
 plotAtsProcedures(atsdata:any){
+  this.airportLayerGroup.clearLayers();
 console.log('atsdata ',atsdata);
   var  featureCollection: GeoJSON.FeatureCollection<GeoJSON.Point>= {
     "type": "FeatureCollection",
@@ -1076,7 +1019,9 @@ console.log('atsdata ',atsdata);
                distance=airwayName
                airway=false;
           }
-          lineJson.features.push({ "type": "Feature", "properties": { "Name":  ats.code,"Distance":distance, "Bearing": null}, "geometry":
+          var angle =this.calculateBearing(featureCollection.features[featureCollection.features.length-1].geometry.coordinates[1],featureCollection.features[featureCollection.features.length-1].geometry.coordinates[0],ats.geometry.coordinates[1],ats.geometry.coordinates[0])
+
+          lineJson.features.push({ "type": "Feature", "properties": { "Name":  ats.code,"Distance":distance, "Bearing": angle}, "geometry":
             { "type": "MultiLineString", "coordinates": [ [ featureCollection.features[featureCollection.features.length-1].geometry.coordinates,ats.geometry.coordinates] ] } },)
          }
         featureCollection.features.push( { "type": "Feature", "properties": { "Name": ats.code,type:ats.type,  "Speed": "", "Altitude": "" }, "geometry": { "type": "Point", "coordinates":ats.geometry.coordinates } });
@@ -1105,7 +1050,7 @@ console.log('atsdata ',atsdata);
       
   })
 
-
+console.log(lineJson,"dkjfhdsjvhdfukvndfkhvdkfjvnfdhgi")
   const aitportIcon = L.icon({
     iconUrl: 'assets/AKTIM_7A/Fly-by.png',
     iconSize: [40, 40],
@@ -1161,41 +1106,88 @@ console.log('atsdata ',atsdata);
    geoJsonLayer.addTo(this.map);
    const lineFeatures = lineJson.features; // Assuming lineData is your GeoJSON data
 
-   this.lineGeoJsonLayer = L.geoJSON(lineJson,
-     {
-       style: {
-           color:  "red", // Set line color
-           weight: 2 // Set line weight
-       },
-       onEachFeature: (feature: GeoJSON.Feature<GeoJSON.MultiLineString>, layer) => {
-        const currentIndex = lineFeatures.indexOf(feature as GeoJSON.Feature<GeoJSON.MultiLineString>);
+   this.lineGeoJsonLayer = L.geoJSON(lineJson, {
+    style: {
+        color:  'red', // Set line color
+        weight: 2 // Set line weight
+    },
+    onEachFeature: (feature: GeoJSON.Feature<GeoJSON.MultiLineString>, layer) => {
+        const currentIndex = lineFeatures.indexOf(feature as GeoJSON.Feature<GeoJSON.MultiLineString>); // Type assertion here
+        if (feature.properties) {
+            const bearing = feature.properties['Bearing'];
+            const distance = feature.properties['Distance'];
 
-        if (feature.properties && feature.properties['Distance']!==null) {
-            const coordinates = feature.geometry.coordinates[0];
-            const start = coordinates[0];
-            const end = coordinates[1];
+            if (bearing !== null || distance !== null) {
+                let coordinates: number[][] = [];
+                if (feature.geometry.type === 'MultiLineString') {
+                    coordinates = feature.geometry.coordinates[0]; // For MultiLineString, choose the first line
+                } else if (feature.geometry.type === 'LineString') {
+                    coordinates = feature.geometry.coordinates[0];
+                }
 
-            // Calculate the midpoint
-            const midpoint = [
-                (start[0] + end[0]) / 2,
-                (start[1] + end[1]) / 2
-            ];
+                const start = coordinates[0];
+                const end = coordinates[1];
 
-            // Create and add the direction icon
-            const directionIcon = L.icon({
-                iconUrl: 'assets/AKTIM_7A/penta1.png', // Replace with your icon path
-                iconSize: [44, 36],
-                iconAnchor: [22, 18]
-            });
+                // Calculate the angle between start and end points in radians
+                let angle = Math.atan2(end[1] - start[1], end[0] - start[0]);
 
-            const marker = L.marker(L.latLng(midpoint[1], midpoint[0]), {
-                icon: directionIcon,
-                rotationAngle: feature.properties['Bearing'] || 0 // Default to 0 if not available
-            }).addTo(this.airportLayerGroup);
+                // Ensure angle is positive
+                if (angle < 0) {
+                    angle += 2 * Math.PI;
+                }
+
+                // Calculate the center point of the line segment
+                const center = [(start[0] + end[0]) / 2, (start[1] + end[1]) / 2];
+
+                let rotationAngle;
+
+                if (distance !== null) {
+                    const customIcon = L.icon({
+                        iconUrl: 'assets/AKTIM_7A/penta.png',
+                        iconSize: [44, 36],
+                        iconAnchor: [20, 19]
+                    });
+
+                    let iconRotationAngle = parseFloat(bearing);
+
+                    if (isNaN(iconRotationAngle)) {
+                        const nextIndex = currentIndex + 1;
+                        if (nextIndex < lineFeatures.length) {
+                            const nextFeature = lineFeatures[nextIndex];
+                            if (nextFeature.properties && nextFeature.properties['Bearing']) {
+                                iconRotationAngle = parseFloat(nextFeature.properties['Bearing']);
+                            }
+                        }
+                    }
+
+                    const marker = L.marker(L.latLng(center[1], center[0]), {
+                        icon: customIcon,
+                        rotationAngle: iconRotationAngle
+                    }).addTo(this.airportLayerGroup);
+
+                    if (iconRotationAngle !== null) {
+                        rotationAngle = iconRotationAngle >= 0 && iconRotationAngle < 180 
+                                        ? iconRotationAngle - 90 
+                                        : iconRotationAngle + 90;
+                    } else {
+                        rotationAngle = angle * (180 / Math.PI) - 90;
+                    }
+
+                    const distanceTooltip = `<div style="transform: rotate(${rotationAngle}deg); font-size: 8px;">${feature.properties['Distance']}</div>`;
+                    marker.bindTooltip(distanceTooltip, {
+                        permanent: true,
+                        direction: 'center',
+                        className: 'labelstyle',
+                        opacity: 1
+                    });
+                }
+
+              
+            }
         }
     }
-     
-   });
+});
+
 
 
  
