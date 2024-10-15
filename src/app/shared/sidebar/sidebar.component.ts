@@ -376,8 +376,10 @@ export class SidebarComponent {
     }
     if(route === '/APM'){
       this.isAPMTable=true;
+      this.isApmSidebar=true;
     }else{
       this.isAPMTable=false;
+      this.isApmSidebar=false;
     }
     this.isCompare = false;
     this.sharedService.sidebar$.subscribe((option: any) => {
