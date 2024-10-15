@@ -9,7 +9,7 @@
             <mat-icon (click)="toggleSidebar()" class="tgbtn"*ngIf="isCollapsed">chevron_right</mat-icon>
         </div>
     
-        <ng-container *ngIf="!isMultiMapView && !isNotamTable && !isminNotam && activeTab==='ADM'">
+        <ng-container *ngIf="!isMultiMapView && !isNotamTable && !isminNotam && activeTab==='ADM' && !isApmSidebar">
         <div class="sub-option" [ngClass]="{'active': selectedTab==='PANS-OPS'}"  (click)="navigateToFullMap()">
             <mat-icon class="maticon">dataset</mat-icon>
             <span>PANS-OPS</span>
@@ -41,7 +41,7 @@
   </ng-container>
 
 
-    <ng-container *ngIf="isMultiMapView && !isCollapsed && !isNotamTable && !isminNotam&& activeTab==='ADM'">
+    <ng-container *ngIf="isMultiMapView && !isCollapsed && !isNotamTable && !isminNotam&& activeTab==='ADM' && !isApmSidebar">
 
         <app-adm-sidebar (AIXM)="onToggleChange($event)"></app-adm-sidebar>
     

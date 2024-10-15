@@ -3,6 +3,7 @@ import { NotamService } from 'src/app/service/Notam/notam.service';
 import { SharedService } from 'src/app/service/Notam/shared.service';
 import { SharedService as loaderservice } from 'src/app/service/shared.service';
 import { SharedService as wxmshared } from 'src/app/service/Weather/shared.service';
+import { SharedService as apmservice } from 'src/app/service/Apm/shared.service';
 
 @Component({
   selector: 'app-apm-sidebar',
@@ -59,7 +60,7 @@ export class ApmSidebarComponent {
   ];
 
 
-  constructor(private notamservice: NotamService,private sharedService:SharedService,private loaderservice:loaderservice, private wxmshared:wxmshared){
+  constructor(private notamservice: NotamService,private sharedService:SharedService,private loaderservice:loaderservice, private wxmshared:wxmshared,private apmservice:apmservice){
   //   this.loaderservice.updateloader(true);
   //  this.notamservice.getNotamFilterOptions().subscribe((response:any)=>{
   //   response.fir.forEach((element:any) => {
@@ -141,7 +142,7 @@ export class ApmSidebarComponent {
         selectedFilters[filter.name.toLowerCase().replace(/\s+/g, '')] = filter.allOptionsChecked;
       }
     });
-    console.log(selectedFilters);
+    this.apmservice.updateFilter(selectedFilters);
   }
 
   @HostListener('document:click', ['$event'])
@@ -192,8 +193,7 @@ export class ApmSidebarComponent {
     this.addMoreObj.forEach(filter => {
       selectedFilters[filter.name.toLowerCase().replace(/\s+/g, '')] = filter.fliterSelectedOptions;
     });
-  
-    console.log(selectedFilters);
+    this.apmservice.updateaddMoreData(selectedFilters);
   }
   ngOnDestroy(){
 

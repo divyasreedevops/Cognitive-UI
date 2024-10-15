@@ -102,7 +102,7 @@ export class SidebarComponent {
   isminEnroute=false;
   isairportTable=false;
   isminairport=false;
-  isApmSidebar=true;
+  isApmSidebar=false;
   isAPMTable=false;
   constructor(
     private sharedService: SharedService,
