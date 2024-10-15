@@ -26,7 +26,8 @@ const routes: Routes = [
   {path:'weather',component:MapComponent, children: [{ path: 'PANS-OPS', component: MapComponent }]},
   {path: 'ADM', component:MultimapComponent , children: [{ path: 'PANS-OPS', component: MapComponent }]},
   { path: 'videoclip', component: VideoClipComponent},
-  { path: 'pansop/:id', component: PansOpsComponent}
+  { path: 'pansop/:id', component: PansOpsComponent},
+  { path: 'APM', component: MapComponent },
 ];
 
 @NgModule({

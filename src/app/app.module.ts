@@ -47,11 +47,12 @@ import { WeatherComponent } from './weather/weather.component';
 import { WeatherSidebarComponent } from './shared/all-sidebar/weather-sidebar/weather-sidebar.component';
 import { EnroteSidebarComponent } from './shared/all-sidebar/weather-sidebar/enroute/enrote-sidebar/enrote-sidebar/enrote-sidebar.component';
 import { WeatherTableComponent } from './shared/weather-table/weather-table.component';
-import { WeatherPopupComponent } from './shared/weather-popup/weather-popup.component';
 import { TerminalComponent } from './shared/all-sidebar/weather-sidebar/terminal/terminal.component';
 import { AtsTableComponent } from './shared/ats-table/ats-table.component';
 import { LoaderComponent } from './shared/loader/loader.component';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { ApmSidebarComponent } from './shared/all-sidebar/apm-sidebar/apm-sidebar.component';
+import { ApmTableComponent } from './shared/apm-table/apm-table.component';
 
 @NgModule({
     declarations: [
@@ -77,10 +78,11 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
         WeatherComponent,
         EnroteSidebarComponent,
         WeatherTableComponent,
-        WeatherPopupComponent,
         TerminalComponent,
         AtsTableComponent,
-        LoaderComponent
+        LoaderComponent,
+        ApmSidebarComponent,
+        ApmTableComponent
     ],
   
     imports: [

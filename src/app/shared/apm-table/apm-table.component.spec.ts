@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { WeatherPopupComponent } from './weather-popup.component';
+import { ApmTableComponent } from './apm-table.component';
 
-describe('WeatherPopupComponent', () => {
-  let component: WeatherPopupComponent;
-  let fixture: ComponentFixture<WeatherPopupComponent>;
+describe('ApmTableComponent', () => {
+  let component: ApmTableComponent;
+  let fixture: ComponentFixture<ApmTableComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [WeatherPopupComponent]
+      imports: [ApmTableComponent]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(WeatherPopupComponent);
+    fixture = TestBed.createComponent(ApmTableComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
