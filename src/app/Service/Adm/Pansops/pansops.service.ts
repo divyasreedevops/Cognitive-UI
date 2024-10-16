@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import {Baseurl,Adm} from "../../../utils/constants";
 import { SharedService } from '../../shared.service';
 @Injectable({
@@ -11,6 +11,12 @@ export class PansopsService {
   private apiUrl =Baseurl; // Replace with your API endpoint
   private selectedAirac="";
   private airacValues=[];
+  private selectedRunwaySource = new BehaviorSubject<string[]>([]);
+  private selectedTypeofProcedureSource = new BehaviorSubject<string[]>([]);
+  selectedRunway$ = this.selectedRunwaySource.asObservable();
+  selectedTypeofProcedure$ = this.selectedTypeofProcedureSource.asObservable();
+
+  
   constructor(private http: HttpClient,private sharedService: SharedService) {
      
     this.sharedService.sidebar$.subscribe(sidebarRes => {
@@ -59,6 +65,14 @@ export class PansopsService {
   getProcedureCompareDetails(data:any):Observable<any>{
     const headers = new HttpHeaders({'Content-Type': 'application/json'});
     return this.http.post<any>(`${this.apiUrl}/adm/compare`,data,{headers});
+  }
+  
+  updateSelectedRunway(value: string[]) {
+    this.selectedRunwaySource.next(value);
+  }
+
+  updateSelectedTypeofProcedure(value: string[]) {
+    this.selectedTypeofProcedureSource.next(value);
   }
 
   // // Example POST request

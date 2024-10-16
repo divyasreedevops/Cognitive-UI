@@ -653,6 +653,7 @@ export class AdmSidebarComponent {
         this.sharedService.updateloader(false);
        })
        const formValues = this.Airform.value;
+       this.pansopsService.updateSelectedRunway(this.selectedRunway);
       this.sharedService.updateFormValues(formValues);
       break;
       }
@@ -690,6 +691,7 @@ export class AdmSidebarComponent {
       //  })
         // procedureNames
         const formValues = this.Airform.value;
+        this.pansopsService.updateSelectedTypeofProcedure(this.selectedTypeofProcedure);
         this.sharedService.updateFormValues(formValues);
         break;
       }

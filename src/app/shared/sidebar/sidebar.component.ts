@@ -82,6 +82,8 @@ export class SidebarComponent {
   multipart1: ListItem[] = [];
   multipart2: ListItem[] = [];
   isshowloader=false;
+  selectedRunway: string[] = [];
+  selectedTypeofProcedure: string[] = [];
 
 
   optionsAirport: { value: any; label: any }[] = [
@@ -417,6 +419,15 @@ export class SidebarComponent {
   
    })
    this.weatherSelectedTab=' ';
+   this.pansopsService.selectedRunway$.subscribe(value => {
+    console.log('selectedRunway ', value);
+    this.selectedRunway = value;
+  });
+
+  this.pansopsService.selectedTypeofProcedure$.subscribe(value => {
+    console.log('selectedTypeofProcedure ', value);
+    this.selectedTypeofProcedure = value;
+  });
   }
 
   compareComplexObjects(obj1: ComplexObject, obj2: ComplexObject): ComparedComplexObject {
