@@ -20,8 +20,8 @@ export class ApmSidebarComponent {
       allOptionsChecked: false,
       isOpen: false, // To track dropdown open/close
       options: [
-        { name: 'Airport Closure', checked: false},
-        { name: 'Enroute Clouser', checked: false },
+        { name: 'VT-IIU', checked: false},
+        { name: 'A9C-DHS	', checked: false },
       ],
       fliterSelectedOptions: [],
     },
@@ -30,8 +30,8 @@ export class ApmSidebarComponent {
       allOptionsChecked: false,
       isOpen: false,
       options: [
-        { name: 'Airport Closure', checked: false},
-        { name: 'Enroute Clouser', checked: false },
+        { name: 'A320-215N', checked: false},
+        { name: 'B767-323', checked: false },
       ],
       fliterSelectedOptions: [],
     },
@@ -40,8 +40,11 @@ export class ApmSidebarComponent {
       allOptionsChecked: false,
       isOpen: false,
       options: [
-        { name: 'Airport Closure', checked: false},
-        { name: 'Enroute Clouser', checked: false },
+        { name: 'VAJL', checked: false},
+        { name: 'VIDP', checked: false },
+        { name: 'VEVU', checked: false},
+        { name: 'VIDN', checked: false },
+        { name: 'VRAH', checked: false},
       ],
       fliterSelectedOptions: [],
     },
@@ -50,8 +53,10 @@ export class ApmSidebarComponent {
       allOptionsChecked: false,
       isOpen: false,
       options: [
-        { name: 'Airport Closure', checked: false},
-        { name: 'Enroute Clouser', checked: false },
+        { name: 'VAAB', checked: false},
+        { name: 'VEVU', checked: false },
+        { name: 'VECC', checked: false},
+        { name: 'VTSS', checked: false },
       ],
       fliterSelectedOptions: [],
     },
