@@ -663,8 +663,13 @@ export class AdmSidebarComponent {
   
     if (target.checked) {
       // Add selected value
-      selectedOptions.push(target.value);
-      this.selectedTypeofProcedure.push(target.value);
+      if (!selectedOptions.includes(target.value)) {
+        selectedOptions.push(target.value);
+      }
+      
+      if (!this.selectedTypeofProcedure.includes(target.value)) {
+        this.selectedTypeofProcedure.push(target.value);
+      }
     } else {
       // Remove deselected value
       const index = selectedOptions.indexOf(target.value);
@@ -778,14 +783,21 @@ export class AdmSidebarComponent {
           this.selectedProcedureName=[];
           this.selectedProcedureNameShow=[];
           this.previousSelectedProcedure=[];
+          this.multipart1=[];
+          this.multipart2=[];
+          this.selectedOptions=[];
           this.Airform.patchValue({
             selectedProcedureName: [],
           });
 
         if(this.selectedAirac==='compare'){
           console.log('compare outside...');
+          this.multipart1=[];
+          this.multipart2=[];
+          this.selectedOptions=[];
           console.log(this.airacs)
           const airacValues:any[]=  this.airacs.filter((ele:any)=>ele.status!=="compare")||[];
+          this.sharedService.updateloader(true);
           this.pansopsService.getProcedureCompareDetails(
             {
               "action":"list_procedures",
@@ -797,7 +809,8 @@ export class AdmSidebarComponent {
           ).subscribe((res)=>{
                this.sharedService.setCompareAiracInfo(res);
                this.compareAiracValues=res;
-               this.compareResponse(res)
+               this.compareResponse(res);
+               this.sharedService.updateloader(false);
           })
         }else{
           this.getProcedureNames();
@@ -843,23 +856,74 @@ areArraysEqual(arr1: any[], arr2: any[]): boolean {
 toggledropdown(event: Event, dropmenu:any){
 
   switch(dropmenu){
+    // case "type":
+    //   event.stopPropagation();
+    //   this.isProcedureType = !this.isProcedureType;
+    //   if (!this.areArraysEqual(this.selectedTypeofProcedure, this.previousSelectedTypeofProcedure)) {
+    //     this.procedureNames=[];
+    //     this.selectedProcedureName=[];
+    //     this.previousSelectedProcedure=[];
+    //     this.selectedProcedureNameShow=[];
+    //     this.Airform.patchValue({
+    //       selectedProcedureName: [],
+    //     });
+    //   this.getProcedureNames();
+    //   this.previousSelectedTypeofProcedure = [...this.selectedTypeofProcedure];
+    //   const formValues = this.Airform.value;
+    //   this.sharedService.updateFormValues(formValues);
+      
+    //   }
+    //   break;
     case "type":
-      event.stopPropagation();
-      this.isProcedureType = !this.isProcedureType;
-      if (!this.areArraysEqual(this.selectedTypeofProcedure, this.previousSelectedTypeofProcedure)) {
-        this.procedureNames=[];
-        this.selectedProcedureName=[];
-        this.previousSelectedProcedure=[];
-        this.selectedProcedureNameShow=[];
-        this.Airform.patchValue({
-          selectedProcedureName: [],
-        });
+  event.stopPropagation();
+  this.isProcedureType = !this.isProcedureType;
+
+  if (!this.areArraysEqual(this.selectedTypeofProcedure, this.previousSelectedTypeofProcedure)) {
+    this.procedureNames = [];
+    this.selectedProcedureName = [];
+    this.previousSelectedProcedure = [];
+    this.selectedProcedureNameShow = [];
+    this.Airform.patchValue({
+      selectedProcedureName: [],
+    });
+
+    // Add your comparison logic here
+    if (this.selectedAirac === 'compare') {
+      console.log('compare outside...');
+      this.multipart1 = [];
+      this.multipart2 = [];
+      this.selectedOptions = [];
+      console.log(this.airacs);
+      
+      // Filter out "compare" from airacs
+      const airacValues: any[] = this.airacs.filter((ele: any) => ele.status !== "compare") || [];
+
+      // Fetch procedure comparison details
+      this.sharedService.updateloader(true);
+      this.pansopsService.getProcedureCompareDetails({
+        "action": "list_procedures",
+        "airport_icao": this.Airform.get('selectedAirport')?.value,
+        "rwy_dir": this.Airform.get('selectedRunway')?.value,
+        "type": this.Airform.get('selectedTypeofProcedure')?.value,
+        "airacs": [airacValues[0].id, airacValues[1].id]
+      }).subscribe((res) => {
+        this.sharedService.setCompareAiracInfo(res);
+        this.compareAiracValues = res;
+        this.compareResponse(res);
+        this.sharedService.updateloader(false);  
+      });
+
+    } else {
+      // If not comparing, just fetch procedure names
       this.getProcedureNames();
-      this.previousSelectedTypeofProcedure = [...this.selectedTypeofProcedure];
-      const formValues = this.Airform.value;
-      this.sharedService.updateFormValues(formValues);
-      }
-      break;
+    }
+
+    this.previousSelectedTypeofProcedure = [...this.selectedTypeofProcedure];
+    const formValues = this.Airform.value;
+    this.sharedService.updateFormValues(formValues);
+  }
+  break;
+
     case "name":
       event.stopPropagation();
       this.isProcedureName = !this.isProcedureName;
@@ -949,6 +1013,50 @@ convertToArray(obj:any) {
   return result;
 };
 
+// toggleSelection(item: string, part: string, index: number, value: any): void {
+//   const selectedOptions = this.Airform.get('selectedProcedureName')?.value || [];
+//   const uniqueId = `${item}-${part}-${index}`; // Create a unique identifier for the item
+
+//   // Check if the item is already selected
+//   const selectedIndex = this.selectedOptions.indexOf(uniqueId);
+
+//   // Ensure only one option is selected per column
+//   if (part === 'part1') {
+//     // Clear previous selection in Part 1
+//     this.multipart1.forEach((_, idx) => {
+//       const idToRemove = `-${part}-${idx}`;
+//       const removeIndex = this.selectedOptions.findIndex(id => id.includes(idToRemove));
+//       if (removeIndex !== -1) {
+//         selectedOptions.splice(removeIndex, 1); // Remove from form selectedOptions
+//         this.selectedOptions.splice(removeIndex, 1); // Remove from internal selectedOptions
+//         this.selectedOptionstoshow.splice(removeIndex, 1); // Remove from display
+//       }
+//     });
+//   } else if (part === 'part2') {
+//     // Clear previous selection in Part 2
+//     this.multipart2.forEach((_, idx) => {
+//       const idToRemove = `-${part}-${idx}`;
+//       const removeIndex = this.selectedOptions.findIndex(id => id.includes(idToRemove));
+//       if (removeIndex !== -1) {
+//         selectedOptions.splice(removeIndex, 1); // Remove from form selectedOptions
+//         this.selectedOptions.splice(removeIndex, 1); // Remove from internal selectedOptions
+//         this.selectedOptionstoshow.splice(removeIndex, 1); // Remove from display
+//       }
+//     });
+//   }
+
+//   // Add new selection if not already selected
+//   if (selectedIndex === -1) {
+//     selectedOptions.push(value);
+//     this.selectedOptions.push(uniqueId);
+//     this.selectedOptionstoshow.push(item);
+//   }
+
+//   // Update form control with the new selected options
+//   this.Airform.get('selectedProcedureName')?.setValue(selectedOptions);
+//   console.log('this.airf ', this.Airform);
+//   console.log(this.multipart1,' ',this.multipart2);
+// }
 toggleSelection(item: string, part: string, index: number, value: any): void {
   const selectedOptions = this.Airform.get('selectedProcedureName')?.value || [];
   const uniqueId = `${item}-${part}-${index}`; // Create a unique identifier for the item
@@ -956,42 +1064,57 @@ toggleSelection(item: string, part: string, index: number, value: any): void {
   // Check if the item is already selected
   const selectedIndex = this.selectedOptions.indexOf(uniqueId);
 
-  // Ensure only one option is selected per column
+  // Clear previous selection in Part 1 and Part 2 respectively
   if (part === 'part1') {
-    // Clear previous selection in Part 1
     this.multipart1.forEach((_, idx) => {
       const idToRemove = `-${part}-${idx}`;
       const removeIndex = this.selectedOptions.findIndex(id => id.includes(idToRemove));
       if (removeIndex !== -1) {
-        selectedOptions.splice(removeIndex, 1); // Remove from form selectedOptions
-        this.selectedOptions.splice(removeIndex, 1); // Remove from internal selectedOptions
-        this.selectedOptionstoshow.splice(removeIndex, 1); // Remove from display
+        selectedOptions.splice(removeIndex, 1);
+        this.selectedOptions.splice(removeIndex, 1);
+        this.selectedOptionstoshow.splice(removeIndex, 1);
       }
     });
   } else if (part === 'part2') {
-    // Clear previous selection in Part 2
     this.multipart2.forEach((_, idx) => {
       const idToRemove = `-${part}-${idx}`;
       const removeIndex = this.selectedOptions.findIndex(id => id.includes(idToRemove));
       if (removeIndex !== -1) {
-        selectedOptions.splice(removeIndex, 1); // Remove from form selectedOptions
-        this.selectedOptions.splice(removeIndex, 1); // Remove from internal selectedOptions
-        this.selectedOptionstoshow.splice(removeIndex, 1); // Remove from display
+        selectedOptions.splice(removeIndex, 1);
+        this.selectedOptions.splice(removeIndex, 1);
+        this.selectedOptionstoshow.splice(removeIndex, 1);
       }
     });
   }
 
   // Add new selection if not already selected
   if (selectedIndex === -1) {
-    selectedOptions.push(value);
-    this.selectedOptions.push(uniqueId);
-    this.selectedOptionstoshow.push(item);
+    if (part === 'part2') {
+      // Ensure part2 goes first
+      selectedOptions.unshift(value); // Add at index 0
+      this.selectedOptions.unshift(uniqueId);
+      this.selectedOptionstoshow.unshift(item);
+    } else if (part === 'part1') {
+      // Ensure part1 goes after part2, or at index 0 if part2 is not selected
+      if (this.selectedOptions.length > 0 && this.selectedOptions[0].includes('part2')) {
+        selectedOptions.splice(1, 0, value); // Add at index 1
+        this.selectedOptions.splice(1, 0, uniqueId);
+        this.selectedOptionstoshow.splice(1, 0, item);
+      } else {
+        selectedOptions.unshift(value);
+        this.selectedOptions.unshift(uniqueId);
+        this.selectedOptionstoshow.unshift(item);
+      }
+    }
   }
 
   // Update form control with the new selected options
   this.Airform.get('selectedProcedureName')?.setValue(selectedOptions);
+
   console.log('this.airf ', this.Airform);
+  console.log(this.multipart1, ' ', this.multipart2);
 }
+
 
 onToggle(event:any){
     this.AIXM.emit({E:event,res:this.procedureResponse});
