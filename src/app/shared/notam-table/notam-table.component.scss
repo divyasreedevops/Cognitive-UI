@@ -170,7 +170,9 @@
   padding: 11px;
   flex-direction: column;
   font-weight: 0 !important;
-
+  overflow-y: auto;
+  max-height: 17rem;
+  overflow-x: hidden;
   span{
     width: auto;
     display: flex;
