@@ -26,7 +26,7 @@ export class ApmTableComponent {
         this.updateAircraftData(this.addMoreData);
     })
   }
-  aircraftData = [
+  aircraftData:any = [
     {
       regNo: 'VT-IIU',
       type: 'A320-215N',
@@ -57,7 +57,7 @@ export class ApmTableComponent {
   
     // Check if the aircraft already exists in the aircraftData array
     const aircraftIndex = this.aircraftData.findIndex(
-      (aircraft) =>
+      (aircraft:any) =>
         aircraft.regNo === aircraftregistration && aircraft.type === aircrafttype
     );
   
@@ -68,7 +68,7 @@ export class ApmTableComponent {
   
       // Check if the city pair already exists
       const cityPairExists = selectedAircraft.cityPairs.some(
-        (pair) => pair.departure === departureairport && pair.destination === destinationairport
+        (pair:any) => pair.departure === departureairport && pair.destination === destinationairport
       );
   
       // If the city pair doesn't exist, add the new city pair
@@ -138,7 +138,7 @@ export class ApmTableComponent {
   
     // Filter the aircraft data based on the registration and type
     const filteredData = this.aircraftData
-      .map(aircraft => {
+      .map((aircraft:any) => {
         // Check if the aircraft's registration and type match any of the provided values
         const registrationMatch = aircraftregistration.includes(aircraft.regNo.trim());
         const typeMatch = aircrafttype.includes(aircraft.type.trim());
@@ -146,7 +146,7 @@ export class ApmTableComponent {
         if (registrationMatch && typeMatch) {
           // Filter the cityPairs to find only the matching city pair (departure/destination)
           const matchingCityPairs = aircraft.cityPairs.filter(
-            city => city.departure === departureairport && city.destination === destinationairport
+            (city:any) => city.departure === departureairport && city.destination === destinationairport
           );
   
           // Return the aircraft object with cityPairs: either matching cityPairs or an empty array
@@ -158,10 +158,10 @@ export class ApmTableComponent {
         }
         return null; // Return null if there's no match
       })
-      .filter(aircraft => aircraft !== null); // Filter out null entries
+      .filter((aircraft:any) => aircraft !== null); // Filter out null entries
   
     // Log or return the filtered data
-    console.log(filteredData);
+    this.aircraftData = filteredData;
   }
   onPageChnage($event:any){
 
