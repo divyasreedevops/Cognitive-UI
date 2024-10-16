@@ -24,6 +24,7 @@
     border: 1px solid black;
     text-align: center;
     border-radius: 6px;
+    width: max-content;
   }
   
   .city-info {
@@ -47,4 +48,9 @@
     color: gray;
     font-weight: 501;
     line-height: 13px;
+  }
+
+  .notam-paginationContainer{
+    display: flex;
+    justify-content: flex-end;
   }

@@ -63,7 +63,16 @@ export class AppComponent {
         navBtn:[],
         navTitle:'AIRLINE OPS MANAGER'
       };
-    }else if(this.currentRoute === '/videoclip' || this.currentRoute === '/ADM' || this.currentRoute === '/NOTAM-Management'||this.currentRoute==='/weather'){
+    }
+    else if(this.currentRoute === '/ADM/PANS-OPS')  {
+      this.navInfo={
+        isTabActive:false,
+        isFilterActive:true,
+        navBtn:[],
+        navTitle:''
+      };
+    }
+    else {
       
       
 
@@ -107,13 +116,9 @@ export class AppComponent {
         navTitle:''
       };
     }
-    else if(this.currentRoute === '/ADM/PANS-OPS')  {
-      this.navInfo={
-        isTabActive:false,
-        isFilterActive:true,
-        navBtn:[],
-        navTitle:''
-      };
-    }
+    
+    console.log('------------------');
+    console.log(this.currentRoute);
+    console.log(this.navInfo);
   }
 }

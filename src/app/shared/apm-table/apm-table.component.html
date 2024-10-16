@@ -8,7 +8,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let aircraft of aircraftData">
+        <tr *ngFor="let aircraft of (aircraftData | paginate: { itemsPerPage: 50, currentPage: p, totalItems: total });">
           <!-- Registration and Type -->
           <td style="white-space: nowrap;">{{ aircraft.regNo }}</td>
           <td style="white-space: nowrap;">{{ aircraft.type }}</td>
@@ -31,3 +31,7 @@
     </table>
   </div>
   
+  <div class="notam-paginationContainer">
+    <pagination-controls  (pageChange)="onPageChnage($event)"></pagination-controls>
+
+  </div>

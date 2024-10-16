@@ -9,13 +9,16 @@ import { SharedService } from 'src/app/service/Apm/shared.service';
 export class ApmTableComponent {
 
   addMoreData:any=[];
+  p: number = 1;
+  total: number =0;
   constructor(private service:SharedService){
 
   }
 
   ngOnInit(){
     this.service.filterData$.subscribe((data:any) => {
-
+        console.log(data);
+        this.filterAircraftData(data);
     })
 
     this.service.addMoreData$.subscribe((data:any)=>{
@@ -23,7 +26,7 @@ export class ApmTableComponent {
         this.updateAircraftData(this.addMoreData);
     })
   }
-  aircraftData = [
+  aircraftData:any = [
     {
       regNo: 'VT-IIU',
       type: 'A320-215N',
@@ -54,7 +57,7 @@ export class ApmTableComponent {
   
     // Check if the aircraft already exists in the aircraftData array
     const aircraftIndex = this.aircraftData.findIndex(
-      (aircraft) =>
+      (aircraft:any) =>
         aircraft.regNo === aircraftregistration && aircraft.type === aircrafttype
     );
   
@@ -65,7 +68,7 @@ export class ApmTableComponent {
   
       // Check if the city pair already exists
       const cityPairExists = selectedAircraft.cityPairs.some(
-        (pair) => pair.departure === departureairport && pair.destination === destinationairport
+        (pair:any) => pair.departure === departureairport && pair.destination === destinationairport
       );
   
       // If the city pair doesn't exist, add the new city pair
@@ -98,5 +101,72 @@ export class ApmTableComponent {
     console.log(this.aircraftData);
   }
 
+  // filterAircraftData(filterCriteria: any) {
+  //   const { aircraftregistration, aircrafttype, departureairport, destinationairport } = filterCriteria;
+  
+  //   // Filter the aircraft data based on the registration and type
+  //   const filteredData = this.aircraftData
+  //     .map(aircraft => {
+  //       // Check if the aircraft's registration and type match any of the provided values
+  //       const registrationMatch = aircraftregistration.includes(aircraft.regNo.trim());
+  //       const typeMatch = aircrafttype.includes(aircraft.type.trim());
+  
+  //       if (registrationMatch && typeMatch) {
+  //         // Filter the cityPairs to find only the matching city pair (departure/destination)
+  //         const matchingCityPairs = aircraft.cityPairs.filter(
+  //           city => city.departure === departureairport && city.destination === destinationairport
+  //         );
+  
+  //         // Return only the object with the matching city pair
+  //         if (matchingCityPairs.length > 0) {
+  //           return {
+  //             ...aircraft,
+  //             cityPairs: matchingCityPairs // Only include the matching city pair
+  //           };
+  //         }
+  //       }
+  //       return null; // Return null if there's no match
+  //     })
+  //     .filter(aircraft => aircraft !== null); // Filter out null entries
+  
+  //   // Log or return the filtered data
+  //   console.log(filteredData);
+  // }
 
+  filterAircraftData(filterCriteria: any) {
+    const { aircraftregistration, aircrafttype, departureairport, destinationairport } = filterCriteria;
+  
+    // Filter the aircraft data based on the registration and type
+    const filteredData = this.aircraftData
+      .map((aircraft:any) => {
+        // Check if the aircraft's registration and type match any of the provided values
+        const registrationMatch = aircraftregistration.includes(aircraft.regNo.trim());
+        const typeMatch = aircrafttype.includes(aircraft.type.trim());
+  
+        if (registrationMatch && typeMatch) {
+          // Filter the cityPairs to find only the matching city pair (departure/destination)
+          const matchingCityPairs = aircraft.cityPairs.filter(
+            (city:any) => city.departure === departureairport && city.destination === destinationairport
+          );
+  
+          // Return the aircraft object with cityPairs: either matching cityPairs or an empty array
+          return {
+            regNo: aircraft.regNo,
+            type: aircraft.type,
+            cityPairs: matchingCityPairs.length > 0 ? matchingCityPairs : [] // Empty array if no match
+          };
+        }
+        return null; // Return null if there's no match
+      })
+      .filter((aircraft:any) => aircraft !== null); // Filter out null entries
+  
+    // Log or return the filtered data
+    this.aircraftData = filteredData;
+  }
+  onPageChnage($event:any){
+
+    this.p=$event;
+   
+   }
+ 
 }
