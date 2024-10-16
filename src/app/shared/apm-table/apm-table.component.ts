@@ -9,6 +9,8 @@ import { SharedService } from 'src/app/service/Apm/shared.service';
 export class ApmTableComponent {
 
   addMoreData:any=[];
+  p: number = 1;
+  total: number =0;
   constructor(private service:SharedService){
 
   }
@@ -161,5 +163,10 @@ export class ApmTableComponent {
     // Log or return the filtered data
     console.log(filteredData);
   }
+  onPageChnage($event:any){
 
+    this.p=$event;
+   
+   }
+ 
 }
