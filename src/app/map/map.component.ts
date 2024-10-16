@@ -232,8 +232,8 @@ export class MapComponent implements OnInit {
     this.selectedTypeofProcedure = [];
     this.selectedProcedureName = [];
     this.updateLayers();
-
     this.sharedService.procedure$.subscribe(procedureRes => {
+    
       this.multipleProcedure = procedureRes;
       this.updateLayers()
     });
@@ -738,29 +738,6 @@ addCircles(circles: any): void {
   }
 
 
- calculateCoordinated=(referenceLat=28.18888889,referenceLon:any=74.11138889,angleDeg:any= 92.05)=>{
-// Given data
-const speedKnots = 180; // speed in knots
-
-// Convert angle to radians
-const angleRad = angleDeg * (Math.PI / 180);
-
-// Convert speed (nautical miles) to distance in kilometers
-const distanceNm = speedKnots; // distance in nautical miles (assuming 1 hour)
-const distanceKm = distanceNm * 1.852; // convert nautical miles to kilometers
-
-// Calculate latitude and longitude deltas
-const deltaLat = distanceKm * Math.cos(angleRad) / 111; // 1 degree latitude ≈ 111 km
-const deltaLon = distanceKm * Math.sin(angleRad) / (111 * Math.cos(referenceLat * (Math.PI / 180))); // 1 degree longitude ≈ 111 km * cos(latitude)
-
-// New coordinates
-const newLat = referenceLat + deltaLat;
-const newLon = referenceLon + deltaLon;
-  var returnData:number[]=[newLat,newLon,0.0];
-  
- return returnData
-  }
-
 
   getDistance=(altitude:any,selectedRunway:any)=>{
     
@@ -900,14 +877,14 @@ featureCollection.features.push( { "type": "Feature", "properties": { "Name": ""
                   // Safely get the last feature's name
                 const lastFeature = featureCollection.features[featureCollection.features.length - 1];
                 const startPoint = lastFeature && lastFeature.properties ? lastFeature.properties['Name']|| "" : "";
-                   lineJson.features.push({ "type": "Feature", "properties": { "Name":  ele.path_descriptor, "Distance":null, "Bearing": ele.course_angle, "StartPoint":startPoint,"EndPoint":  ele.waypoint.name}, "geometry": { "type": "MultiLineString", "coordinates": [ [ prevCoordinates, coordinates ] ] } },)
+                   lineJson.features.push({ "type": "Feature", "properties": { "Name":  ele.path_descriptor, "Distance":null, "Bearing": ele.course_angle.replace(/\s*\(.*?\)\s*/, ''), "StartPoint":startPoint,"EndPoint":  ele.waypoint.name}, "geometry": { "type": "MultiLineString", "coordinates": [ [ prevCoordinates, coordinates ] ] } },)
                 }else{
                  if(featureCollection.features.length>0){
                   const prevCoordinates=featureCollection.features[featureCollection.features.length-1].geometry.coordinates;
                               // Safely get the last feature's name
                 const lastFeature = featureCollection.features[featureCollection.features.length - 1];
                 const startPoint = lastFeature && lastFeature.properties ? lastFeature.properties['Name']|| "" : "";
-                  lineJson.features.push({ "type": "Feature", "properties": { "Name":  ele.path_descriptor,"StartPoint":startPoint,"EndPoint":   ele.waypoint.name, "Distance":ele.dst_time?ele.dst_time:null, "Bearing": ele.course_angle }, "geometry":
+                  lineJson.features.push({ "type": "Feature", "properties": { "Name":  ele.path_descriptor,"StartPoint":startPoint,"EndPoint":   ele.waypoint.name, "Distance":ele.dst_time?ele.dst_time:null, "Bearing": ele.course_angle.replace(/\s*\(.*?\)\s*/, '') }, "geometry":
                      { "type": "MultiLineString", "coordinates": [ [ prevCoordinates, ele.waypoint.geometry.coordinates ] ] } },)
                  }
                   featureCollection.features.push(
@@ -1466,7 +1443,14 @@ const flattenLatLngs = (latLngs: L.LatLng | L.LatLng[] | L.LatLng[][] | L.LatLng
         iconSize: [30, 30],
         iconAnchor: [10, 30]
       });
-
+      if(selectedAirport?.length){
+        const airportCoordinates=   this.airPorts.find((ele:any)=>ele.airport_icao===selectedAirport).airport.geometry.coordinates;
+        console.log(airportCoordinates,"airportCoordinatesairportCoordinates")        ;
+        this.airportLayerGroup.clearLayers(); // Remove all markers when no airport is selected
+         const marker = L.marker([airportCoordinates[1], airportCoordinates[0]], { icon: customIcon }).addTo(this.airportLayerGroup);
+        //  // Set the map view to the marker's position
+         this.map.setView([airportCoordinates[1], airportCoordinates[0]], 13);
+         }
 
 
     });
