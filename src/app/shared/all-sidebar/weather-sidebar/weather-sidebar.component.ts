@@ -1,4 +1,4 @@
-import { Component, EventEmitter, HostListener, Output } from '@angular/core';
+import { Component, EventEmitter, HostListener, Output,ElementRef } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { PansopsService } from 'src/app/service/Adm/Pansops/pansops.service';
@@ -92,7 +92,8 @@ export class WeatherSidebarComponent {
     private formbuilder: FormBuilder,
     private weatherService: WeatherService,
     private pansopsService: PansopsService,
-    private wxmshared:wxmshared
+    private wxmshared:wxmshared,
+    private elementRef: ElementRef
   ){
 
   }
@@ -309,13 +310,8 @@ export class WeatherSidebarComponent {
   }
   @HostListener('document:click', ['$event'])
   handleOutsideClick(event: Event): void {
-    
-    const target = event.target as HTMLElement;
-    console.log(target);
-    const clickedInside = target.closest('.select');
-    console.log('click outside... ',clickedInside);
-
-    if (!clickedInside) {
+    const targetElement = this.elementRef.nativeElement;
+    if (!targetElement.contains(event.target)) {
       this.isDropdownVisible = false; 
       if (this.isProcedureName) {
         this.isProcedureName = false; 
@@ -337,7 +333,7 @@ export class WeatherSidebarComponent {
             selectedProcedureName: [],
           });
 
-       
+          this.getProcedureNames();
         this.previousSelectedTypeofProcedure = [...this.selectedTypeofProcedure];
         // const formValues = this.Airform.value;
         // this.sharedService.updateFormValues(formValues);
