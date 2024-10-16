@@ -224,5 +224,9 @@
  <div class="tab tab-style" style="pointer-events: auto;" *ngIf="isAPMTable">
   <app-apm-table></app-apm-table>
 </div>
+<div class="rwy-box" *ngIf="selectedRunway.length > 0 && selectedTypeofProcedure.length === 0">
+  <div class="rwy-title">{{selectedRunway}}</div>
+  <div class="rwy-value">270.50</div>
+</div>
 </div>
 <app-loader [show]="isshowloader"></app-loader>
