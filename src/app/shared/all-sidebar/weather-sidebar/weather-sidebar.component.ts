@@ -127,7 +127,25 @@ export class WeatherSidebarComponent {
       selectedTypeofProcedure: [[]],
       selectedProcedureName: [[]],
     });
-
+    this.sharedService.refreshSidebar$.subscribe((option:any) => {
+      this.selectedAirport=[];
+      this.optionRunway=[];
+      this.selectedRunway=[];
+      this.optionProviderType=[];
+      this.selectedTypeofProcedure=[];
+      this.procedureNames=[];
+      this.selectedProcedureName=[];
+      this.selectedProcedureNameShow=[];
+      this.previousSelectedProcedure=[];
+      this.previousSelectedTypeofProcedure=[];
+      this.selectedOptionstoshow=[];
+      this.Airform.reset({
+        selectedAirport: [],
+        selectedRunway: [],
+        selectedTypeofProcedure: [],
+        selectedProcedureName: [],
+      });
+    });
     this.sharedService.airport$.subscribe((response)=>{
       this.sharedService.updateloader(true);
       if(response){
