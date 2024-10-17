@@ -11,6 +11,7 @@ import { SharedService as wxmshared } from 'src/app/service/Weather/shared.servi
 })
 export class NotamSidebarComponent {
   additionalInfo: string = '';
+  bufferDistance = '5nm';
   filters = [
     {
       name: 'FIR',
@@ -134,6 +135,7 @@ export class NotamSidebarComponent {
       }
     });
     selectedFilters['additionalInfo'] = this.additionalInfo;
+    selectedFilters['bufferDistance'] = this.bufferDistance;
 
     this.sharedService.updateFormValues(selectedFilters);
   }
