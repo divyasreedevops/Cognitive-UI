@@ -457,6 +457,7 @@ export class MapComponent implements OnInit {
 
   ngOnDestroy(): void {
     this.mobileQuery.removeListener(this._mobileQueryListener);
+    this.notamSharedService.atsDataList([]);
   }
 
   spiresAPI(): void {
