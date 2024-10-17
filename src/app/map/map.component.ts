@@ -478,6 +478,7 @@ addCircles(circles: any): void {
 
   ngOnDestroy(): void {
     this.mobileQuery.removeListener(this._mobileQueryListener);
+    this.notamSharedService.atsDataList([]);
   }
 
 
