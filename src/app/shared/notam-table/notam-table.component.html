@@ -71,13 +71,13 @@
         <td>{{ entry.airport }}</td>
         <td>{{ entry.fir }}</td>
         <td>{{ entry.airSpace }}</td>
-        <td>{{ entry.qualifier1 }}</td>
-        <td>{{ entry.qualifier2 }}</td>
-        <td>{{ entry.traffic }}</td>
+        <td>{{getNamesOfCodes(entry.qualifier1,'qualifier1')  }}</td>
+        <td>{{getNamesOfCodes(entry.qualifier2,'qualifier2') }}</td>
+        <td>{{getNamesOfCodes(entry.traffic,'traffic')  }}</td>
         <td>{{ entry.purpose }}</td>
-        <td>{{ entry.scope }}</td>
-        <td>{{ entry.series }}</td>
-        <td>{{ entry.type }}</td>
+        <td>{{getNamesOfCodes(entry.scope,'scope')  }}</td>
+        <td>{{getNamesOfCodes(entry.series,'series')  }}</td>
+        <td>{{getNamesOfCodes(entry.qualifier2,'qualifier2')  }}</td>
         <td>{{ entry.permanent }}</td>
       </tr>
     </tbody>

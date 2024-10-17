@@ -15,6 +15,7 @@ export class NotamTableComponent implements OnInit {
    notamData:any = [
   ];
   filteredNotamData: any[] = [];
+  filtersData:any;
   @Output() showCircles: EventEmitter<any> = new EventEmitter<any>();
   p: number = 1;
   total: number =0;
@@ -39,6 +40,11 @@ export class NotamTableComponent implements OnInit {
       this.notamTableStatus=data
     })
 
+    this.sharedService.sidebarFiltersSubject$.subscribe((data)=>{
+      this.filtersData=data;
+      console.log(this.filtersData,"ckjdvdfjvgdufvbdfjgvfyugvdfugv")
+    })
+
     this.sharedService.formValues$.subscribe((data)=>{
       if(data){
         this.selectedFilters=data;
@@ -57,6 +63,43 @@ export class NotamTableComponent implements OnInit {
         this.close(data)
       }
     })
+  }
+
+
+  getNamesOfCodes(code:any,field:any){
+    switch(field){
+      case "qualifier1":{
+        const data=this.filtersData[field].find((ele:any)=>ele.code===code);
+     return data?data.significance:""
+      }
+      case "qualifier2":{
+         const data=this.filtersData[field].find((ele:any)=>ele.code===code);
+         return data?data.significance:""
+      }
+      case "scope":{
+        const data=this.filtersData[field].find((ele:any)=>ele.code===code);
+         return data?data.name:""
+      }
+      case "traffic":{
+          const data=this.filtersData[field].find((ele:any)=>ele.code===code);
+         return data?data.name:""
+      }
+      case "type":{
+          const data=this.filtersData[field].find((ele:any)=>ele.code===code);
+         return data?data.name:""
+      }
+      case "genInstruction":{
+       const data=this.filtersData[field].find((ele:any)=>ele.code===code);
+         return data?data.significance:""
+      }
+      case "purpose":{
+        const data=this.filtersData[field].find((ele:any)=>ele.code===code);
+          return data?data.name:""
+       }
+
+      default:
+        return "sdjhe"
+    }
   }
 
 

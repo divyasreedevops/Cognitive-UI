@@ -34,6 +34,11 @@
       <!-- <label class="titleLable">Additional Information</label> -->
       <textarea [(ngModel)]="additionalInfo" placeholder="Enter additional info" class="textarea-expand" rows="1"></textarea>
     </div>
+    <div class="bufferDistance-textbox">
+      <label class="titleLable">Buffer Distance</label>
+      <!-- <textarea [(ngModel)]="additionalInfo" ></textarea> -->
+       <input [(ngModel)]="bufferDistance" type="text" class="bufferDistanceInputBox">
+    </div>
     <div class="submitDiv">
       <button type="submit" class="submitButton" (click)="submit()">Submit</button>
     </div>
