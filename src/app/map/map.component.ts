@@ -1147,10 +1147,11 @@ console.log('atsdata ',atsdata);
        onEachFeature: (feature: GeoJSON.Feature<GeoJSON.MultiLineString>, layer) => {
         const currentIndex = lineFeatures.indexOf(feature as GeoJSON.Feature<GeoJSON.MultiLineString>);
 
-        if (feature.properties && feature.properties['Distance']!==null) {
+        if (feature.properties) {
             const coordinates = feature.geometry.coordinates[0];
             const start = coordinates[0];
             const end = coordinates[1];
+            this.addBufferToLine(start, end)
 
             // Calculate the midpoint
             const midpoint = [
@@ -1189,6 +1190,38 @@ const flattenLatLngs = (latLngs: L.LatLng | L.LatLng[] | L.LatLng[][] | L.LatLng
    this.airportLayerGroup.addLayer(this.lineGeoJsonLayer);
 
   }
+
+  addBufferToLine(start: number[], end: number[]) {
+    const bufferWidth = 0.5; // in degrees, adjust as needed
+ 
+    // Calculate the angle of the line
+    const dx = end[0] - start[0];
+    const dy = end[1] - start[1];
+    const angle = Math.atan2(dy, dx);
+ 
+    // Calculate the perpendicular angle
+    const perpAngle = angle + Math.PI / 2;
+ 
+    // Calculate the offset for the buffer
+    const offsetX = bufferWidth * Math.cos(perpAngle);
+    const offsetY = bufferWidth * Math.sin(perpAngle);
+ 
+    // Calculate the four corners of the rectangle
+    const rect = [
+      [start[0] - offsetX, start[1] - offsetY],
+      [start[0] + offsetX, start[1] + offsetY],
+      [end[0] + offsetX, end[1] + offsetY],
+      [end[0] - offsetX, end[1] - offsetY]
+    ];
+ 
+    // Create a polygon using the rectangle coordinates
+    L.polygon(rect.map(coord => [coord[1], coord[0]]), {
+      color: 'transparent',
+      fillColor: 'lightblue',
+      fillOpacity: 0.3
+    }).addTo(this.airportLayerGroup);
+  }
+ 
 
 
  plotProcedures(ele:any,geoLayer:any,color='black'){
