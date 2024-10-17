@@ -17,7 +17,7 @@ import { SharedService as wxmshared } from '../service/Weather/shared.service';
 import { PansopsService } from '../service/Adm/Pansops/pansops.service';
 import { NotamService } from '../service/Notam/notam.service';
 import moment from 'moment';
-import { reset } from 'ol/transform';
+
 declare module 'leaflet' {
   interface MarkerOptions {
     rotationAngle?: number;
@@ -99,8 +99,6 @@ export class MapComponent implements OnInit {
     popupAnchor: [0, -20] // Point from which the popup should open relative to the iconAnchor
   });
   
-
-
   toggleMenu() {
     this.menuOpen = !this.menuOpen;
   }
@@ -112,7 +110,6 @@ export class MapComponent implements OnInit {
   stopPropagation(event: Event) {
     event.stopPropagation();
   }
-
 
    toDMS(degrees: number): string {
     const absDegrees = Math.abs(degrees);
@@ -140,7 +137,6 @@ export class MapComponent implements OnInit {
   optionsRWY_27RTypeofProcedure: { value: any; label: any; }[] = [];
   optionsVEPYTypeofProcedure: { value: any; label: any; }[] = [];
   optionsProcedureName: { value: any; label: any; }[] = [];
-
   isSidenavOpen = true;
 
   toggleSidenav(snav: any) {
@@ -209,31 +205,18 @@ export class MapComponent implements OnInit {
     });
    
 
-
-
-    /**
-     * api call to fetch the airport details
-     */
-
-    
-    
-    // this.route.params.subscribe(params => {
-    //   this.mapId = params['id'];
-    // });
     const selectedMap = localStorage.getItem('selectedMap');
     if(selectedMap){
       this.mapId = selectedMap;
     }
     this.initMap();
     this.watchAirportChanges();
-
     this.selectedAirport = [];
     this.selectedRunway = [];
     this.selectedTypeofProcedure = [];
     this.selectedProcedureName = [];
     this.updateLayers();
     this.sharedService.procedure$.subscribe(procedureRes => {
-    
       this.multipleProcedure = procedureRes;
       this.updateLayers()
     });
@@ -276,7 +259,7 @@ export class MapComponent implements OnInit {
 
   circleData:any = []
   circleGroups: any = {};
-addCircles(circles: any): void {
+ addCircles(circles: any): void {
   this.circleData = this.circleData.concat(circles[0]);
   const currentDate = moment();
   console.log('currentDate', currentDate)
@@ -310,7 +293,6 @@ addCircles(circles: any): void {
             isGrey = true
           }
           let leafletCircle: any;
-          // console.log('category', category)
           if (isCurrentBetween) {
             let isIcon = false
             const latLonRadiusKey = `${latitude},${longitude},${radius}`;
@@ -402,7 +384,6 @@ addCircles(circles: any): void {
           redCircleMarker.on('click', function () {
               redCircleMarker.openPopup();
           });
-
         });
       }
   }
@@ -451,14 +432,12 @@ addCircles(circles: any): void {
       const planeSVG = `
         <svg height="20" width="20" style="transition: transform 0.5s ease; transform: rotate(${flight.heading}deg); transform-origin: center; background: none; border: none;" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 46.876 46.876" xml:space="preserve" fill="#000000" stroke="#000000"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <g> <path style="fill:#e3b021;" d="M26.602,24.568l15.401,6.072l-0.389-4.902c-10.271-7.182-9.066-6.481-14.984-10.615V2.681 c0-1.809-1.604-2.701-3.191-2.681c-1.587-0.021-3.19,0.872-3.19,2.681v12.44c-5.918,4.134-4.714,3.434-14.985,10.615l-0.39,4.903 l15.401-6.072c0,0-0.042,15.343-0.006,15.581l-5.511,3.771v2.957l7.044-2.427h3.271l7.046,2.427V43.92l-5.513-3.771 C26.644,39.909,26.602,24.568,26.602,24.568z"></path> </g> </g></svg>
       `;
-
-
-      
       const icon = L.divIcon({
         html: planeSVG,
         iconSize: [30, 30],
         iconAnchor: [15, 15],
         className: 'custom-plane-icon'
+
       });
 
       if (this.markers[flight.flight_id]) {
@@ -480,71 +459,6 @@ addCircles(circles: any): void {
     this.mobileQuery.removeListener(this._mobileQueryListener);
   }
 
-
-
-
-  // all world data
-  // private updateMapWithPlaneData(data: { satellite: Plane[]; terrestrial: Plane[] }): void {
-  //   const planes = [...data.satellite, ...data.terrestrial];
-
-  //   if (planes.length === 0) {
-  //     console.error('No valid plane data found', data);
-  //     return;
-  //   }
-
-  //   planes.forEach((plane: any) => {
-  //     const target: Plane = {
-  //       icao_address: plane.icao_address,
-  //       callsign: plane.callsign,
-  //       origin_country: plane.origin_country || '',
-  //       time_position: plane.timestamp,
-  //       last_contact: plane.ingestion_time,
-  //       longitude: parseFloat(plane.longitude),
-  //       latitude: parseFloat(plane.latitude),
-  //       altitude_baro: parseFloat(plane.altitude_baro),
-  //       on_ground: plane.on_ground,
-  //       velocity: parseFloat(plane.speed),
-  //       heading: parseFloat(plane.heading),
-  //       vertical_rate: parseFloat(plane.vertical_rate),
-  //       sensors: plane.source || '',
-  //       geo_altitude: parseFloat(plane.altitude_baro),
-  //       squawk: plane.squawk,
-  //       spi: plane.on_ground,
-  //       position_source: 1,
-  //       collection_type: plane.collection_type,
-  //     };
-
-  //     if (isNaN(target.latitude) || isNaN(target.longitude)) {
-  //       console.error('Invalid coordinates for plane:', target);
-  //       return;
-  //     }
-
-  //     const planeSVG = `
-  //     <svg height="20" width="20" style="transform-origin: center; transform: rotate(${target.heading}deg);" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 46.876 46.876" xml:space="preserve" fill="#000000" stroke="#000000"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <g> <path style="fill:#e3b021;" d="M26.602,24.568l15.401,6.072l-0.389-4.902c-10.271-7.182-9.066-6.481-14.984-10.615V2.681 c0-1.809-1.604-2.701-3.191-2.681c-1.587-0.021-3.19,0.872-3.19,2.681v12.44c-5.918,4.134-4.714,3.434-14.985,10.615l-0.39,4.903 l15.401-6.072c0,0-0.042,15.343-0.006,15.581l-5.511,3.771v2.957l7.044-2.427h3.271l7.046,2.427V43.92l-5.513-3.771 C26.644,39.909,26.602,24.568,26.602,24.568z"></path> </g> </g></svg>
-  //   `;
-
-  //     const planeIcon = L.divIcon({
-  //       html: planeSVG,
-  //       className: 'custom-plane-icon',
-  //       iconSize: [20, 20],
-  //       iconAnchor: [10, 10],
-  //     });
-
-  //     if (this.markers[target.icao_address]) {
-  //       const marker = this.markers[target.icao_address];
-  //       marker.setLatLng([target.latitude, target.longitude]);
-  //       marker.setIcon(planeIcon);
-  //     } else {
-  //       const marker = L.marker([target.latitude, target.longitude], { icon: planeIcon });
-  //       marker.addTo(this.map).on('click', () => {
-  //         this.displayPlaneData(target);
-  //       });
-
-  //       this.markers[target.icao_address] = marker;
-  //     }
-  //   });
-  // }
-
   spiresAPI(): void {
     if (this.subscription) {
       this.subscription.unsubscribe();
@@ -563,11 +477,9 @@ addCircles(circles: any): void {
 
   private updateMapWithPlaneData(data: { satellite: Plane[]; terrestrial: Plane[] }): void {
     const planes = [...data.satellite, ...data.terrestrial];
-
     if (planes.length === 0) {
       return;
     }
-
     if (this.mode === 'animation') {
       this.startAnimation(planes);
     } else {
@@ -580,11 +492,9 @@ addCircles(circles: any): void {
       if (!plane.callsign || !plane.callsign.startsWith('IGO')) {
         return;
       }
-
       const planeSVG = `
         <svg height="20" width="20" style="transform-origin: center; transform: rotate(${plane.heading}deg);" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 46.876 46.876" xml:space="preserve" fill="#000000" stroke="#000000"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <g> <path style="fill:#e3b021;" d="M26.602,24.568l15.401,6.072l-0.389-4.902c-10.271-7.182-9.066-6.481-14.984-10.615V2.681 c0-1.809-1.604-2.701-3.191-2.681c-1.587-0.021-3.19,0.872-3.19,2.681v12.44c-5.918,4.134-4.714,3.434-14.985,10.615l-0.39,4.903 l15.401-6.072c0,0-0.042,15.343-0.006,15.581l-5.511,3.771v2.957l7.044-2.427h3.271l7.046,2.427V43.92l-5.513-3.771 C26.644,39.909,26.602,24.568,26.602,24.568z"></path> </g> </g></svg>
       `;
-
       const planeIcon = L.divIcon({
         html: planeSVG,
         className: 'custom-plane-icon',
@@ -609,26 +519,21 @@ addCircles(circles: any): void {
 
   private startAnimation(planes: Plane[]): void {
     clearInterval(this.animationInterval);
-
     this.animationInterval = setInterval(() => {
       const plane = planes[this.animationIndex];
       this.animationIndex = (this.animationIndex + 1) % planes.length;
-
       if (!plane.callsign || !plane.callsign.startsWith('IGO')) {
         return;
       }
-
       const planeSVG = `
         <svg height="20" width="20" style="transform-origin: center; transform: rotate(${plane.heading}deg);" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 46.876 46.876" xml:space="preserve" fill="#000000" stroke="#000000"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <g> <path style="fill:#e3b021;" d="M26.602,24.568l15.401,6.072l-0.389-4.902c-10.271-7.182-9.066-6.481-14.984-10.615V2.681 c0-1.809-1.604-2.701-3.191-2.681c-1.587-0.021-3.19,0.872-3.19,2.681v12.44c-5.918,4.134-4.714,3.434-14.985,10.615l-0.39,4.903 l15.401-6.072c0,0-0.042,15.343-0.006,15.581l-5.511,3.771v2.957l7.044-2.427h3.271l7.046,2.427V43.92l-5.513-3.771 C26.644,39.909,26.602,24.568,26.602,24.568z"></path> </g> </g></svg>
       `;
-
       const planeIcon = L.divIcon({
         html: planeSVG,
         className: 'custom-plane-icon',
         iconSize: [20, 20],
         iconAnchor: [10, 10],
       });
-
       if (this.markers[plane.icao_address]) {
         const marker = this.markers[plane.icao_address];
         marker.setLatLng([plane.latitude, plane.longitude]);
@@ -903,9 +808,7 @@ featureCollection.features.push( { "type": "Feature", "properties": { "Name": ""
 
   updateLayers(): void {
   // Clear existing layers
-   
   this.airportLayerGroup.clearLayers();
-
     const loadSIDProcedure = async (procedureName: string[])=>{
       if(this.Airform.get('selectedRunway')?.value.length!==0){
            const selectedRunwyInfo=  this.runways.find((runway:any)=>runway.designation=== this.Airform.get('selectedRunway')?.value);
@@ -915,6 +818,8 @@ featureCollection.features.push( { "type": "Feature", "properties": { "Name": ""
              iconSize: [20, 30],
              iconAnchor: [10, 30]
            });
+
+           
            const feature: GeoJsonFeature = {
              type: "Feature",
              properties: {
@@ -931,14 +836,12 @@ featureCollection.features.push( { "type": "Feature", "properties": { "Name": ""
             features:[feature],
             type:"FeatureCollection",
             "crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
-
            }
 
              const geoLayer = L.geoJSON(geoJsonFeatureCollection, {
                pointToLayer: (feature, latlng) => {
                  const trueB = parseFloat(feature.properties.True_B);
                  let marker: L.Marker<any>|null;
-       
                  if (!isNaN(trueB)) {
                    const rotationAngle = trueB
                    /**
@@ -952,9 +855,27 @@ featureCollection.features.push( { "type": "Feature", "properties": { "Name": ""
                  return marker;
                }
              });
+
              const activeAirac=    this.airacs.find((ele:any)=>ele.status==="active");
              this.Airform.get('selectedProcedureName')?.value.map((ele:string)=>{
               if(this.multipleProcedure[ele]){
+                let color;
+
+switch (this.multipleProcedure[ele].type) {
+    case "SID":
+        color = "green";
+        break;
+    case "APCH":
+        color = "red";
+        break;
+    case "STAR":
+        color = "blue";
+        break;
+    default:
+        color = "black"; // Optional: for any other type
+}
+
+
               if(this.multipleProcedure[ele].type==="APCH"){
                 const result = [];
                 let currentGroup:any[] = [];
@@ -984,19 +905,17 @@ featureCollection.features.push( { "type": "Feature", "properties": { "Name": ""
                 activeAirac.id===this.multipleProcedure[ele].airac_id?
                 this.plotProcedures(updatedProcedure,geoLayer,"green"):this.plotProcedures(updatedProcedure,geoLayer,"red")
               }else{
-                this.plotProcedures(updatedProcedure,geoLayer,"black")
+                this.plotProcedures(updatedProcedure,geoLayer,color)
               }
-           
                 })
-
               }
               else{
-
                 if(this.selectedAirac==='compare'){
                   activeAirac.id===this.multipleProcedure[ele].airac_id?
                   this.plotProcedures(this.multipleProcedure[ele],geoLayer,"green"):this.plotProcedures(this.multipleProcedure[ele],geoLayer,"red")
                 }else{
-                  this.plotProcedures(this.multipleProcedure[ele],geoLayer,"black")
+                  console.log(this.multipleProcedure[ele].type,"this.multipleProcedure[ele].type")
+                  this.plotProcedures(this.multipleProcedure[ele],geoLayer,color)
                 }
               }
             }
@@ -1072,14 +991,11 @@ console.log('atsdata ',atsdata);
             { "type": "MultiLineString", "coordinates": [ [ featureCollection.features[featureCollection.features.length-1].geometry.coordinates,ats.geometry.coordinates] ] } },)
          }
         featureCollection.features.push( { "type": "Feature", "properties": { "Name": ats.code,type:ats.type,  "Speed": "", "Altitude": "" }, "geometry": { "type": "Point", "coordinates":ats.geometry.coordinates } });
-       
       }
       if(ats.type==='airway'){
         airway=true;
         airwayName=ats.code
       }
-
-      
   })
 
 
@@ -1137,7 +1053,7 @@ console.log('atsdata ',atsdata);
    // Add the layer to your map
    geoJsonLayer.addTo(this.map);
    const lineFeatures = lineJson.features; // Assuming lineData is your GeoJSON data
-
+console.log(lineFeatures,"linefeatures")
    this.lineGeoJsonLayer = L.geoJSON(lineJson,
      {
        style: {
@@ -1146,11 +1062,12 @@ console.log('atsdata ',atsdata);
        },
        onEachFeature: (feature: GeoJSON.Feature<GeoJSON.MultiLineString>, layer) => {
         const currentIndex = lineFeatures.indexOf(feature as GeoJSON.Feature<GeoJSON.MultiLineString>);
-
-        if (feature.properties) {
-            const coordinates = feature.geometry.coordinates[0];
-            const start = coordinates[0];
-            const end = coordinates[1];
+     const coordinates = feature.geometry.coordinates[0];
+     const start = coordinates[0];
+     const end = coordinates[1];
+     this.addBufferToLine(start, end)
+        if (feature.properties &&feature.properties["Distance"] !== null      ) {
+           
             this.addBufferToLine(start, end)
 
             // Calculate the midpoint
@@ -1161,7 +1078,7 @@ console.log('atsdata ',atsdata);
 
             // Create and add the direction icon
             const directionIcon = L.icon({
-                iconUrl: 'assets/AKTIM_7A/penta1.png', // Replace with your icon path
+                iconUrl: 'assets/AKTIM_7A/penta.png', // Replace with your icon path
                 iconSize: [44, 36],
                 iconAnchor: [22, 18]
             });
@@ -1245,10 +1162,10 @@ const flattenLatLngs = (latLngs: L.LatLng | L.LatLng[] | L.LatLng[][] | L.LatLng
      // Set up the permanent tooltip content
      let tooltipContent = '';
      if (feature.properties.Name) {
-       tooltipContent += `<b>${feature.properties.Name}</b><br>`;
+       tooltipContent += `<b style="color: ${color}">${feature.properties.Name}</b><br>`;
      }
      if (feature.properties.Altitude) {
-       tooltipContent += `${feature.properties.Altitude}<br>`;
+       tooltipContent += `<b style="color: ${color}">${feature.properties.Altitude}</b><br>`;
      }
      if (feature.properties.Speed) {
        tooltipContent += `${feature.properties.Speed}<br>`;
@@ -1507,225 +1424,6 @@ const flattenLatLngs = (latLngs: L.LatLng | L.LatLng[] | L.LatLng[][] | L.LatLng
         // Set the map view to the marker's position
         this.map.setView([thresholdValues.coordinates[1], thresholdValues.coordinates[0]], 13);
         }
-    });
-
-    this.Airform.get('selectedTypeofProcedure')?.valueChanges.subscribe((selectedTypeofProcedure: string[]) => {
-
-      let filteredOptions: { value: string, label: string }[] = [];
-
-      if (this.Airform.get('selectedRunway')?.value.includes('RWY 09L')) {
-        if (selectedTypeofProcedure.includes('SID')) {
-
-          filteredOptions = filteredOptions.concat([
-            { value: 'AKTIM 7A', label: 'AKTIM 7A' },
-            { value: 'ANIRO 7A', label: 'ANIRO 7A' },
-            { value: 'GUNIM 7A', label: 'GUNIM 7A' },
-            { value: 'VAGPU 7A', label: 'VAGPU 7A' },
-            { value: 'GUNIM 7L', label: 'GUNIM 7L' },
-            { value: 'OPAMO 7A', label: 'OPAMO 7A' },
-            { value: 'PEXEG 7A', label: 'PEXEG 7A' },
-            { value: 'TULNA 7A', label: 'TULNA 7A' },
-            { value: 'VEMBO 7A', label: 'VEMBO 7A' },
-            { value: 'LATID 7A', label: 'LATID 7A' },
-            { value: 'SAI 7A', label: 'SAI 7A' },
-          ]);
-        }
-        if (selectedTypeofProcedure.includes('STAR')) {
-          filteredOptions = filteredOptions.concat([
-            { value: 'ADKAL 7E', label: 'ADKAL 7E' },
-            { value: 'GUNIM 7E', label: 'GUNIM 7E' },
-            { value: 'LEKAP 7E', label: 'LEKAP 7E' },
-            { value: 'PEXEG 7E', label: 'PEXEG 7E' },
-            { value: 'RIKBU 7E', label: 'RIKBU 7E' },
-            { value: 'SUSIK 7E', label: 'SUSIK 7E' },
-            { value: 'SUSIK 7J', label: 'SUSIK 7J' },
-            { value: 'TELUV 7E', label: 'TELUV 7E' },
-            { value: 'UGABA 7E', label: 'UGABA 7E' },
-            { value: 'XIVIL 7E', label: 'XIVIL 7E' },
-          ]);
-        }
-        if (selectedTypeofProcedure.includes('APCH')) {
-          filteredOptions = filteredOptions.concat([
-            { value: 'RNP', label: 'RNP_RWY_09L' },
-          ]);
-        }
-        this.optionsProcedureName = filteredOptions;
-      }
-      if (this.Airform.get('selectedRunway')?.value.includes('RWY 27R')) {
-        if (selectedTypeofProcedure.includes('SID')) {
-
-          filteredOptions = filteredOptions.concat([
-            { value: 'AKTIM 7B', label: 'AKTIM 7B' },
-            { value: 'ANIRO 7B', label: 'ANIRO 7B' },
-            { value: 'GUNIM 7B', label: 'GUNIM 7B' },
-            { value: 'GUNIM 7J', label: 'GUNIM 7J' },
-            { value: 'OPAMO 7B', label: 'OPAMO 7B' },
-            { value: 'SAI 7B', label: 'SAI 7B' },
-            { value: 'PEXEG 7B', label: 'PEXEG 7B' },
-            { value: 'TULNA 7B', label: 'TULNA 7B' },
-            { value: 'VEMBO 7B', label: 'VEMBO 7B' },
-            { value: 'LATID 7B', label: 'LATID 7B' },
-            { value: 'VEMBO 7S', label: 'VEMBO 7S' },
-            { value: 'ANIRO 7S', label: 'ANIRO 7S' },
-            { value: 'VAGPU 7B', label: 'VAGPU 7B' },
-          ]);
-        }
-        if (selectedTypeofProcedure.includes('STAR')) {
-          filteredOptions = filteredOptions.concat([
-            { value: 'ADKAL 7F', label: 'ADKAL 7F' },
-            { value: 'GUNIM 7F', label: 'GUNIM 7F' },
-            { value: 'GUNIM 7N', label: 'GUNIM 7N' },
-            { value: 'LEKAP 7F', label: 'LEKAP 7F' },
-            { value: 'PEXEG 7F', label: 'PEXEG 7F' },
-            { value: 'PEXEG 7N', label: 'PEXEG 7N' },
-            { value: 'RIKBU 7F', label: 'RIKBU 7F' },
-            { value: 'SUSIK 7F', label: 'SUSIK 7F' },
-            { value: 'SUSIK 7L', label: 'SUSIK 7L' },
-            { value: 'TELUV 7F', label: 'TELUV 7F' },
-            { value: 'UGABA 7F', label: 'UGABA 7F' },
-            { value: 'XIVIL 7F', label: 'XIVIL 7F' },
-          ]);
-        }
-        if (selectedTypeofProcedure.includes('APCH')) {
-          filteredOptions = filteredOptions.concat([
-            { value: 'RNP_Y', label: 'RNP_Y_RWY_27R' },
-          ]);
-        }
-        this.optionsProcedureName = filteredOptions;
-      }
-      if (this.Airform.get('selectedRunway')?.value.includes('RWY_09')) {
-        if (selectedTypeofProcedure.includes('SID')) {
-
-          filteredOptions = filteredOptions.concat([
-            { value: 'UKASO 1D', label: 'UKASO 1D' },
-            { value: 'UXENI 1D', label: 'UXENI 1D' },
-            { value: 'GUDUM 1D', label: 'GUDUM 1D' },
-            { value: 'NIKOT 1D', label: 'NIKOT 1D' },
-            { value: 'IKAVA 1D', label: 'IKAVA 1D' },
-            { value: 'INTIL 1D', label: 'INTIL 1D' },
-            { value: 'LOVGA 1D', label: 'LOVGA 1D' },
-          ]);
-        }
-        if (selectedTypeofProcedure.includes('STAR')) {
-          filteredOptions = filteredOptions.concat([
-            { value: 'IGOLU 1C', label: 'IGOLU 1C' },
-            { value: 'LOVGA 1C', label: 'LOVGA 1C' },
-            { value: 'BUBNU 1C', label: 'BUBNU 1C' },
-            { value: 'RIDRA 1C', label: 'RIDRA 1C' },
-            { value: 'INTIL 1C', label: 'INTIL 1C' },
-            { value: 'UXENI 1C', label: 'UXENI 1C' },
-          ]);
-        }
-        if (selectedTypeofProcedure.includes('APCH')) {
-          filteredOptions = filteredOptions.concat([
-            { value: 'RNP_Y_RWY_09', label: 'RNP_Y_RWY_09' },
-          ]);
-        }
-        this.optionsProcedureName = filteredOptions;
-      }
-      if (this.Airform.get('selectedRunway')?.value.includes('RWY_27')) {
-        if (selectedTypeofProcedure.includes('SID')) {
-
-          filteredOptions = filteredOptions.concat([
-            { value: 'UXENI 1B', label: 'UXENI 1B' },
-            { value: 'IKAVA 1B', label: 'IKAVA 1B' },
-            { value: 'INTIL 1B', label: 'INTIL 1B' },
-            { value: 'UKASO 1B', label: 'UKASO 1B' },
-            { value: 'LOVGA 1B', label: 'LOVGA 1B' },
-            { value: 'GUDUM 1B', label: 'GUDUM 1B' },
-            { value: 'NIKOT 1B', label: 'NIKOT 1B' },
-          ]);
-        }
-        if (selectedTypeofProcedure.includes('STAR')) {
-          filteredOptions = filteredOptions.concat([
-            { value: 'IGOLU 1A', label: 'IGOLU 1A' },
-            { value: 'LOVGA 1A', label: 'LOVGA 1A' },
-            { value: 'INTIL 1A', label: 'INTIL 1A' },
-            { value: 'RIDRA 1A', label: 'RIDRA 1A' },
-            { value: 'BUBNU 1A', label: 'BUBNU 1A' },
-            { value: 'UXENI 1A', label: 'UXENI 1A' },
-          ]);
-        }
-        if (selectedTypeofProcedure.includes('APCH')) {
-          filteredOptions = filteredOptions.concat([
-            { value: 'RNP_Y_RWY27', label: 'RNP_Y_RWY27' },
-
-          ]);
-        }
-        this.optionsProcedureName = filteredOptions;
-      }
-      if (this.Airform.get('selectedRunway')?.value.includes('RWY 20')) {
-        if (selectedTypeofProcedure.includes('SID')) {
-
-          filteredOptions = filteredOptions.concat([
-            { value: 'BGD1', label: 'BGD1' },
-          ]);
-        }
-        this.optionsProcedureName = filteredOptions;
-      }
-      if (this.Airform.get('selectedRunway')?.value.includes('RWY 02')) {
-
-        if (selectedTypeofProcedure.includes('APCH')) {
-          filteredOptions = filteredOptions.concat([
-            { value: 'RNP_Y_RWY02', label: 'RNP_Y_RWY02' },
-          ]);
-        }
-        this.optionsProcedureName = filteredOptions;
-      }
-
-      if (this.Airform.get('selectedRunway')?.value.includes('RWY_9R')) {
-        if (selectedTypeofProcedure.includes('SID')) {
-
-          filteredOptions = filteredOptions.concat([
-            { value: 'AKTIM 7C', label: 'AKTIM 7C' },
-            { value: 'ANIRO 7C', label: 'ANIRO 7C' },
-            { value: 'GUNIM 7C', label: 'GUNIM 7C' },
-            { value: 'GUNIM 7M', label: 'GUNIM 7M' },
-            { value: 'LATID 7C', label: 'LATID 7C' },
-            { value: 'OPAMO 7C', label: 'OPAMO 7C' },
-            { value: 'PEXEG 7C', label: 'PEXEG 7C' },
-            { value: 'SAI 7C', label: 'SAI 7C' },
-            { value: 'TULNA 7C', label: 'TULNA 7C' },
-            { value: 'VAGPU 7C', label: 'VAGPU 7C' },
-            { value: 'VEMBO 7C', label: 'VEMBO 7C' },
-          ]);
-        }
-
-        if (selectedTypeofProcedure.includes('APCH')) {
-          filteredOptions = filteredOptions.concat([
-            { value: 'RNP_Y_RWY09R', label: 'RNP_Y_RWY09R' },
-          ]);
-        }
-        this.optionsProcedureName = filteredOptions;
-      }
-
-      if (this.Airform.get('selectedRunway')?.value.includes('27L_RWY')) {
-        if (selectedTypeofProcedure.includes('SID')) {
-
-          filteredOptions = filteredOptions.concat([
-            { value: 'AKTIM 7D', label: 'AKTIM 7D' },
-            { value: 'ANIRO 7D', label: 'ANIRO 7D' },
-            { value: 'GUNIM 7D', label: 'GUNIM 7D' },
-            { value: 'GUNIM 7U', label: 'GUNIM 7U' },
-            { value: 'LATID 7D', label: 'LATID 7D' },
-            { value: 'OPAMO 7D', label: 'OPAMO 7D' },
-            { value: 'PEXEG 7D', label: 'PEXEG 7D' },
-            { value: 'SAI 7D', label: 'SAI 7D' },
-            { value: 'TULNA 7D', label: 'TULNA 7D' },
-            { value: 'VAGPU 7D', label: 'VAGPU 7D' },
-            { value: 'VEMBO 7D', label: 'VEMBO 7D' },
-            { value: 'VEMBO 7Y', label: 'VEMBO 7Y' },
-            { value: 'ANIRO 7Y', label: 'ANIRO 7Y' },
-          ]);
-        }
-
-        if (selectedTypeofProcedure.includes('APCH')) {
-          filteredOptions = filteredOptions.concat([
-            { value: 'RNP_Y_RWY27L', label: 'RNP_Y_RWY27L' },
-          ]);
-        }
-        this.optionsProcedureName = filteredOptions;
-      }
     });
 
     this.Airform.get('selectedProcedureName')?.valueChanges.subscribe((selectedProcedureName: string) => {
