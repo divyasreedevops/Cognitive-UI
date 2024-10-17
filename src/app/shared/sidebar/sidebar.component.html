@@ -1,13 +1,22 @@
 <div class="outer-hold">
     <div class="side-container" [ngClass]="{'collapsed': isCollapsed}">
-        <div class="tab-toggel" [ngClass]="{'displayEnd': !isMultiMapView || isCollapsed, 'displayBetween': isMultiMapView && !isCollapsed}">
+        <!-- <div class="tab-toggel" [ngClass]="{'displayEnd': !isMultiMapView || isCollapsed, 'displayBetween': isMultiMapView && !isCollapsed}">
             <div class="arrow-hold" *ngIf="!isCollapsed && isMultiMapView || (weatherSelectedTab==='PANS-OPS' || weatherSelectedTab==='ENR' || weatherSelectedTab==='AIRPORT')">
                 <mat-icon (click)="navigateToMultiMap()">west</mat-icon>
                 <mat-icon>east</mat-icon>
             </div>
             <mat-icon (click)="toggleSidebar()" class="tgbtn" *ngIf="!isCollapsed">chevron_left</mat-icon>
             <mat-icon (click)="toggleSidebar()" class="tgbtn"*ngIf="isCollapsed">chevron_right</mat-icon>
+        </div> -->
+        <div class="tab-toggel" [ngClass]="{'displayEnd': !isMultiMapView || isCollapsed, 'displayBetween': isMultiMapView && !isCollapsed}">
+          <div class="arrow-hold" [hidden]="isCollapsed || !(isMultiMapView || (weatherSelectedTab === 'PANS-OPS' || weatherSelectedTab === 'ENR' || weatherSelectedTab === 'AIRPORT'))">
+            <mat-icon (click)="navigateToMultiMap()">west</mat-icon>
+            <mat-icon>east</mat-icon>
+          </div>
+          <mat-icon (click)="toggleSidebar()" class="tgbtn" [hidden]="isCollapsed">chevron_left</mat-icon>
+          <mat-icon (click)="toggleSidebar()" class="tgbtn" [hidden]="!isCollapsed">chevron_right</mat-icon>
         </div>
+        
     
         <ng-container *ngIf="!isMultiMapView && !isNotamTable && !isminNotam && activeTab==='ADM' && !isApmSidebar">
         <div class="sub-option" [ngClass]="{'active': selectedTab==='PANS-OPS'}"  (click)="navigateToFullMap()">
@@ -41,29 +50,26 @@
   </ng-container>
 
 
-    <ng-container *ngIf="isMultiMapView && !isCollapsed && !isNotamTable && !isminNotam&& activeTab==='ADM' && !isApmSidebar">
 
-        <app-adm-sidebar (AIXM)="onToggleChange($event)"></app-adm-sidebar>
-    
-    </ng-container>
+        <app-adm-sidebar (AIXM)="onToggleChange($event)" [hidden]="!isMultiMapView || isNotamTable || isminNotam || activeTab !== 'ADM' || isApmSidebar || isCollapsed"  ></app-adm-sidebar>
 
     <!-- For Notam Table  -->
-    <ng-container *ngIf="!isMultiMapView && !isCollapsed && (isNotamTable || isminNotam)">
-      <app-notam-sidebar></app-notam-sidebar>
+    <ng-container>
+      <app-notam-sidebar [hidden]="isMultiMapView || isCollapsed || !(isNotamTable || isminNotam)"></app-notam-sidebar>
       
     </ng-container>
 
       <!-- For Notam Table  -->
-      <ng-container *ngIf="weatherSelectedTab==='PANS-OPS' && !isCollapsed">
-        <app-weather-sidebar></app-weather-sidebar>
+      <ng-container >
+        <app-weather-sidebar [hidden]="!(weatherSelectedTab === 'PANS-OPS' && !isCollapsed)"></app-weather-sidebar>
         
       </ng-container>
-      <ng-container *ngIf="weatherSelectedTab==='ENR' && !isCollapsed">
-       <app-enrote-sidebar (wxm)="isEnrouteTable=true"></app-enrote-sidebar>
+      <ng-container >
+       <app-enrote-sidebar (wxm)="isEnrouteTable=true" [hidden]="!(weatherSelectedTab === 'ENR' && !isCollapsed)"></app-enrote-sidebar>
         
       </ng-container>
-      <ng-container *ngIf="weatherSelectedTab==='AIRPORT' && !isCollapsed">
-       <app-terminal (wxm)="isairportTable=true"></app-terminal>
+      <ng-container>
+       <app-terminal (wxm)="isairportTable=true" [hidden]="!(weatherSelectedTab === 'AIRPORT' && !isCollapsed)"></app-terminal>
         
       </ng-container>
 

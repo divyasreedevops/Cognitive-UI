@@ -1,6 +1,7 @@
 .side-container {
   // width: 16vw;
-  width: 19vw;
+  min-width: 19vw;
+  max-width: 20vw;
   height: 100vh;
   z-index: 2;
 //  background: linear-gradient(267deg, rgb(134 183 202 / 58%) 1%, rgb(38 210 200 / 19%) 21%);
@@ -15,6 +16,8 @@ background: linear-gradient(267deg, rgb(58 82 91 / 71%) 1%, rgb(31 194 174 / 46%
 
   &.collapsed {
     width: 5vw;
+    min-width: unset;
+    max-width: unset;
   }
 
   .sub-option {
