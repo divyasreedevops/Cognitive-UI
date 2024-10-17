@@ -56,4 +56,11 @@ export class SharedService {
     this.mapFiltersSubject.next(values);
   }
 
+  private sidebarFiltersSubject = new BehaviorSubject<any>(null);
+  sidebarFiltersSubject$ = this.sidebarFiltersSubject.asObservable();
+
+  updateSideBarFilters(values: any) {
+    this.sidebarFiltersSubject.next(values);
+  }
+
 }
