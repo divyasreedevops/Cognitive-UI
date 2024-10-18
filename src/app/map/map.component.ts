@@ -93,7 +93,7 @@ export class MapComponent implements OnInit {
   createdAt: string = '25 Jul 2024 06:56:00';
   source: string = 'VECCYNYX';
   redCircleIcon = L.icon({
-    iconUrl: 'assets/icons/1.png', // Set the path to your icon
+    iconUrl: 'assets/icons/17.png', // Set the path to your icon
     iconSize: [25, 25], // Adjust icon size
     iconAnchor: [12, 12], // Point of the icon which will correspond to marker's location
     popupAnchor: [0, -20] // Point from which the popup should open relative to the iconAnchor
@@ -1018,7 +1018,21 @@ console.log('atsdata ',atsdata);
         if(feature.properties.type==='waypoint'){
           marker = L.marker(latlng, { icon: waypointIcon });
         }else{
-         marker = L.marker(latlng, { icon: aitportIcon });
+          const popupContent = `
+          <div class="rwy-box">
+            <div class="rwy-title">${feature.properties.Name}</div>
+            <div class="rwy-value">270.50</div>
+          </div>
+          `;
+          marker = L.marker(latlng, { icon: aitportIcon }) // Create the marker with your custom icon
+          .bindPopup(popupContent, {
+            closeButton: false,  // Hide close button to make it look like a tooltip
+            offset: [-80, 30],    // Adjust popup position
+            autoClose: false,    // Prevent popup from automatically closing
+            closeOnClick: false,// Prevent popup from closing when clicking anywhere on the map
+            className: 'custom-popup'  
+          }).addTo(this.airportLayerGroup)
+          .openPopup();
 
         }
    
@@ -1110,33 +1124,39 @@ const flattenLatLngs = (latLngs: L.LatLng | L.LatLng[] | L.LatLng[][] | L.LatLng
   }
 
   addBufferToLine(start: number[], end: number[]) {
-    const bufferWidth = 0.5; // in degrees, adjust as needed
- 
-    // Calculate the angle of the line
+    const bufferWidth = 0.5; // Adjust buffer width as needed
+    const extensionFactor = 0.2; // Extension distance only at the end
+   
+    // Calculate the direction of the line (dx, dy)
     const dx = end[0] - start[0];
     const dy = end[1] - start[1];
     const angle = Math.atan2(dy, dx);
- 
-    // Calculate the perpendicular angle
     const perpAngle = angle + Math.PI / 2;
- 
-    // Calculate the offset for the buffer
+   
+    // Use the original start point and extend only the end point
+    const extendedStart = [...start]; // Original start point
+    const extendedEnd = [
+        end[0] + extensionFactor * Math.cos(angle),
+        end[1] + extensionFactor * Math.sin(angle)
+    ];
+   
+    // Offset for buffer width
     const offsetX = bufferWidth * Math.cos(perpAngle);
     const offsetY = bufferWidth * Math.sin(perpAngle);
- 
-    // Calculate the four corners of the rectangle
+   
+    // Create a rectangle polygon with the extended points
     const rect = [
-      [start[0] - offsetX, start[1] - offsetY],
-      [start[0] + offsetX, start[1] + offsetY],
-      [end[0] + offsetX, end[1] + offsetY],
-      [end[0] - offsetX, end[1] - offsetY]
+        [extendedStart[0] - offsetX, extendedStart[1] - offsetY],
+        [extendedStart[0] + offsetX, extendedStart[1] + offsetY],
+        [extendedEnd[0] + offsetX, extendedEnd[1] + offsetY],
+        [extendedEnd[0] - offsetX, extendedEnd[1] - offsetY]
     ];
- 
-    // Create a polygon using the rectangle coordinates
+   
+    // Add the polygon to the map layer
     L.polygon(rect.map(coord => [coord[1], coord[0]]), {
-      color: 'transparent',
-      fillColor: 'lightblue',
-      fillOpacity: 0.3
+        color: 'transparent',
+        fillColor: 'lightblue',
+        fillOpacity: 0.2
     }).addTo(this.airportLayerGroup);
   }
  
@@ -1375,7 +1395,7 @@ const flattenLatLngs = (latLngs: L.LatLng | L.LatLng[] | L.LatLng[][] | L.LatLng
    this.airportLayerGroup.addLayer(this.lineGeoJsonLayer);
  }
 
-
+ temp:any = []
   watchAirportChanges(): void {
 
 
@@ -1419,12 +1439,252 @@ const flattenLatLngs = (latLngs: L.LatLng | L.LatLng[] | L.LatLng[][] | L.LatLng
 
       // Check if RWY 09L or RWY 27R is selected
         if(selectedRunway?.length){
+          const popupContent = `
+    <div class="rwy-box">
+      <div class="rwy-title">${selectedRunway}</div>
+      <div class="rwy-value">270.50</div>
+    </div>
+  `;
        const thresholdValues=   this.runways.find((ele:any)=>ele.designation===selectedRunway).geometry_runway_start;
        this.airportLayerGroup.clearLayers(); // Remove all markers when no airport is selected
-        const marker = L.marker([thresholdValues.coordinates[1], thresholdValues.coordinates[0]], { icon: customIcon }).addTo(this.airportLayerGroup);
+       const marker = L.marker([thresholdValues.coordinates[1], thresholdValues.coordinates[0]], { icon: customIcon }).addTo(this.airportLayerGroup)
+        .bindPopup(popupContent, {
+          closeButton: false,  // Hide close button to look like a tooltip
+          offset: [0, -120], // Adjust popup position
+          autoClose: false,    // Prevent popup from automatically closing when another opens
+          closeOnClick: false,// Prevent popup from closing when clicking anywhere on the map
+            className: 'custom-popup'
+        })
+        .openPopup();
+        if (this.temp?.length) {
+          console.log('inside IF condition')
+          marker.closePopup();
+          this.temp = []
+        }
+        
         // Set the map view to the marker's position
         this.map.setView([thresholdValues.coordinates[1], thresholdValues.coordinates[0]], 13);
         }
+        
+    });
+
+    this.Airform.get('selectedTypeofProcedure')?.valueChanges.subscribe((selectedTypeofProcedure: string[]) => {
+      this.temp = selectedTypeofProcedure;
+      let filteredOptions: { value: string, label: string }[] = [];
+
+      if (this.Airform.get('selectedRunway')?.value.includes('RWY 09L')) {
+        if (selectedTypeofProcedure.includes('SID')) {
+
+          filteredOptions = filteredOptions.concat([
+            { value: 'AKTIM 7A', label: 'AKTIM 7A' },
+            { value: 'ANIRO 7A', label: 'ANIRO 7A' },
+            { value: 'GUNIM 7A', label: 'GUNIM 7A' },
+            { value: 'VAGPU 7A', label: 'VAGPU 7A' },
+            { value: 'GUNIM 7L', label: 'GUNIM 7L' },
+            { value: 'OPAMO 7A', label: 'OPAMO 7A' },
+            { value: 'PEXEG 7A', label: 'PEXEG 7A' },
+            { value: 'TULNA 7A', label: 'TULNA 7A' },
+            { value: 'VEMBO 7A', label: 'VEMBO 7A' },
+            { value: 'LATID 7A', label: 'LATID 7A' },
+            { value: 'SAI 7A', label: 'SAI 7A' },
+          ]);
+        }
+        if (selectedTypeofProcedure.includes('STAR')) {
+          filteredOptions = filteredOptions.concat([
+            { value: 'ADKAL 7E', label: 'ADKAL 7E' },
+            { value: 'GUNIM 7E', label: 'GUNIM 7E' },
+            { value: 'LEKAP 7E', label: 'LEKAP 7E' },
+            { value: 'PEXEG 7E', label: 'PEXEG 7E' },
+            { value: 'RIKBU 7E', label: 'RIKBU 7E' },
+            { value: 'SUSIK 7E', label: 'SUSIK 7E' },
+            { value: 'SUSIK 7J', label: 'SUSIK 7J' },
+            { value: 'TELUV 7E', label: 'TELUV 7E' },
+            { value: 'UGABA 7E', label: 'UGABA 7E' },
+            { value: 'XIVIL 7E', label: 'XIVIL 7E' },
+          ]);
+        }
+        if (selectedTypeofProcedure.includes('APCH')) {
+          filteredOptions = filteredOptions.concat([
+            { value: 'RNP', label: 'RNP_RWY_09L' },
+          ]);
+        }
+        this.optionsProcedureName = filteredOptions;
+      }
+      if (this.Airform.get('selectedRunway')?.value.includes('RWY 27R')) {
+        if (selectedTypeofProcedure.includes('SID')) {
+
+          filteredOptions = filteredOptions.concat([
+            { value: 'AKTIM 7B', label: 'AKTIM 7B' },
+            { value: 'ANIRO 7B', label: 'ANIRO 7B' },
+            { value: 'GUNIM 7B', label: 'GUNIM 7B' },
+            { value: 'GUNIM 7J', label: 'GUNIM 7J' },
+            { value: 'OPAMO 7B', label: 'OPAMO 7B' },
+            { value: 'SAI 7B', label: 'SAI 7B' },
+            { value: 'PEXEG 7B', label: 'PEXEG 7B' },
+            { value: 'TULNA 7B', label: 'TULNA 7B' },
+            { value: 'VEMBO 7B', label: 'VEMBO 7B' },
+            { value: 'LATID 7B', label: 'LATID 7B' },
+            { value: 'VEMBO 7S', label: 'VEMBO 7S' },
+            { value: 'ANIRO 7S', label: 'ANIRO 7S' },
+            { value: 'VAGPU 7B', label: 'VAGPU 7B' },
+          ]);
+        }
+        if (selectedTypeofProcedure.includes('STAR')) {
+          filteredOptions = filteredOptions.concat([
+            { value: 'ADKAL 7F', label: 'ADKAL 7F' },
+            { value: 'GUNIM 7F', label: 'GUNIM 7F' },
+            { value: 'GUNIM 7N', label: 'GUNIM 7N' },
+            { value: 'LEKAP 7F', label: 'LEKAP 7F' },
+            { value: 'PEXEG 7F', label: 'PEXEG 7F' },
+            { value: 'PEXEG 7N', label: 'PEXEG 7N' },
+            { value: 'RIKBU 7F', label: 'RIKBU 7F' },
+            { value: 'SUSIK 7F', label: 'SUSIK 7F' },
+            { value: 'SUSIK 7L', label: 'SUSIK 7L' },
+            { value: 'TELUV 7F', label: 'TELUV 7F' },
+            { value: 'UGABA 7F', label: 'UGABA 7F' },
+            { value: 'XIVIL 7F', label: 'XIVIL 7F' },
+          ]);
+        }
+        if (selectedTypeofProcedure.includes('APCH')) {
+          filteredOptions = filteredOptions.concat([
+            { value: 'RNP_Y', label: 'RNP_Y_RWY_27R' },
+          ]);
+        }
+        this.optionsProcedureName = filteredOptions;
+      }
+      if (this.Airform.get('selectedRunway')?.value.includes('RWY_09')) {
+        if (selectedTypeofProcedure.includes('SID')) {
+
+          filteredOptions = filteredOptions.concat([
+            { value: 'UKASO 1D', label: 'UKASO 1D' },
+            { value: 'UXENI 1D', label: 'UXENI 1D' },
+            { value: 'GUDUM 1D', label: 'GUDUM 1D' },
+            { value: 'NIKOT 1D', label: 'NIKOT 1D' },
+            { value: 'IKAVA 1D', label: 'IKAVA 1D' },
+            { value: 'INTIL 1D', label: 'INTIL 1D' },
+            { value: 'LOVGA 1D', label: 'LOVGA 1D' },
+          ]);
+        }
+        if (selectedTypeofProcedure.includes('STAR')) {
+          filteredOptions = filteredOptions.concat([
+            { value: 'IGOLU 1C', label: 'IGOLU 1C' },
+            { value: 'LOVGA 1C', label: 'LOVGA 1C' },
+            { value: 'BUBNU 1C', label: 'BUBNU 1C' },
+            { value: 'RIDRA 1C', label: 'RIDRA 1C' },
+            { value: 'INTIL 1C', label: 'INTIL 1C' },
+            { value: 'UXENI 1C', label: 'UXENI 1C' },
+          ]);
+        }
+        if (selectedTypeofProcedure.includes('APCH')) {
+          filteredOptions = filteredOptions.concat([
+            { value: 'RNP_Y_RWY_09', label: 'RNP_Y_RWY_09' },
+          ]);
+        }
+        this.optionsProcedureName = filteredOptions;
+      }
+      if (this.Airform.get('selectedRunway')?.value.includes('RWY_27')) {
+        if (selectedTypeofProcedure.includes('SID')) {
+
+          filteredOptions = filteredOptions.concat([
+            { value: 'UXENI 1B', label: 'UXENI 1B' },
+            { value: 'IKAVA 1B', label: 'IKAVA 1B' },
+            { value: 'INTIL 1B', label: 'INTIL 1B' },
+            { value: 'UKASO 1B', label: 'UKASO 1B' },
+            { value: 'LOVGA 1B', label: 'LOVGA 1B' },
+            { value: 'GUDUM 1B', label: 'GUDUM 1B' },
+            { value: 'NIKOT 1B', label: 'NIKOT 1B' },
+          ]);
+        }
+        if (selectedTypeofProcedure.includes('STAR')) {
+          filteredOptions = filteredOptions.concat([
+            { value: 'IGOLU 1A', label: 'IGOLU 1A' },
+            { value: 'LOVGA 1A', label: 'LOVGA 1A' },
+            { value: 'INTIL 1A', label: 'INTIL 1A' },
+            { value: 'RIDRA 1A', label: 'RIDRA 1A' },
+            { value: 'BUBNU 1A', label: 'BUBNU 1A' },
+            { value: 'UXENI 1A', label: 'UXENI 1A' },
+          ]);
+        }
+        if (selectedTypeofProcedure.includes('APCH')) {
+          filteredOptions = filteredOptions.concat([
+            { value: 'RNP_Y_RWY27', label: 'RNP_Y_RWY27' },
+
+          ]);
+        }
+        this.optionsProcedureName = filteredOptions;
+      }
+      if (this.Airform.get('selectedRunway')?.value.includes('RWY 20')) {
+        if (selectedTypeofProcedure.includes('SID')) {
+
+          filteredOptions = filteredOptions.concat([
+            { value: 'BGD1', label: 'BGD1' },
+          ]);
+        }
+        this.optionsProcedureName = filteredOptions;
+      }
+      if (this.Airform.get('selectedRunway')?.value.includes('RWY 02')) {
+
+        if (selectedTypeofProcedure.includes('APCH')) {
+          filteredOptions = filteredOptions.concat([
+            { value: 'RNP_Y_RWY02', label: 'RNP_Y_RWY02' },
+          ]);
+        }
+        this.optionsProcedureName = filteredOptions;
+      }
+
+      if (this.Airform.get('selectedRunway')?.value.includes('RWY_9R')) {
+        if (selectedTypeofProcedure.includes('SID')) {
+
+          filteredOptions = filteredOptions.concat([
+            { value: 'AKTIM 7C', label: 'AKTIM 7C' },
+            { value: 'ANIRO 7C', label: 'ANIRO 7C' },
+            { value: 'GUNIM 7C', label: 'GUNIM 7C' },
+            { value: 'GUNIM 7M', label: 'GUNIM 7M' },
+            { value: 'LATID 7C', label: 'LATID 7C' },
+            { value: 'OPAMO 7C', label: 'OPAMO 7C' },
+            { value: 'PEXEG 7C', label: 'PEXEG 7C' },
+            { value: 'SAI 7C', label: 'SAI 7C' },
+            { value: 'TULNA 7C', label: 'TULNA 7C' },
+            { value: 'VAGPU 7C', label: 'VAGPU 7C' },
+            { value: 'VEMBO 7C', label: 'VEMBO 7C' },
+          ]);
+        }
+
+        if (selectedTypeofProcedure.includes('APCH')) {
+          filteredOptions = filteredOptions.concat([
+            { value: 'RNP_Y_RWY09R', label: 'RNP_Y_RWY09R' },
+          ]);
+        }
+        this.optionsProcedureName = filteredOptions;
+      }
+
+      if (this.Airform.get('selectedRunway')?.value.includes('27L_RWY')) {
+        if (selectedTypeofProcedure.includes('SID')) {
+
+          filteredOptions = filteredOptions.concat([
+            { value: 'AKTIM 7D', label: 'AKTIM 7D' },
+            { value: 'ANIRO 7D', label: 'ANIRO 7D' },
+            { value: 'GUNIM 7D', label: 'GUNIM 7D' },
+            { value: 'GUNIM 7U', label: 'GUNIM 7U' },
+            { value: 'LATID 7D', label: 'LATID 7D' },
+            { value: 'OPAMO 7D', label: 'OPAMO 7D' },
+            { value: 'PEXEG 7D', label: 'PEXEG 7D' },
+            { value: 'SAI 7D', label: 'SAI 7D' },
+            { value: 'TULNA 7D', label: 'TULNA 7D' },
+            { value: 'VAGPU 7D', label: 'VAGPU 7D' },
+            { value: 'VEMBO 7D', label: 'VEMBO 7D' },
+            { value: 'VEMBO 7Y', label: 'VEMBO 7Y' },
+            { value: 'ANIRO 7Y', label: 'ANIRO 7Y' },
+          ]);
+        }
+
+        if (selectedTypeofProcedure.includes('APCH')) {
+          filteredOptions = filteredOptions.concat([
+            { value: 'RNP_Y_RWY27L', label: 'RNP_Y_RWY27L' },
+          ]);
+        }
+        this.optionsProcedureName = filteredOptions;
+      }
     });
 
     this.Airform.get('selectedProcedureName')?.valueChanges.subscribe((selectedProcedureName: string) => {
