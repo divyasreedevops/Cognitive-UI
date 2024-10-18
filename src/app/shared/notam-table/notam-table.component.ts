@@ -77,12 +77,22 @@ export class NotamTableComponent implements OnInit {
          return data?data.significance:""
       }
       case "scope":{
-        const data=this.filtersData[field].find((ele:any)=>ele.code===code);
-         return data?data.name:""
+        const filterMap = new Map(this.filtersData[field].map((filter:any) => [filter.code, filter.name]));
+        const response = code
+  ?.split('')                              
+  .map((code:any) => filterMap.get(code))     
+  .filter(Boolean)                       
+  .join(',');    
+       return response?response:""
       }
       case "traffic":{
-          const data=this.filtersData[field].find((ele:any)=>ele.code===code);
-         return data?data.name:""
+    const filterMap = new Map(this.filtersData[field].map((filter:any) => [filter.code, filter.name]));
+          const response = code
+    ?.split('')                              
+    .map((code:any) => filterMap.get(code))     
+    .filter(Boolean)                       
+    .join(',');    
+         return response?response:""
       }
       case "type":{
           const data=this.filtersData[field].find((ele:any)=>ele.code===code);
@@ -93,8 +103,13 @@ export class NotamTableComponent implements OnInit {
          return data?data.significance:""
       }
       case "purpose":{
-        const data=this.filtersData[field].find((ele:any)=>ele.code===code);
-          return data?data.name:""
+        const filterMap = new Map(this.filtersData[field].map((filter:any) => [filter.code, filter.name]));
+        const response = code
+  ?.split('')                              
+  .map((code:any) => filterMap.get(code))     
+  .filter(Boolean)                       
+  .join(',');    
+       return response?response:""
        }
 
       default:
@@ -191,7 +206,7 @@ if(this.selectedFilters){
 const dataFilters={
 "fir":this.selectedFilters.fir,
 "airport":this.selectedFilters['airports'],
-"airSpaceEnr":this.selectedFilters['airspace/enr'],
+"airspaceEnr":this.selectedFilters['airspace/enr'],
 "facilityDownGrade":this.selectedFilters['facilitydowngrade'],
 "airPortClosure":this.selectedFilters.closure.includes('Airport Closure'),
 "airSpaceClosure":this.selectedFilters.closure.includes('Enroute Clouser')
@@ -225,6 +240,7 @@ if(searchStatus)
 }
 
 this.headers.forEach((header:any)=>{
+  console.log(tableFilters,"tableFilterstableFilters")
 if(header.selectedOptions.length>0) {
 tableFilters[header.mappingName]=header.selectedOptions
 } 
@@ -257,7 +273,7 @@ this.getTableData(payload)
         const dataFilters={
           "fir":this.selectedFilters.fir,
           "airport":this.selectedFilters['airports'],
-          "airSpaceEnr":this.selectedFilters['airspace/enr'],
+          "airspaceEnr":this.selectedFilters['airspace/enr'],
           "facilityDownGrade":this.selectedFilters['facilitydowngrade'],
           "airPortClosure":this.selectedFilters.closure.includes('Airport Closure'),
           "airSpaceClosure":this.selectedFilters.closure.includes('Enroute Clouser')
