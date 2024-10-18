@@ -17,7 +17,7 @@ import { SharedService as wxmshared } from '../service/Weather/shared.service';
 import { PansopsService } from '../service/Adm/Pansops/pansops.service';
 import { NotamService } from '../service/Notam/notam.service';
 import moment from 'moment';
-import { reset } from 'ol/transform';
+
 declare module 'leaflet' {
   interface MarkerOptions {
     rotationAngle?: number;
@@ -99,8 +99,6 @@ export class MapComponent implements OnInit {
     popupAnchor: [0, -20] // Point from which the popup should open relative to the iconAnchor
   });
   
-
-
   toggleMenu() {
     this.menuOpen = !this.menuOpen;
   }
@@ -112,7 +110,6 @@ export class MapComponent implements OnInit {
   stopPropagation(event: Event) {
     event.stopPropagation();
   }
-
 
    toDMS(degrees: number): string {
     const absDegrees = Math.abs(degrees);
@@ -140,7 +137,6 @@ export class MapComponent implements OnInit {
   optionsRWY_27RTypeofProcedure: { value: any; label: any; }[] = [];
   optionsVEPYTypeofProcedure: { value: any; label: any; }[] = [];
   optionsProcedureName: { value: any; label: any; }[] = [];
-
   isSidenavOpen = true;
 
   toggleSidenav(snav: any) {
@@ -209,31 +205,18 @@ export class MapComponent implements OnInit {
     });
    
 
-
-
-    /**
-     * api call to fetch the airport details
-     */
-
-    
-    
-    // this.route.params.subscribe(params => {
-    //   this.mapId = params['id'];
-    // });
     const selectedMap = localStorage.getItem('selectedMap');
     if(selectedMap){
       this.mapId = selectedMap;
     }
     this.initMap();
     this.watchAirportChanges();
-
     this.selectedAirport = [];
     this.selectedRunway = [];
     this.selectedTypeofProcedure = [];
     this.selectedProcedureName = [];
     this.updateLayers();
     this.sharedService.procedure$.subscribe(procedureRes => {
-    
       this.multipleProcedure = procedureRes;
       this.updateLayers()
     });
@@ -276,7 +259,7 @@ export class MapComponent implements OnInit {
 
   circleData:any = []
   circleGroups: any = {};
-addCircles(circles: any): void {
+ addCircles(circles: any): void {
   this.circleData = this.circleData.concat(circles[0]);
   const currentDate = moment();
   console.log('currentDate', currentDate)
@@ -310,7 +293,6 @@ addCircles(circles: any): void {
             isGrey = true
           }
           let leafletCircle: any;
-          // console.log('category', category)
           if (isCurrentBetween) {
             let isIcon = false
             const latLonRadiusKey = `${latitude},${longitude},${radius}`;
@@ -402,7 +384,6 @@ addCircles(circles: any): void {
           redCircleMarker.on('click', function () {
               redCircleMarker.openPopup();
           });
-
         });
       }
   }
@@ -451,14 +432,12 @@ addCircles(circles: any): void {
       const planeSVG = `
         <svg height="20" width="20" style="transition: transform 0.5s ease; transform: rotate(${flight.heading}deg); transform-origin: center; background: none; border: none;" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 46.876 46.876" xml:space="preserve" fill="#000000" stroke="#000000"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <g> <path style="fill:#e3b021;" d="M26.602,24.568l15.401,6.072l-0.389-4.902c-10.271-7.182-9.066-6.481-14.984-10.615V2.681 c0-1.809-1.604-2.701-3.191-2.681c-1.587-0.021-3.19,0.872-3.19,2.681v12.44c-5.918,4.134-4.714,3.434-14.985,10.615l-0.39,4.903 l15.401-6.072c0,0-0.042,15.343-0.006,15.581l-5.511,3.771v2.957l7.044-2.427h3.271l7.046,2.427V43.92l-5.513-3.771 C26.644,39.909,26.602,24.568,26.602,24.568z"></path> </g> </g></svg>
       `;
-
-
-      
       const icon = L.divIcon({
         html: planeSVG,
         iconSize: [30, 30],
         iconAnchor: [15, 15],
         className: 'custom-plane-icon'
+
       });
 
       if (this.markers[flight.flight_id]) {
@@ -478,72 +457,8 @@ addCircles(circles: any): void {
 
   ngOnDestroy(): void {
     this.mobileQuery.removeListener(this._mobileQueryListener);
+    this.notamSharedService.atsDataList([]);
   }
-
-
-
-
-  // all world data
-  // private updateMapWithPlaneData(data: { satellite: Plane[]; terrestrial: Plane[] }): void {
-  //   const planes = [...data.satellite, ...data.terrestrial];
-
-  //   if (planes.length === 0) {
-  //     console.error('No valid plane data found', data);
-  //     return;
-  //   }
-
-  //   planes.forEach((plane: any) => {
-  //     const target: Plane = {
-  //       icao_address: plane.icao_address,
-  //       callsign: plane.callsign,
-  //       origin_country: plane.origin_country || '',
-  //       time_position: plane.timestamp,
-  //       last_contact: plane.ingestion_time,
-  //       longitude: parseFloat(plane.longitude),
-  //       latitude: parseFloat(plane.latitude),
-  //       altitude_baro: parseFloat(plane.altitude_baro),
-  //       on_ground: plane.on_ground,
-  //       velocity: parseFloat(plane.speed),
-  //       heading: parseFloat(plane.heading),
-  //       vertical_rate: parseFloat(plane.vertical_rate),
-  //       sensors: plane.source || '',
-  //       geo_altitude: parseFloat(plane.altitude_baro),
-  //       squawk: plane.squawk,
-  //       spi: plane.on_ground,
-  //       position_source: 1,
-  //       collection_type: plane.collection_type,
-  //     };
-
-  //     if (isNaN(target.latitude) || isNaN(target.longitude)) {
-  //       console.error('Invalid coordinates for plane:', target);
-  //       return;
-  //     }
-
-  //     const planeSVG = `
-  //     <svg height="20" width="20" style="transform-origin: center; transform: rotate(${target.heading}deg);" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 46.876 46.876" xml:space="preserve" fill="#000000" stroke="#000000"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <g> <path style="fill:#e3b021;" d="M26.602,24.568l15.401,6.072l-0.389-4.902c-10.271-7.182-9.066-6.481-14.984-10.615V2.681 c0-1.809-1.604-2.701-3.191-2.681c-1.587-0.021-3.19,0.872-3.19,2.681v12.44c-5.918,4.134-4.714,3.434-14.985,10.615l-0.39,4.903 l15.401-6.072c0,0-0.042,15.343-0.006,15.581l-5.511,3.771v2.957l7.044-2.427h3.271l7.046,2.427V43.92l-5.513-3.771 C26.644,39.909,26.602,24.568,26.602,24.568z"></path> </g> </g></svg>
-  //   `;
-
-  //     const planeIcon = L.divIcon({
-  //       html: planeSVG,
-  //       className: 'custom-plane-icon',
-  //       iconSize: [20, 20],
-  //       iconAnchor: [10, 10],
-  //     });
-
-  //     if (this.markers[target.icao_address]) {
-  //       const marker = this.markers[target.icao_address];
-  //       marker.setLatLng([target.latitude, target.longitude]);
-  //       marker.setIcon(planeIcon);
-  //     } else {
-  //       const marker = L.marker([target.latitude, target.longitude], { icon: planeIcon });
-  //       marker.addTo(this.map).on('click', () => {
-  //         this.displayPlaneData(target);
-  //       });
-
-  //       this.markers[target.icao_address] = marker;
-  //     }
-  //   });
-  // }
 
   spiresAPI(): void {
     if (this.subscription) {
@@ -563,11 +478,9 @@ addCircles(circles: any): void {
 
   private updateMapWithPlaneData(data: { satellite: Plane[]; terrestrial: Plane[] }): void {
     const planes = [...data.satellite, ...data.terrestrial];
-
     if (planes.length === 0) {
       return;
     }
-
     if (this.mode === 'animation') {
       this.startAnimation(planes);
     } else {
@@ -580,11 +493,9 @@ addCircles(circles: any): void {
       if (!plane.callsign || !plane.callsign.startsWith('IGO')) {
         return;
       }
-
       const planeSVG = `
         <svg height="20" width="20" style="transform-origin: center; transform: rotate(${plane.heading}deg);" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 46.876 46.876" xml:space="preserve" fill="#000000" stroke="#000000"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <g> <path style="fill:#e3b021;" d="M26.602,24.568l15.401,6.072l-0.389-4.902c-10.271-7.182-9.066-6.481-14.984-10.615V2.681 c0-1.809-1.604-2.701-3.191-2.681c-1.587-0.021-3.19,0.872-3.19,2.681v12.44c-5.918,4.134-4.714,3.434-14.985,10.615l-0.39,4.903 l15.401-6.072c0,0-0.042,15.343-0.006,15.581l-5.511,3.771v2.957l7.044-2.427h3.271l7.046,2.427V43.92l-5.513-3.771 C26.644,39.909,26.602,24.568,26.602,24.568z"></path> </g> </g></svg>
       `;
-
       const planeIcon = L.divIcon({
         html: planeSVG,
         className: 'custom-plane-icon',
@@ -609,26 +520,21 @@ addCircles(circles: any): void {
 
   private startAnimation(planes: Plane[]): void {
     clearInterval(this.animationInterval);
-
     this.animationInterval = setInterval(() => {
       const plane = planes[this.animationIndex];
       this.animationIndex = (this.animationIndex + 1) % planes.length;
-
       if (!plane.callsign || !plane.callsign.startsWith('IGO')) {
         return;
       }
-
       const planeSVG = `
         <svg height="20" width="20" style="transform-origin: center; transform: rotate(${plane.heading}deg);" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 46.876 46.876" xml:space="preserve" fill="#000000" stroke="#000000"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <g> <path style="fill:#e3b021;" d="M26.602,24.568l15.401,6.072l-0.389-4.902c-10.271-7.182-9.066-6.481-14.984-10.615V2.681 c0-1.809-1.604-2.701-3.191-2.681c-1.587-0.021-3.19,0.872-3.19,2.681v12.44c-5.918,4.134-4.714,3.434-14.985,10.615l-0.39,4.903 l15.401-6.072c0,0-0.042,15.343-0.006,15.581l-5.511,3.771v2.957l7.044-2.427h3.271l7.046,2.427V43.92l-5.513-3.771 C26.644,39.909,26.602,24.568,26.602,24.568z"></path> </g> </g></svg>
       `;
-
       const planeIcon = L.divIcon({
         html: planeSVG,
         className: 'custom-plane-icon',
         iconSize: [20, 20],
         iconAnchor: [10, 10],
       });
-
       if (this.markers[plane.icao_address]) {
         const marker = this.markers[plane.icao_address];
         marker.setLatLng([plane.latitude, plane.longitude]);
@@ -903,9 +809,7 @@ featureCollection.features.push( { "type": "Feature", "properties": { "Name": ""
 
   updateLayers(): void {
   // Clear existing layers
-   
   this.airportLayerGroup.clearLayers();
-
     const loadSIDProcedure = async (procedureName: string[])=>{
       if(this.Airform.get('selectedRunway')?.value.length!==0){
            const selectedRunwyInfo=  this.runways.find((runway:any)=>runway.designation=== this.Airform.get('selectedRunway')?.value);
@@ -915,6 +819,8 @@ featureCollection.features.push( { "type": "Feature", "properties": { "Name": ""
              iconSize: [20, 30],
              iconAnchor: [10, 30]
            });
+
+           
            const feature: GeoJsonFeature = {
              type: "Feature",
              properties: {
@@ -931,14 +837,12 @@ featureCollection.features.push( { "type": "Feature", "properties": { "Name": ""
             features:[feature],
             type:"FeatureCollection",
             "crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
-
            }
 
              const geoLayer = L.geoJSON(geoJsonFeatureCollection, {
                pointToLayer: (feature, latlng) => {
                  const trueB = parseFloat(feature.properties.True_B);
                  let marker: L.Marker<any>|null;
-       
                  if (!isNaN(trueB)) {
                    const rotationAngle = trueB
                    /**
@@ -952,9 +856,27 @@ featureCollection.features.push( { "type": "Feature", "properties": { "Name": ""
                  return marker;
                }
              });
+
              const activeAirac=    this.airacs.find((ele:any)=>ele.status==="active");
              this.Airform.get('selectedProcedureName')?.value.map((ele:string)=>{
               if(this.multipleProcedure[ele]){
+                let color;
+
+switch (this.multipleProcedure[ele].type) {
+    case "SID":
+        color = "green";
+        break;
+    case "APCH":
+        color = "red";
+        break;
+    case "STAR":
+        color = "blue";
+        break;
+    default:
+        color = "black"; // Optional: for any other type
+}
+
+
               if(this.multipleProcedure[ele].type==="APCH"){
                 const result = [];
                 let currentGroup:any[] = [];
@@ -984,19 +906,17 @@ featureCollection.features.push( { "type": "Feature", "properties": { "Name": ""
                 activeAirac.id===this.multipleProcedure[ele].airac_id?
                 this.plotProcedures(updatedProcedure,geoLayer,"green"):this.plotProcedures(updatedProcedure,geoLayer,"red")
               }else{
-                this.plotProcedures(updatedProcedure,geoLayer,"black")
+                this.plotProcedures(updatedProcedure,geoLayer,color)
               }
-           
                 })
-
               }
               else{
-
                 if(this.selectedAirac==='compare'){
                   activeAirac.id===this.multipleProcedure[ele].airac_id?
                   this.plotProcedures(this.multipleProcedure[ele],geoLayer,"green"):this.plotProcedures(this.multipleProcedure[ele],geoLayer,"red")
                 }else{
-                  this.plotProcedures(this.multipleProcedure[ele],geoLayer,"black")
+                  console.log(this.multipleProcedure[ele].type,"this.multipleProcedure[ele].type")
+                  this.plotProcedures(this.multipleProcedure[ele],geoLayer,color)
                 }
               }
             }
@@ -1072,14 +992,11 @@ console.log('atsdata ',atsdata);
             { "type": "MultiLineString", "coordinates": [ [ featureCollection.features[featureCollection.features.length-1].geometry.coordinates,ats.geometry.coordinates] ] } },)
          }
         featureCollection.features.push( { "type": "Feature", "properties": { "Name": ats.code,type:ats.type,  "Speed": "", "Altitude": "" }, "geometry": { "type": "Point", "coordinates":ats.geometry.coordinates } });
-       
       }
       if(ats.type==='airway'){
         airway=true;
         airwayName=ats.code
       }
-
-      
   })
 
 
@@ -1151,7 +1068,7 @@ console.log('atsdata ',atsdata);
    // Add the layer to your map
    geoJsonLayer.addTo(this.map);
    const lineFeatures = lineJson.features; // Assuming lineData is your GeoJSON data
-
+console.log(lineFeatures,"linefeatures")
    this.lineGeoJsonLayer = L.geoJSON(lineJson,
      {
        style: {
@@ -1160,11 +1077,12 @@ console.log('atsdata ',atsdata);
        },
        onEachFeature: (feature: GeoJSON.Feature<GeoJSON.MultiLineString>, layer) => {
         const currentIndex = lineFeatures.indexOf(feature as GeoJSON.Feature<GeoJSON.MultiLineString>);
-
-        if (feature.properties) {
-            const coordinates = feature.geometry.coordinates[0];
-            const start = coordinates[0];
-            const end = coordinates[1];
+     const coordinates = feature.geometry.coordinates[0];
+     const start = coordinates[0];
+     const end = coordinates[1];
+     this.addBufferToLine(start, end)
+        if (feature.properties &&feature.properties["Distance"] !== null      ) {
+           
             this.addBufferToLine(start, end)
 
             // Calculate the midpoint
@@ -1175,7 +1093,7 @@ console.log('atsdata ',atsdata);
 
             // Create and add the direction icon
             const directionIcon = L.icon({
-                iconUrl: 'assets/AKTIM_7A/penta1.png', // Replace with your icon path
+                iconUrl: 'assets/AKTIM_7A/penta.png', // Replace with your icon path
                 iconSize: [44, 36],
                 iconAnchor: [22, 18]
             });
@@ -1206,33 +1124,39 @@ const flattenLatLngs = (latLngs: L.LatLng | L.LatLng[] | L.LatLng[][] | L.LatLng
   }
 
   addBufferToLine(start: number[], end: number[]) {
-    const bufferWidth = 0.5; // in degrees, adjust as needed
- 
-    // Calculate the angle of the line
+    const bufferWidth = 0.5; // Adjust buffer width as needed
+    const extensionFactor = 0.2; // Extension distance only at the end
+   
+    // Calculate the direction of the line (dx, dy)
     const dx = end[0] - start[0];
     const dy = end[1] - start[1];
     const angle = Math.atan2(dy, dx);
- 
-    // Calculate the perpendicular angle
     const perpAngle = angle + Math.PI / 2;
- 
-    // Calculate the offset for the buffer
+   
+    // Use the original start point and extend only the end point
+    const extendedStart = [...start]; // Original start point
+    const extendedEnd = [
+        end[0] + extensionFactor * Math.cos(angle),
+        end[1] + extensionFactor * Math.sin(angle)
+    ];
+   
+    // Offset for buffer width
     const offsetX = bufferWidth * Math.cos(perpAngle);
     const offsetY = bufferWidth * Math.sin(perpAngle);
- 
-    // Calculate the four corners of the rectangle
+   
+    // Create a rectangle polygon with the extended points
     const rect = [
-      [start[0] - offsetX, start[1] - offsetY],
-      [start[0] + offsetX, start[1] + offsetY],
-      [end[0] + offsetX, end[1] + offsetY],
-      [end[0] - offsetX, end[1] - offsetY]
+        [extendedStart[0] - offsetX, extendedStart[1] - offsetY],
+        [extendedStart[0] + offsetX, extendedStart[1] + offsetY],
+        [extendedEnd[0] + offsetX, extendedEnd[1] + offsetY],
+        [extendedEnd[0] - offsetX, extendedEnd[1] - offsetY]
     ];
- 
-    // Create a polygon using the rectangle coordinates
+   
+    // Add the polygon to the map layer
     L.polygon(rect.map(coord => [coord[1], coord[0]]), {
-      color: 'transparent',
-      fillColor: 'lightblue',
-      fillOpacity: 0.3
+        color: 'transparent',
+        fillColor: 'lightblue',
+        fillOpacity: 0.2
     }).addTo(this.airportLayerGroup);
   }
  
@@ -1259,10 +1183,10 @@ const flattenLatLngs = (latLngs: L.LatLng | L.LatLng[] | L.LatLng[][] | L.LatLng
      // Set up the permanent tooltip content
      let tooltipContent = '';
      if (feature.properties.Name) {
-       tooltipContent += `<b>${feature.properties.Name}</b><br>`;
+       tooltipContent += `<b style="color: ${color}">${feature.properties.Name}</b><br>`;
      }
      if (feature.properties.Altitude) {
-       tooltipContent += `${feature.properties.Altitude}<br>`;
+       tooltipContent += `<b style="color: ${color}">${feature.properties.Altitude}</b><br>`;
      }
      if (feature.properties.Speed) {
        tooltipContent += `${feature.properties.Speed}<br>`;
@@ -1541,6 +1465,7 @@ const flattenLatLngs = (latLngs: L.LatLng | L.LatLng[] | L.LatLng[][] | L.LatLng
         // Set the map view to the marker's position
         this.map.setView([thresholdValues.coordinates[1], thresholdValues.coordinates[0]], 13);
         }
+        
     });
 
     this.Airform.get('selectedTypeofProcedure')?.valueChanges.subscribe((selectedTypeofProcedure: string[]) => {

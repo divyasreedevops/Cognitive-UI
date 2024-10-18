@@ -35,6 +35,13 @@ export class SharedService {
     this.updateSidebar.next(content);
   }
 
+  private refreshSidebar = new Subject<any>();
+  refreshSidebar$ = this.refreshSidebar.asObservable();
+
+  refreshsidebar(content: any) {
+    this.refreshSidebar.next(content);
+  }
+
 
   private airportSubject = new BehaviorSubject<any>(null);
   private runwaySubject = new BehaviorSubject<any>(null);

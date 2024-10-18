@@ -271,7 +271,25 @@ export class AdmSidebarComponent {
           break;   
       }
     });
-
+    this.sharedService.refreshSidebar$.subscribe((option:any) => {
+      this.selectedAirport=[];
+      this.optionRunway=[];
+      this.selectedRunway=[];
+      this.optionProviderType=[];
+      this.selectedTypeofProcedure=[];
+      this.procedureNames=[];
+      this.selectedProcedureName=[];
+      this.selectedProcedureNameShow=[];
+      this.previousSelectedProcedure=[];
+      this.previousSelectedTypeofProcedure=[];
+      this.selectedOptionstoshow=[];
+      this.Airform.reset({
+        selectedAirport: [],
+        selectedRunway: [],
+        selectedTypeofProcedure: [],
+        selectedProcedureName: [],
+      });
+    });
     // this.Airform.valueChanges.subscribe(values => {
     //   // Update form values in the shared service
     //   this.sharedService.updateFormValues(values);

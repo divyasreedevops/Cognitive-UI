@@ -487,6 +487,8 @@ export class SidebarComponent {
       this.isEnrouteTable=false;
       this.selectedTab = '';
       this.isairportTable=false;
+      this.wxmSharedService.updatemap([]);
+      this.sharedService.refreshsidebar('');
     }
 
   }
@@ -499,9 +501,13 @@ export class SidebarComponent {
   }
 
   navigateToFullMap() {
+    
     this.selectedTab = 'PANS-OPS';
     this.sharedService.updateSidebarContent({ status: 1 });
     this.isMultiMapView = true;
+    this.sharedService.updateFormValues([]);
+    this.wxmSharedService.updatemap([]);
+    this.sharedService.refreshsidebar('');
   }
 
   navigate(){
