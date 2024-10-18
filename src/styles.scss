@@ -142,3 +142,50 @@ body {
     left: 5rem;
     
 }
+
+.rwy-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100px; /* Adjust based on your needs */
+    height: 70px; /* Adjust based on your needs */
+    border: 3px solid black;
+    border-radius: 20px;
+    background-color: rgba(236, 239, 241, 0.5); /* Light grey with 50% transparency */
+    font-family: Arial, sans-serif;
+    // margin-left: 800px;
+    // margin-top: 400px;
+    z-index: 2;
+  }
+  
+  
+  .rwy-title {
+    font-size: 16px;
+    font-weight: bold;
+    color: black;
+  }
+  
+  .rwy-value {
+    font-size: 14px;
+    color: black;
+  }
+
+  .leaflet-popup.custom-popup .leaflet-popup-content {
+    margin: 0px;
+    border-radius: 20px;
+    background-color: rgba(236, 239, 241, 0.5);
+  }
+  
+  .leaflet-popup.custom-popup .leaflet-popup-content-wrapper {
+    background-color: transparent;
+  }
+  
+  .leaflet-popup.custom-popup {
+    background-color: transparent;
+    position: relative;
+  }
+  
+
+
+// .leaflet-zoom-animated"
