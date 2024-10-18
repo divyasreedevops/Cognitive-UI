@@ -93,7 +93,7 @@ export class MapComponent implements OnInit {
   createdAt: string = '25 Jul 2024 06:56:00';
   source: string = 'VECCYNYX';
   redCircleIcon = L.icon({
-    iconUrl: 'assets/icons/1.png', // Set the path to your icon
+    iconUrl: 'assets/icons/17.png', // Set the path to your icon
     iconSize: [25, 25], // Adjust icon size
     iconAnchor: [12, 12], // Point of the icon which will correspond to marker's location
     popupAnchor: [0, -20] // Point from which the popup should open relative to the iconAnchor
@@ -1101,7 +1101,21 @@ console.log('atsdata ',atsdata);
         if(feature.properties.type==='waypoint'){
           marker = L.marker(latlng, { icon: waypointIcon });
         }else{
-         marker = L.marker(latlng, { icon: aitportIcon });
+          const popupContent = `
+          <div class="rwy-box">
+            <div class="rwy-title">${feature.properties.Name}</div>
+            <div class="rwy-value">270.50</div>
+          </div>
+          `;
+          marker = L.marker(latlng, { icon: aitportIcon }) // Create the marker with your custom icon
+          .bindPopup(popupContent, {
+            closeButton: false,  // Hide close button to make it look like a tooltip
+            offset: [-80, 30],    // Adjust popup position
+            autoClose: false,    // Prevent popup from automatically closing
+            closeOnClick: false,// Prevent popup from closing when clicking anywhere on the map
+            className: 'custom-popup'  
+          }).addTo(this.airportLayerGroup)
+          .openPopup();
 
         }
    
@@ -1457,7 +1471,7 @@ const flattenLatLngs = (latLngs: L.LatLng | L.LatLng[] | L.LatLng[][] | L.LatLng
    this.airportLayerGroup.addLayer(this.lineGeoJsonLayer);
  }
 
-
+ temp:any = []
   watchAirportChanges(): void {
 
 
@@ -1501,16 +1515,36 @@ const flattenLatLngs = (latLngs: L.LatLng | L.LatLng[] | L.LatLng[][] | L.LatLng
 
       // Check if RWY 09L or RWY 27R is selected
         if(selectedRunway?.length){
+          const popupContent = `
+    <div class="rwy-box">
+      <div class="rwy-title">${selectedRunway}</div>
+      <div class="rwy-value">270.50</div>
+    </div>
+  `;
        const thresholdValues=   this.runways.find((ele:any)=>ele.designation===selectedRunway).geometry_runway_start;
        this.airportLayerGroup.clearLayers(); // Remove all markers when no airport is selected
-        const marker = L.marker([thresholdValues.coordinates[1], thresholdValues.coordinates[0]], { icon: customIcon }).addTo(this.airportLayerGroup);
+       const marker = L.marker([thresholdValues.coordinates[1], thresholdValues.coordinates[0]], { icon: customIcon }).addTo(this.airportLayerGroup)
+        .bindPopup(popupContent, {
+          closeButton: false,  // Hide close button to look like a tooltip
+          offset: [0, -120], // Adjust popup position
+          autoClose: false,    // Prevent popup from automatically closing when another opens
+          closeOnClick: false,// Prevent popup from closing when clicking anywhere on the map
+            className: 'custom-popup'
+        })
+        .openPopup();
+        if (this.temp?.length) {
+          console.log('inside IF condition')
+          marker.closePopup();
+          this.temp = []
+        }
+        
         // Set the map view to the marker's position
         this.map.setView([thresholdValues.coordinates[1], thresholdValues.coordinates[0]], 13);
         }
     });
 
     this.Airform.get('selectedTypeofProcedure')?.valueChanges.subscribe((selectedTypeofProcedure: string[]) => {
-
+      this.temp = selectedTypeofProcedure;
       let filteredOptions: { value: string, label: string }[] = [];
 
       if (this.Airform.get('selectedRunway')?.value.includes('RWY 09L')) {
