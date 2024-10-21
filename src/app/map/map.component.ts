@@ -227,6 +227,17 @@ export class MapComponent implements OnInit {
       }
     });
 
+    this.notamSharedService.formValues$.subscribe(formData => {
+      this.map.eachLayer((layer) => {
+          if (layer instanceof L.Circle) {
+            this.map.removeLayer(layer);
+          }
+        });
+      if (formData) {
+        this.Airform.setValue(formData);
+      }
+    });
+
     this.notamSharedService.atsData$.subscribe(atsData=>{
       if(atsData){
         this.plotAtsProcedures(atsData)
