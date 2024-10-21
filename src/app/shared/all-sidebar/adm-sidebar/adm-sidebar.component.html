@@ -129,7 +129,7 @@
   <label for="">AIXM</label>
   <div class="toggle-container">
       <label class="toggle-label">
-        <input type="checkbox" (change)="onToggle($event)">
+        <input type="checkbox" [disabled]="!showAIXM" [checked]="isAIXM" (change)="onToggle($event)">
         <!-- (change)="onToggleChange($event)" -->
         <span class="toggle-switch"></span>
       </label>
