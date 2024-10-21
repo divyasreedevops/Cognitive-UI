@@ -84,17 +84,9 @@ export class NotamSidebarComponent {
   }
 
 
-  // {
-  //   name: 'FIR',
-  //   allOptionsChecked: false,
-  //   isOpen: false, // To track dropdown open/close
-  //   options: [
-  //   ],
-  //   fliterSelectedOptions: [],
-  // },
-
   selectAllOption(field: any) {
-    console.log('field.name', field.name)
+    /*This function allows the user to select all options
+     by checking the master checkbox located beside the field name.*/
     field.allOptionsChecked = !field.allOptionsChecked
     if (field.options){
       field.fliterSelectedOptions = []
@@ -108,11 +100,11 @@ export class NotamSidebarComponent {
       } else {
         field.fliterSelectedOptions = []
       }
-      console.log('field.fliterSelectedOptions', field.fliterSelectedOptions)
     }
   }
 
   toggleOption(filter: any, option: any) {
+    /*This function is use to toggle the Fields*/
     if (filter.options) {
       option.checked = !option.checked;
       if (option.checked) {
@@ -128,7 +120,7 @@ export class NotamSidebarComponent {
   }
 
   submit() {
-    const selectedFilters: any = {};
+      const selectedFilters: any = {};
     this.filters.forEach(filter => {
       if (filter.options) {
         selectedFilters[filter.name.toLowerCase().replace(/\s+/g, '')] = filter.fliterSelectedOptions;
@@ -144,6 +136,7 @@ export class NotamSidebarComponent {
 
   @HostListener('document:click', ['$event'])
   onDocumentClick(event: MouseEvent) {
+    /*This function is use to close the dropdown when clicked outside the dropdown*/
     const target = event.target as HTMLElement;
     this.filters.forEach(filter => {
       if (filter.isOpen && !target.closest('.dropdown')) {
@@ -153,7 +146,7 @@ export class NotamSidebarComponent {
   }
 
   ngOnDestroy(){
-
+    /* */
     this.wxmshared.updatemap('this.Airform.value');
   }
 }

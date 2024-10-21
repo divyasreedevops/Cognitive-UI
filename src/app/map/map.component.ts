@@ -935,6 +935,7 @@ switch (this.multipleProcedure[ele].type) {
 
 plotAtsProcedures(atsdata:any){
 console.log('atsdata ',atsdata);
+this.airportLayerGroup.clearLayers();
   var  featureCollection: GeoJSON.FeatureCollection<GeoJSON.Point>= {
     "type": "FeatureCollection",
     "features": [
