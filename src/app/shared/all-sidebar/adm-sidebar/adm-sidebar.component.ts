@@ -201,7 +201,8 @@ export class AdmSidebarComponent {
     }
 
   ];
-
+  isAIXM:boolean=false;
+  showAIXM:boolean=false;
   ngOnInit(){
   //   this.isMultiMapView = false;
   //   const route = localStorage.getItem('currentRoute');
@@ -233,7 +234,8 @@ export class AdmSidebarComponent {
   //     this.isNotamTable=false;
   //   }
 
-
+  this.isAIXM=false;
+  this.showAIXM=false;
     this.Airform = this.formbuilder.group({
       selectedAirport: [[]],
       selectedRunway: [[]],
@@ -253,6 +255,7 @@ export class AdmSidebarComponent {
           this.previousSelectedProcedure=[];
           this.previousSelectedTypeofProcedure=[];
           this.selectedOptionstoshow=[];
+          this.selectedOptions=[];
           this.Airform.reset({
             selectedAirport: [],
             selectedRunway: [],
@@ -262,12 +265,14 @@ export class AdmSidebarComponent {
       switch(option){
         case 'compare':
           this.isCompare=true;
+          this.checkIXAM();
           break;
         case 'AIRAC 2402':
           this.isCompare=false;
           break;
         default:
           this.isCompare=false;
+          this.checkIXAM();
           break;   
       }
     });
@@ -283,6 +288,9 @@ export class AdmSidebarComponent {
       this.previousSelectedProcedure=[];
       this.previousSelectedTypeofProcedure=[];
       this.selectedOptionstoshow=[];
+      this.selectedOptions=[];
+      this.isAIXM=false;
+      this.showAIXM=false;
       this.Airform.reset({
         selectedAirport: [],
         selectedRunway: [],
@@ -320,7 +328,7 @@ export class AdmSidebarComponent {
     }
    
    })
-    
+    this.checkIXAM();
   }
   watchAirportChanges(): void {
     this.Airform.get('selectedAirport')?.valueChanges.subscribe((selectedAirport: string[]) => {
@@ -645,6 +653,7 @@ export class AdmSidebarComponent {
          })
          const formValues = this.Airform.value;
           this.sharedService.updateFormValues(formValues);
+          this.checkIXAM();
         break;
          }
         
@@ -673,6 +682,7 @@ export class AdmSidebarComponent {
        const formValues = this.Airform.value;
        this.pansopsService.updateSelectedRunway(this.selectedRunway);
       this.sharedService.updateFormValues(formValues);
+      this.checkIXAM();
       break;
       }
       case 'typeOfProcedure':{
@@ -716,6 +726,7 @@ export class AdmSidebarComponent {
         const formValues = this.Airform.value;
         this.pansopsService.updateSelectedTypeofProcedure(this.selectedTypeofProcedure);
         this.sharedService.updateFormValues(formValues);
+        this.checkIXAM();
         break;
       }
         case 'procedureName':{
@@ -748,7 +759,7 @@ export class AdmSidebarComponent {
           //   }).subscribe(response=>{
           //     console.log(response,"HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH")
           //   })
-          
+          this.checkIXAM();
           break;
         }
 
@@ -1019,6 +1030,7 @@ getProcedure(){
        this.procedureResponse=response;
        this.sharedService.updateloader(false);
     })
+    this.checkIXAM();
 }
 
 convertToArray(obj:any) {
@@ -1135,9 +1147,18 @@ toggleSelection(item: string, part: string, index: number, value: any): void {
 
 
 onToggle(event:any){
+    this.isAIXM = !this.isAIXM;
     this.AIXM.emit({E:event,res:this.procedureResponse});
 }
-
+checkIXAM(){
+  if(this.procedureNames.length!==0 || this.selectedOptions.length!==0){
+    this.showAIXM=true;
+  }else{
+    this.isAIXM=false;
+    this.showAIXM=false;
+    this.AIXM.emit({E:event,res:this.procedureResponse});
+  }
+}
 ngOnDestroy(){
   this.Airform.reset({
     selectedAirport: [],
