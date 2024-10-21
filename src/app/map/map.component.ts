@@ -1103,6 +1103,16 @@ console.log(lineFeatures,"linefeatures")
                 icon: directionIcon,
                 rotationAngle: feature.properties['Bearing'] || 0 // Default to 0 if not available
             }).addTo(this.airportLayerGroup);
+
+
+
+            const distanceTooltip = `<div style="transform: rotate(${feature.properties['Bearing'] || 0 }deg); font-size: 8px;">${feature.properties['Distance']}</div>`;
+            marker.bindTooltip(distanceTooltip, {
+                permanent: true,
+                direction: 'center',
+                className: 'labelstyle',
+                opacity: 1
+            });
         }
     }
      
