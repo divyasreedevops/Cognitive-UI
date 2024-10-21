@@ -1430,19 +1430,20 @@ const flattenLatLngs = (latLngs: L.LatLng | L.LatLng[] | L.LatLng[][] | L.LatLng
       // Reset options for both runways
       this.selectedTypeofProcedure = [];
       this.optionsRWY_09LTypeofProcedure = [];
-
+         this.runways
       const customIcon = L.icon({
         iconUrl: 'assets/airport.png',
         iconSize: [30, 30],
         iconAnchor: [10, 30]
       });
+  const runwayDetails= this.runways?.filter((ele:any)=>ele.designation==selectedRunway)
 
       // Check if RWY 09L or RWY 27R is selected
         if(selectedRunway?.length){
           const popupContent = `
     <div class="rwy-box">
       <div class="rwy-title">${selectedRunway}</div>
-      <div class="rwy-value">270.50</div>
+      <div class="rwy-value">${runwayDetails[0].true_bearing.replace('DEG',"")}</div>
     </div>
   `;
        const thresholdValues=   this.runways.find((ele:any)=>ele.designation===selectedRunway).geometry_runway_start;
