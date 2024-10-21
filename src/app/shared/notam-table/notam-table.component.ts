@@ -42,7 +42,6 @@ export class NotamTableComponent implements OnInit {
 
     this.sharedService.sidebarFiltersSubject$.subscribe((data)=>{
       this.filtersData=data;
-      console.log(this.filtersData,"ckjdvdfjvgdufvbdfjgvfyugvdfugv")
     })
 
     this.sharedService.formValues$.subscribe((data)=>{
@@ -125,17 +124,60 @@ export class NotamTableComponent implements OnInit {
       this.notamData=res.data;
       this.filteredNotamData=[...this.notamData]
       this.total=res.totalCount;
-        
-
+       console.log('=.=;.');
+      console.log(res);
+      console.log('filterrr data ',this.filtersData);
    Object.keys( res.filterData).forEach((element:any)=>{
-        const elementFound=  this.headers.find((ele)=>ele.mappingName===element);
+        const elementFound=  this.headers.find((ele:any)=>ele.mappingName===element);
         if(elementFound){
           elementFound.opt=res.filterData[element]
         }
       })
+      console.log('=-=-=-=-=-=-headers');
+      console.log(this.headers);
+      this.updateHeadersWithFilters(this.filtersData, this.headers);
       this.sharedService.notamDataList(res.data);
     })
   }
+
+  updateHeadersWithFilters(filtersData: any, headers: any) {
+    headers.forEach((header: any) => {
+      const mappingName = header.mappingName;
+  
+      // If the mapping name exists in filtersData
+      if (filtersData[mappingName]) {
+        header.opt = header.opt.map((optValue: any) => {
+          // Ensure optValue is a string, not an object from a previous run
+          if (typeof optValue === 'object' && optValue.id) {
+            optValue = optValue.id;  // Extract the id value if it is already an object
+          }
+  
+          const matchingFilter = filtersData[mappingName].find(
+            (filterItem: any) => filterItem.code === optValue
+          );
+  
+          if (matchingFilter) {
+            // Use either 'significance' or 'name'
+            const label = matchingFilter.significance || matchingFilter.name;
+            return { id: optValue, label: `${optValue} (${label})` };
+          } else {
+            // If no match is found, id and label should be the same value
+            return { id: optValue, label: `${optValue}` };
+          }
+        });
+      } else {
+        // If mappingName doesn't exist in filtersData, convert all opt values to {id, label}
+        header.opt = header.opt.map((optValue: any) => {
+          // Ensure optValue is a string, not an object from a previous run
+          if (typeof optValue === 'object' && optValue.id) {
+            optValue = optValue.id;  // Extract the id value if it is already an object
+          }
+          return { id: optValue, label: `${optValue}` };
+        });
+      }
+    });
+  }
+
 
   isShowPopup:boolean=false;
   notemanNumber:any="";
@@ -144,7 +186,7 @@ export class NotamTableComponent implements OnInit {
 
   selectedNotam:any;
  
-  headers = [
+  headers:any = [
     { label: 'S/N', isOpen: false, opt: [],mappingName:"", selectedOptions: [] as string[] },  // Define selectedOptions as string[]
     { label: 'NOTAM Number', isOpen: false, opt: [],mappingName:"", selectedOptions: [] as string[] },
     { label: 'Status', isOpen: false, opt: ['active','inactive'],mappingName:"status", selectedOptions: [] as string[] },
@@ -166,7 +208,7 @@ export class NotamTableComponent implements OnInit {
     this.headers[index].isOpen = !this.headers[index].isOpen;
     
     // Optional: Close all other dropdowns when one is opened
-    this.headers.forEach((header, i) => {
+    this.headers.forEach((header:any, i:any) => {
       if (i !== index) {
         header.isOpen = false;
       }
@@ -174,6 +216,7 @@ export class NotamTableComponent implements OnInit {
   }
 
   onCheckboxChange(headerIndex: number, option: string, event: any) {
+    console.log(option);
     const header:any = this.headers[headerIndex];
 
     if (event.target.checked) {
