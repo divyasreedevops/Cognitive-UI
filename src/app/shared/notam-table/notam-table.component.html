@@ -51,9 +51,9 @@
               class="checkbox-show"
               type="checkbox" 
               [id]="'checkbox-' + i + '-' + option" 
-              [checked]="header.selectedOptions.includes(option)" 
-              (change)="onCheckboxChange(i, option, $event)">
-            <label [for]="'checkbox-' + i + '-' + option">{{ option }}</label>
+              [checked]="header.selectedOptions.includes(option['id'])" 
+              (change)="onCheckboxChange(i, option['id'], $event)">
+            <label [for]="'checkbox-' + i + '-' + option">{{ option['label'] }}</label>
           </span>
         </div>  
       </th>
