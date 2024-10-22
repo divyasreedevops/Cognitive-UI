@@ -7,7 +7,7 @@ import { LoginComponent } from './login/login.component';
 import { MapViewerComponent } from './map-viewer/map-viewer.component';
 import { HeaderComponent } from './shared/header/header.component';
 import { OpsManagerComponent } from './airlineopsmanager/opsmanager.component';
-import { MultimapComponent } from './shared/multimap/multimap.component';
+import { MultimapComponent } from './components/adm/multimap/multimap.component';
 import { VideoClipComponent } from './airlineopsmanager/videoclip/clip.component';
 import { PansOpsComponent } from './shared/pans-ops/pans-ops.component';
 import { WeatherComponent } from './weather/weather.component';

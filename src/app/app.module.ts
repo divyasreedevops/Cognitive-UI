@@ -34,11 +34,11 @@ import { OpsManagerComponent } from './airlineopsmanager/opsmanager.component';
 import { SubheaderComponent } from "./shared/subheader/subheader.component";
 import { WxmComponent } from './shared/wxm/wxm.component';
 import { SidebarComponent } from './shared/sidebar/sidebar.component';
-import { MultimapComponent } from './shared/multimap/multimap.component';
+import { MultimapComponent } from './components/adm/multimap/multimap.component';
 import { VideoClipComponent } from './airlineopsmanager/videoclip/clip.component';
 import { SharedService } from 'src/app/service/shared.service';
 import { AuthInterceptor } from './interceptor/auth.interceptor';
-import { NotamTableComponent } from './shared/notam-table/notam-table.component';
+import { NotamTableComponent } from './components/notam/notam-table/notam-table.component';
 
 import { NgxPaginationModule } from 'ngx-pagination'; 
 import { AdmSidebarComponent } from './shared/all-sidebar/adm-sidebar/adm-sidebar.component';
@@ -46,13 +46,13 @@ import { NotamSidebarComponent } from './shared/all-sidebar/notam-sidebar/notam-
 import { WeatherComponent } from './weather/weather.component';
 import { WeatherSidebarComponent } from './shared/all-sidebar/weather-sidebar/weather-sidebar.component';
 import { EnroteSidebarComponent } from './shared/all-sidebar/weather-sidebar/enroute/enrote-sidebar/enrote-sidebar/enrote-sidebar.component';
-import { WeatherTableComponent } from './shared/weather-table/weather-table.component';
+import { WeatherTableComponent } from './components/weather/weather-table/weather-table.component';
 import { TerminalComponent } from './shared/all-sidebar/weather-sidebar/terminal/terminal.component';
-import { AtsTableComponent } from './shared/ats-table/ats-table.component';
+import { AtsTableComponent } from './components/weather/ats-table/ats-table.component';
 import { LoaderComponent } from './shared/loader/loader.component';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ApmSidebarComponent } from './shared/all-sidebar/apm-sidebar/apm-sidebar.component';
-import { ApmTableComponent } from './shared/apm-table/apm-table.component';
+import { ApmTableComponent } from './components/weather/apm-table/apm-table.component';
 
 @NgModule({
     declarations: [
