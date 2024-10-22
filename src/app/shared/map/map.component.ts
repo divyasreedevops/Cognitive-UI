@@ -4,18 +4,18 @@ import { MediaMatcher } from '@angular/cdk/layout';
 import { ChangeDetectorRef, OnDestroy } from '@angular/core';
 import * as L from 'leaflet';
 import 'leaflet-rotatedmarker';
-import { AuthService } from '../service/auth.service';
+import { AuthService } from 'src/app/service/auth.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { StreamServiceService } from '../service/stream-service.service';
-import { Flight, Plane } from '../target';
+import { StreamServiceService } from 'src/app/service/stream-service.service';
+import { Flight, Plane } from 'src/app/target';
 import {  Subscription } from 'rxjs';
 import * as GeoJSON from 'geojson';
-import { SharedService } from '../service/shared.service';
-import { SharedService as NotamSharedService} from '../service/Notam/shared.service';
-import { SharedService as wxmshared } from '../service/Weather/shared.service';
+import { SharedService } from 'src/app/service/shared.service';
+import { SharedService as NotamSharedService } from 'src/app/service/Notam/shared.service';
+import { SharedService as wxmshared } from 'src/app/service/Weather/shared.service';
 
-import { PansopsService } from '../service/Adm/Pansops/pansops.service';
-import { NotamService } from '../service/Notam/notam.service';
+import { PansopsService } from 'src/app/service/Adm/Pansops/pansops.service';
+import { NotamService } from 'src/app/service/Notam/notam.service';
 import moment from 'moment';
 
 declare module 'leaflet' {

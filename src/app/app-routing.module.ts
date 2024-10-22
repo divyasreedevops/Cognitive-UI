@@ -1,16 +1,14 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { MapComponent } from './map/map.component';
+import { MapComponent } from './shared/map/map.component';
 
 import { AuthGuard } from './guards/auth.guard';
-import { LoginComponent } from './login/login.component';
-import { MapViewerComponent } from './map-viewer/map-viewer.component';
+import { LoginComponent } from './components/login/login.component';
 import { HeaderComponent } from './shared/header/header.component';
-import { OpsManagerComponent } from './airlineopsmanager/opsmanager.component';
+import { OpsManagerComponent } from './components/landing-page/opsmanager.component';
 import { MultimapComponent } from './components/adm/multimap/multimap.component';
-import { VideoClipComponent } from './airlineopsmanager/videoclip/clip.component';
+import { VideoClipComponent } from './components/landing-page/videoclip/clip.component';
 import { PansOpsComponent } from './shared/pans-ops/pans-ops.component';
-import { WeatherComponent } from './weather/weather.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
@@ -19,8 +17,6 @@ const routes: Routes = [
   },
   { path: 'login', component: LoginComponent },
   { path: 'NOTAM-Management', component: MapComponent },
-  { path: 'mapViewer', component: MapViewerComponent },
-  { path: 'mapview', component: MapViewerComponent, canActivate: [AuthGuard] },
   { path: 'header', component: HeaderComponent },
   { path: 'opsmanager', component:OpsManagerComponent},
   {path:'weather',component:MapComponent, children: [{ path: 'PANS-OPS', component: MapComponent }]},
