@@ -1,45 +1,3 @@
-// import { Component, AfterViewInit } from '@angular/core';
-// import * as L from 'leaflet';
-
-// @Component({
-//   selector: 'app-multimap',
-//   templateUrl: './multimap.component.html',
-//   styleUrl: './multimap.component.scss'
-// })
-// export class MultimapComponent implements AfterViewInit {
-
-//   ngAfterViewInit(): void {
-//     this.initMaps();
-//   }
-
-//   initMaps() {
-//     // Map 1: Satellite Map
-//     const map1 = L.map('map1').setView([20.5937, 78.9629], 5);  // Coordinates for India
-//     L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', {
-//       maxZoom: 17,
-//     }).addTo(map1);
-
-//     // Map 2: Street Map
-//     const map2 = L.map('map2').setView([20.5937, 78.9629], 5);
-//     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-//       maxZoom: 19,
-//     }).addTo(map2);
-
-//     // Map 3: Dark Map
-//     const map3 = L.map('map3').setView([20.5937, 78.9629], 5);
-//     L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-//       maxZoom: 19,
-//     }).addTo(map3);
-
-//     const map4 = L.map('map4').setView([20.5937, 78.9629], 5);
-//     L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
-//     maxZoom: 19,
-//     attribution: '&copy; <a href="https://carto.com/">CartoDB</a>'
-//     }).addTo(map4);
-
-// }
-// }
-
 import { Component, AfterViewInit } from '@angular/core';
 import * as L from 'leaflet';
 import { Location } from '@angular/common';
@@ -73,7 +31,9 @@ export class MultimapComponent implements AfterViewInit {
         this.maps[mapId].remove(); 
         delete this.maps[mapId];   
       }
-      const map = L.map(mapId).setView([20.5937, 78.9629], 5);
+      const map = L.map(mapId, {
+        zoomControl: false  // Disable zoom control
+      }).setView([20.5937, 78.9629], 5);
 
       let tileLayerUrl: string = '';
       switch (mapId) {
