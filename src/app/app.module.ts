@@ -48,7 +48,7 @@ import { AtsTableComponent } from './components/weather/ats-table/ats-table.comp
 import { LoaderComponent } from './shared/loader/loader.component';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ApmSidebarComponent } from './shared/all-sidebar/apm-sidebar/apm-sidebar.component';
-import { ApmTableComponent } from './components/weather/apm-table/apm-table.component';
+import { ApmTableComponent } from './components/apm/apm-table/apm-table.component';
 
 @NgModule({
     declarations: [
