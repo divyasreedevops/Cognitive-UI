@@ -112,7 +112,8 @@
       padding: 10px;
       max-height: 150px;
       overflow-y: auto; 
-      background-color: #f8f9fa; 
+      // background-color: #f8f9fa; 
+      background-color: #EEF4FC;
       height: 2.1rem;
       width: 100%;
       border: none;
@@ -704,19 +705,23 @@
   .options-background{
     background: white;
     // border: 1px solid;
-    padding: 10px;
+    // padding: 10px;
     border-radius: 6px;
   }
 
   .button{
-    width: 100%;
-    height: 2rem;
-    outline: 0;
-    border: 0;
-    border-radius: 6px;
-    background-color: #201b70;
-    color: white;
-    margin-top: 5px;
+    
+      width: 100%;
+      /* height: 2.1rem; */
+      outline: 0;
+      border: 0;
+      border-radius: 6px;
+      background-color: #3E6CA0;
+      color: white;
+      margin-top: 5px;
+      padding: 10px;
+      font-size: 1rem;
+    
   }
 
   .buttomButtons{
@@ -746,4 +751,17 @@
     justify-content: space-between;
     align-items: center;
     gap: 10px;
+}
+
+.bottom{
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+
+  div{
+    font-size: 1rem;
+    color: #3E6CA0;
+    font-weight: 501;
+    cursor: pointer;
+  }
 }

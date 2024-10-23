@@ -6,29 +6,36 @@
     flex-direction: column;
     gap: 10px;">
       <!--Select Airport -->
-      <div class="select">
-          <label for="selectedAirport">Airport</label>
+      <div class="select" style="position: relative;">
+          <!-- <label for="selectedAirport">Airport</label> -->
           <select formControlName="selectedAirport" [(ngModel)]="selectedAirport" id="selectedAirport" (change)="onValueChange($event,'airport')">
             <option value="" disabled selected>Select an airport</option>
             <option *ngFor="let option of optionsAirport" [value]="option.label">{{ option.label }}</option>
           </select>
+          <mat-icon style="position: absolute;right: -3px;
+        top: 5px;
+        font-size: 21px;
+        font-weight: 555;">keyboard_arrow_down</mat-icon>
       </div>
   
       <!--Select Runway -->
-      <div class="select">
-          <label for="selectedRunway">Runway</label>
+      <div class="select" style="position: relative;">
+          <!-- <label for="selectedRunway">Runway</label> -->
           <select formControlName="selectedRunway" [(ngModel)]="selectedRunway" id="selectedRunway" (change)="onValueChange($event,'runway')">
             <option value="" disabled selected>Select an Runway</option>
                  
             <option *ngFor="let option of optionRunway" [value]="option.label">{{ option.label }}
                   </option>
           </select>
-          
+          <mat-icon style="position: absolute;right: -3px;
+        top: 5px;
+        font-size: 21px;
+        font-weight: 555;">keyboard_arrow_down</mat-icon>
       </div>
   
     
       <div class="select">
-        <label for="selectedTypeofProcedure">Type of Procedure</label>
+        <!-- <label for="selectedTypeofProcedure">Type of Procedure</label> -->
         <div style="position: relative;">
           <!-- Textbox showing the selected options, comma-separated -->
           <input 
@@ -60,7 +67,7 @@
   
   
   <div class="select">
-        <label for="selectedTypeofProcedure">Procedure Name</label>
+        <!-- <label for="selectedTypeofProcedure">Procedure Name</label> -->
         <div style="position: relative;">
           <!-- Textbox showing the selected options, comma-separated -->
           <input type="text" 
@@ -96,10 +103,10 @@
   </div>
   <div class="bottom">
     <div>
-      <button class="button buttomButtons">View Analysis</button>
+      View Analysis
     </div>
     <div>
-      <button class="button buttomButtons">Generate Report</button>
+      Generate Report
     </div>
   </div>
   
