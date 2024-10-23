@@ -2,16 +2,17 @@
     position: relative;
     top: 0;
     z-index: 100;
-    background: transparent;
+    background: #EEF4FC;
     backdrop-filter: blur(1px);
     width: 100%;
-    height: 70px;
+    // height: 70px;
+    height: 50px;
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 0 20px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    overflow: hidden;
+    // overflow: hidden;
 
     @media (max-width: 768px) { /* Tablet and below */
         flex-direction: column;
@@ -180,4 +181,58 @@ nav {
     display: flex;
     gap: 10px;
     margin-right: 10px;
+}
+.imgIconSize{
+    height: 20px;
+    width: 20px;
+  }
+
+  //for dropdown
+.nav-drop{
+   display: flex; 
+   align-items: center;
+   justify-content: center;
+   cursor: pointer;
+   gap: 5px;
+    
+
+   span{
+    font-size: 1.2rem;
+   }
+
+   mat-icon{
+    transform: rotate(90deg)
+   } 
+}
+
+  
+.drop-options{
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    gap: 13px;
+    background-color: white;
+    width: max-content;
+    padding: 15px 18px 20px 15px;
+    border-radius: 5px;
+    top: 32px;
+    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+    .opt{
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        cursor: pointer;
+        padding: 10px;
+        border-radius: 5px;
+    }
+
+    .opt:hover{
+        background-color: #0055b2f7;
+        color: white;
+    }
+}
+
+.selectedOption{
+    background-color: #0055b2f7;
+    color: white;
 }

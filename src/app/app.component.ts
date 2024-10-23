@@ -33,10 +33,9 @@ export class AppComponent {
     }
 
     this.sharedService.navbar$.subscribe((selectedNav:any) => {
-   
+      console.log('from home screen ',selectedNav);
       this.activeButton = selectedNav;
       localStorage.setItem('activeNav', selectedNav);
-    
   });
   }
   setActive(button: string) {
@@ -60,7 +59,40 @@ export class AppComponent {
       this.navInfo={
         isTabActive:false,
         isFilterActive:false,
-        navBtn:[],
+        navBtn:[
+          {
+            icon_url:'assets/icons/6.png',
+            icon_name:'ADM',
+          },
+          {
+            icon_url:'assets/icons/7.png',
+            icon_name:'WxM',
+          },
+          {
+            icon_url:'assets/icons/4.png',
+            icon_name:'APM',
+          },
+          {
+            icon_url:'assets/icons/5.png',
+            icon_name:'Airworthiness',
+          },
+          {
+            icon_url:'assets/icons/1.png',
+            icon_name:'FPM',
+          },
+          {
+            icon_url:'assets/icons/2.png',
+            icon_name:'NOTAM Management',
+          },
+          {
+            icon_url:'assets/icons/8.png',
+            icon_name:'Aircraft Tracking',
+          },
+          {
+            icon_url:'assets/icons/triangle.png',
+            icon_name:'Dashboard & Reports',
+          }
+        ],
         navTitle:'AIRLINE OPS MANAGER'
       };
     }
@@ -68,7 +100,40 @@ export class AppComponent {
       this.navInfo={
         isTabActive:false,
         isFilterActive:true,
-        navBtn:[],
+        navBtn:[
+          {
+            icon_url:'assets/icons/6.png',
+            icon_name:'ADM',
+          },
+          {
+            icon_url:'assets/icons/7.png',
+            icon_name:'WxM',
+          },
+          {
+            icon_url:'assets/icons/4.png',
+            icon_name:'APM',
+          },
+          {
+            icon_url:'assets/icons/5.png',
+            icon_name:'Airworthiness',
+          },
+          {
+            icon_url:'assets/icons/1.png',
+            icon_name:'FPM',
+          },
+          {
+            icon_url:'assets/icons/2.png',
+            icon_name:'NOTAM Management',
+          },
+          {
+            icon_url:'assets/icons/8.png',
+            icon_name:'Aircraft Tracking',
+          },
+          {
+            icon_url:'assets/icons/triangle.png',
+            icon_name:'Dashboard & Reports',
+          }
+        ],
         navTitle:''
       };
     }

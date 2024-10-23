@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output} from '@angular/core';
+import { Component, EventEmitter, Input, Output,HostListener} from '@angular/core';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { SharedService } from 'src/app/service/shared.service';
 import { PansopsService } from 'src/app/service/Adm/Pansops/pansops.service';
@@ -37,6 +37,10 @@ export class HeaderComponent {
   selectedOption: string = 'AIRAC 2402';  // Default selected option
   dropdownOptions: any[] = [];
   searchQuery = '';
+
+  isDropdownOpen = false;
+  selectedItem: any = null; // The initially selected item, if any
+  selectedIcon = '';
  
   constructor(private service : SharedService,private pansopsService:PansopsService,private router:Router){
     this.pansopsService.getAiracInfo().subscribe(response=>{
@@ -52,6 +56,23 @@ export class HeaderComponent {
    })
       })
   }
+
+  ngOnInit(){
+    console.log('-=-=-=-=');
+    setTimeout(() => {
+      console.log('nav-=-=-',this.navInfo);
+        const foundIcon =  this.navInfo.navBtn.find((item:any)=> item.icon_name === this.activeButton);
+  console.log(foundIcon);
+  console.log(this.activeButton);
+    if(foundIcon){
+      this.selectedIcon=foundIcon.icon_url;
+      this.selectedItem=foundIcon.icon_name;
+    }
+    }, 500);
+   
+
+  }
+
 
   // Method to emit the button clicked event
   setActive(button: string) {
@@ -69,7 +90,26 @@ export class HeaderComponent {
     this.service.updateSideBar(this.selectedOption);
   }
 
-  
  
+
+  toggleDropdown() {
+    this.isDropdownOpen = !this.isDropdownOpen;
+  }
+
+  selectItem(item: any) {
+    this.selectedItem = item.icon_name; // Set the selected item
+    this.selectedIcon = item.icon_url;
+    this.setActive(item.icon_name);
+    this.isDropdownOpen = false; // Close the dropdown after selection
+  }
+ 
+  @HostListener('document:click', ['$event'])
+  handleOutsideClick(event: Event): void {
+    const clickedInside = (event.target as HTMLElement).closest('.nav-drop, .drop-options');
+  
+    if (!clickedInside && this.isDropdownOpen) {
+      this.isDropdownOpen = false;
+    }
+  }
 }
-// keyboard_arrow_down
+
