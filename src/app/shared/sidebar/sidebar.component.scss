@@ -5,7 +5,8 @@
   height: 100vh;
   z-index: 2;
 //  background: linear-gradient(267deg, rgb(134 183 202 / 58%) 1%, rgb(38 210 200 / 19%) 21%);
-background: linear-gradient(267deg, rgb(58 82 91 / 71%) 1%, rgb(31 194 174 / 46%) 21%);
+//background: linear-gradient(267deg, rgb(58 82 91 / 71%) 1%, rgb(31 194 174 / 46%) 21%);
+background-color: #FFFFFF;
   display: flex;
   flex-direction: column;
   gap: 15px;
@@ -24,16 +25,19 @@ background: linear-gradient(267deg, rgb(58 82 91 / 71%) 1%, rgb(31 194 174 / 46%
     display: flex;
     align-items: center;
     justify-content: space-between;
-    background-color: white;
+    // background-color: white;
+    background-color: #3E6CA0;
+    color: white;
     padding: 10px;
     font-size: 1rem;
-    font-weight: 501;
+    line-height: 16px;
+    // font-weight: 501;
     border-radius: 5px;
     cursor: pointer;
     transition: opacity 0.9s ease-in-out;
 
     span {
-      text-align: center;
+      // text-align: center;
       width: 100%;
        transition: width 0.9s ease-in-out;
       
@@ -41,19 +45,20 @@ background: linear-gradient(267deg, rgb(58 82 91 / 71%) 1%, rgb(31 194 174 / 46%
     }
 
     mat-icon{
-      width: 50px;
+      // width: 50px;
+      margin-right: 5px;
     }
   }
 
-  .sub-option:hover {
-    background-color: #0056b3;
-    color: white;
-  }
+  // .sub-option:hover {
+  //   background-color: #0056b3;
+  //   color: white;
+  // }
 
-  .active {
-    background: linear-gradient(to right, #4acbd3, #0056b3);
-    color: white;
-  }
+  // .active {
+  //   background: linear-gradient(to right, #4acbd3, #0056b3);
+  //   color: white;
+  // }
 
   .tab-toggel {
     display: flex;

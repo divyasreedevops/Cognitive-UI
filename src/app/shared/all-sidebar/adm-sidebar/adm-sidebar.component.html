@@ -1,30 +1,42 @@
+<div class="sub-option">
+  <mat-icon class="maticon">dataset</mat-icon>
+  <span>PANS-OPS</span>
+</div>
+
 <form [formGroup]="Airform" autocomplete="on" novalidate>
       
   
     <!--Select Airport -->
-    <div class="select">
-        <label for="selectedAirport">Airport</label>
+    <div class="select" style="position: relative;">
+        <!-- <label for="selectedAirport">Airport</label> -->
         <select formControlName="selectedAirport" [(ngModel)]="selectedAirport" id="selectedAirport" (change)="onValueChange($event,'airport')">
           <option value="" disabled selected>Select an airport</option>
           <option *ngFor="let option of optionsAirport" [value]="option.label">{{ option.label }}</option>
         </select>
+        <mat-icon style="position: absolute;right: -3px;
+        top: 5px;
+        font-size: 21px;
+        font-weight: 555;">keyboard_arrow_down</mat-icon>
     </div>
 
     <!--Select Runway -->
-    <div class="select">
-        <label for="selectedRunway">Runway</label>
+    <div class="select" style="position: relative;">
+        <!-- <label for="selectedRunway">Runway</label> -->
         <select formControlName="selectedRunway" [(ngModel)]="selectedRunway" id="selectedRunway" (change)="onValueChange($event,'runway')">
           <option value="" disabled selected>Select an Runway</option>
                
           <option *ngFor="let option of optionRunway" [value]="option.label">{{ option.label }}
                 </option>
         </select>
-        
+        <mat-icon style="position: absolute;right: -3px;
+        top: 5px;
+        font-size: 21px;
+        font-weight: 555;">keyboard_arrow_down</mat-icon>
     </div>
 
   
     <div class="select">
-      <label for="selectedTypeofProcedure">Type of Procedure</label>
+      <!-- <label for="selectedTypeofProcedure">Type of Procedure</label> -->
       <div style="position: relative;">
         <!-- Textbox showing the selected options, comma-separated -->
         <input 
@@ -56,7 +68,7 @@
 
 
 <div class="select" *ngIf="!isCompare">
-      <label for="selectedTypeofProcedure">Procedure Name</label>
+      <!-- <label for="selectedTypeofProcedure">Procedure Name</label> -->
       <div style="position: relative;">
         <!-- Textbox showing the selected options, comma-separated -->
         <input type="text" 
@@ -91,10 +103,12 @@
 
 
 </form>
-<div class="select" *ngIf="isCompare">
-<label for="selectedProcedureName">Procedure Name</label>
-<div class="multihold">
-<input type="text" name="selectedOptions" id="selectedOptions" class="multi-select-container" readonly [ngModel]="selectedOptionstoshow.join(', ')" (click)="toggleDropdown()">
+<div class="select" *ngIf="isCompare" style="margin-top: 5px;">
+<!-- <label for="selectedProcedureName">Procedure Name</label> -->
+<div class="multihold" style="position: relative;">
+<input type="text" name="selectedOptions" id="selectedOptions" class="multi-select-container" readonly 
+[value]="selectedOptionstoshow.length > 0 ? selectedOptionstoshow.join(', ') : 'Select Procedure Name'" 
+(click)="toggleDropdown()">
 
 <div class="multisection" *ngIf="isDropdownVisible">
   <!-- Part 1 Options -->
@@ -120,6 +134,10 @@
   </div>
 </div>
 </div>
+<mat-icon style="position: absolute;right: -3px;
+        top: 5px;
+        font-size: 21px;
+        font-weight: 555;">keyboard_arrow_down</mat-icon>
 </div>
 </div>
 
@@ -147,9 +165,32 @@
       </div>
 </div>
 
+  <div class="select" style="position: relative;margin-bottom: 12px;">
+      <!-- <label for="selectedAirport">Airport</label> -->
+      <select style="background-color: white;">
+        <option value="" disabled selected>File Type(Export)</option>
+        <option>PDF</option>
+      </select>
+      <mat-icon style="position: absolute;right: -3px;
+      top: 5px;
+      font-size: 21px;
+      font-weight: 555;">keyboard_arrow_down</mat-icon>
+  </div>
+  <div class="sub-option" style="margin-bottom: 30px;">
+    <mat-icon class="maticon">ios_share</mat-icon>
+    <span>Export</span>
+  </div>
 <div class="button-outer">
 
-  <button type="button">Export PDF</button>
+  <!-- <button type="button">Export PDF</button>
   <button type="button">Export GeoJSON</button>
-  <button type="button">Export CSV</button>
+  <button type="button">Export CSV</button> -->
+  <div class="sub-option" style="background-color: white; color: black; font-weight: 501;">
+    <mat-icon class="maticon">settings</mat-icon>
+    <span>ENR Compatibility</span>
+  </div>
+  <div class="sub-option" style="background-color: white; color: black; font-weight: 501;">
+    <mat-icon class="maticon">settings</mat-icon>
+    <span>Airport Compatibility</span>
+  </div>
 </div>
