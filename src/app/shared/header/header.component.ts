@@ -32,11 +32,14 @@ export class HeaderComponent {
   @Input() icon: string = ''; // Default empty string
   // activeButton: string = ''; // Track which button is active ('adm' or 'wxm')
   @Input() activeButton: string = ''; // Receive the active button from parent
+  @Input() backgroundColor: string = '';
+  @Input() textColor: string = '';
   @Output() activeChange = new EventEmitter<string>(); // Emit active button change
   @Input() navInfo:any={};
   selectedOption: string = 'AIRAC 2402';  // Default selected option
   dropdownOptions: any[] = [];
   searchQuery = '';
+  
 
   isDropdownOpen = false;
   selectedItem: any = null; // The initially selected item, if any

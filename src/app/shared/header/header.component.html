@@ -1,4 +1,4 @@
-<div class="header" [@slideInOut]="isHeaderOpen ? 'in' : 'out'">
+<div class="header" [ngStyle]="{'background-color': backgroundColor, color: textColor}"  [@slideInOut]="isHeaderOpen ? 'in' : 'out'">
     <div class="logo" *ngIf="!navInfo.isTabActive && !navInfo.isFilterActive">
         <img src="https://www.cognitivenavigation.com/wp-content/uploads/2024/05/file.png" class="custom-logo"
             alt="Cognitive Navigation" decoding="async">

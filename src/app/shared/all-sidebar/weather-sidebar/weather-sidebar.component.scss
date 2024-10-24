@@ -756,3 +756,56 @@ form{
     cursor: pointer;
   }
 }
+
+.logo {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: 50px;
+  margin-bottom: 10px;
+
+  img {
+      height: 100%;
+      width: 50px;
+  }
+
+  span {
+      // font-weight: bold;
+      margin-left: 10px;
+      font-size: large;
+      // white-space: nowrap;
+  }
+
+  @media (max-width: 768px) {
+      img {
+          height: 40px;
+          width: 40px;
+      }
+      span {
+          font-size: 14px;
+      }
+  }
+}
+
+.demo-option{
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  background-color: #3E6CA0;
+  color: white;
+  padding: 10px;
+  font-size: 1rem;
+  font-weight: 501;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: opacity 0.9s ease-in-out;
+  margin-bottom: 10px;
+  span {
+    text-align: center;
+    width: 100%;
+     transition: width 0.9s ease-in-out;
+  }
+  mat-icon{
+    width: 50px;
+  }  
+}

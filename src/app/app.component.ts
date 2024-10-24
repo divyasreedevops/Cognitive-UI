@@ -15,6 +15,8 @@ export class AppComponent {
   activeButton: string = ''; // Track which button is active
   currentRoute: string = '';
   navInfo:any='';
+  backgroundColor: string = ''; // New property for background color
+  textColor: string = ''; // New property for text color
   constructor(public router: Router,private sharedService: SharedService) {
     this.router.events
       .pipe(filter((event: Event): event is NavigationEnd => event instanceof NavigationEnd)) // Narrow the type
@@ -22,6 +24,7 @@ export class AppComponent {
         this.currentRoute = event.urlAfterRedirects; // Set the current route
         localStorage.setItem('currentRoute' , this.currentRoute);
         this.updateHeaderContent();
+        this.updateBackgroundColor(); // Update background class based on the route
       });
   }
 
@@ -185,5 +188,15 @@ export class AppComponent {
     console.log('------------------');
     console.log(this.currentRoute);
     console.log(this.navInfo);
+  }
+
+  updateBackgroundColor() {
+    if (this.currentRoute === '/opsmanager') {
+      this.backgroundColor = '#3E6CA0'; //  Add a background color for '/opsmanager'
+      this.textColor = 'white';
+    }else{
+      this.backgroundColor = '#EEF4FC' // Default background color
+      this.textColor = 'black';
+    }
   }
 }
