@@ -1,6 +1,6 @@
 <div class="outer-hold">
     <div class="side-container" [ngClass]="{'collapsed': isCollapsed}">
-      <div class="logo">
+      <div class="logo" [hidden]="isCollapsed">
         <img src="https://www.cognitivenavigation.com/wp-content/uploads/2024/05/file.png" class="custom-logo"
             alt="Cognitive Navigation" decoding="async">
         <span>Cognitive Navigation</span>
@@ -226,10 +226,10 @@
   </div>
 
   <div class="tab tab-style" style="pointer-events: auto;" [hidden]="!isEnrouteTable">
-    <app-weather-table (isMinimize)="minimize($event,'wxm')" ></app-weather-table>
+    <app-weather-table (isMinimize)="minimize($event,'wxm')" [isMapView]="isEnrouteTable"></app-weather-table>
  </div>
   <div class="tab tab-style" style="pointer-events: auto;" [hidden]="!isairportTable">
-     <app-ats-table (isMinimize)="minimize($event,'ats')"></app-ats-table>
+     <app-ats-table (isMinimize)="minimize($event,'ats')" [isMapView]="isairportTable"></app-ats-table>
  </div>
 
  <div class="tab tab-style" style="pointer-events: auto;" *ngIf="isAPMTable">
@@ -237,6 +237,6 @@
 </div>
 
 
-<app-weather-popup *ngIf="activeTab==='WxM'"></app-weather-popup>
+<!-- <app-weather-popup *ngIf="activeTab==='WxM'"></app-weather-popup> -->
 </div>
 <app-loader [show]="isshowloader"></app-loader>

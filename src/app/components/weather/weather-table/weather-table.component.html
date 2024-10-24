@@ -4,7 +4,7 @@
                 <span>Map View</span>
                 <div class="toggle-container" (change)="close()">
                     <label class="toggle-label">
-                      <input type="checkbox" >
+                      <input type="checkbox" [checked]="!isMapView">
                       <span class="toggle-switch"></span>
                     </label>
                   </div>
@@ -17,23 +17,30 @@
 
             <div class="dflex" style="gap: 5px; font-weight: 501;">
                 <div class="dflex border" (click)="filterByFlag('normal')">
-                    <mat-icon class="flag green">play_arrow</mat-icon> Normal
+                    <mat-icon class="flag green">play_arrow</mat-icon> Current
                 </div>
                 <div class="dflex border" (click)="filterByFlag('warning')">
-                    <mat-icon class="flag yellow">play_arrow</mat-icon> Warning
+                    <mat-icon class="flag yellow">play_arrow</mat-icon> Previous
                 </div>
-                <div class="dflex border" (click)="filterByFlag('critical')">
+                <!-- <div class="dflex border" (click)="filterByFlag('critical')">
                     <mat-icon class="flag red">play_arrow</mat-icon> Critical
-                </div>
+                </div> -->
             </div>
 
-            <div class="dflex" style="gap: 5px;">
+            <!-- <div class="dflex" style="gap: 5px;">
                 <input type="text" style="text-align: center; font-weight: 501;" [(ngModel)]="searchText" placeholder="Search NOTAMs" name="" id="">
                 <mat-icon (click)="onSearchClick()">search</mat-icon>
-            </div>
+            </div> -->
     </div>
  </div>
-
+<div class="tab-options-container">
+  <div class="options" *ngFor="let option of tabOptions" 
+  [ngClass]="{'selected': option.isSelected}" 
+  (click)="toggleOption(option)">
+<span>{{ option.label }}</span>
+<mat-icon *ngIf="option.isSelected" (click)="removeOption(option); $event.stopPropagation()">close</mat-icon>
+</div>
+</div>
  <div class="weather-table">
     <div style="position: relative;" *ngFor="let table of tables; let idx = index">
       <h3 class="table-title">{{ table.title }}</h3>
