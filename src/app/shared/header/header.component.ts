@@ -85,10 +85,16 @@ export class HeaderComponent {
       this.router.navigate(['/videoclip']); 
     }, 100);
   }
+
+  // Toggles the state of the navbar (open or closed).
   toggleNavbar() {
     this.isHeaderOpen = !this.isHeaderOpen;
   }
 
+  /**
+ * Sends the selected dropdown option to the sidebar.
+ * This updates the shared service with the currently selected AIRAC option.
+ */
   sendDropdownOption(){
     this.service.updateSideBar(this.selectedOption);
   }

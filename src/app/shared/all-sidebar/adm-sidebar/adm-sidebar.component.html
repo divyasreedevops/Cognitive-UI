@@ -76,8 +76,7 @@
         id="selectedOptions" 
         class="multi-select-container" 
         [value]="selectedProcedureNameShow.length > 0 ? selectedProcedureNameShow.join(', ') : 'Select Procedure Name'"  
-        (click)="toggledropdown($event,'name')" 
-        placeholder="Select Procedure Name" 
+        (click)="toggledropdown($event,'name')"  
         readonly>
     
         <!-- Checkbox options -->

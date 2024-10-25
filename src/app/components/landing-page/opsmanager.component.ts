@@ -11,6 +11,7 @@ export class OpsManagerComponent {
 
   constructor(private sharedService: SharedService){}
 
+  // Array of card objects, each representing a module with a title, description, icon, and router link
     cards = [
         {
           title: 'ADM',
@@ -62,8 +63,8 @@ export class OpsManagerComponent {
         }
       ];
 
+      // Method triggered when a card is selected
       onCardSelected(cardTitle: string) {
-        console.log(cardTitle,"sdjcdbcuiwbhvhjvrivgbrvruiv")
-        this.sharedService.updatenavbar(cardTitle);
+        this.sharedService.updatenavbar(cardTitle); // Updates the navbar based on the selected card title using SharedService
       }
 }
