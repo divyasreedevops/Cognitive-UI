@@ -10,8 +10,11 @@ import { SharedService as wxmshared } from 'src/app/service/Weather/shared.servi
   styleUrl: './notam-sidebar.component.scss'
 })
 export class NotamSidebarComponent {
-  additionalInfo: string = '';
-  bufferDistance = '5nm';
+  
+  additionalInfo: string = ''; // Stores additional information input by the user
+  bufferDistance = '5nm'; // Stores the buffer distance for filtering (default is '5nm')
+
+  // List of filter categories (FIR, Airports, Closure, etc.) with options 
   filters = [
     {
       name: 'FIR',
@@ -64,8 +67,11 @@ export class NotamSidebarComponent {
 
 
   constructor(private notamservice: NotamService,private sharedService:SharedService,private loaderservice:loaderservice, private wxmshared:wxmshared){
+    // Display a loading indicator when the component initializes
     this.loaderservice.updateloader(true);
-   this.notamservice.getNotamFilterOptions().subscribe((response:any)=>{
+
+    // Fetch filter options from the NotamService and populate the filters
+    this.notamservice.getNotamFilterOptions().subscribe((response:any)=>{
 
     response.fir.forEach((element:any) => {
       this.filters[0].options?.push({ name: element, checked: false })
@@ -78,12 +84,14 @@ export class NotamSidebarComponent {
     response.facilityDownGrade.forEach((element:any) => {
       this.filters[3].options?.push({ name: element, checked: false })
     });
+
+    // Update the sidebar filters and hide the loading indicator
     this.sharedService.updateSideBarFilters(response)
     this.loaderservice.updateloader(false);
    })
   }
 
-
+  // Function to select or deselect all options within a specific filter
   selectAllOption(field: any) {
     /*This function allows the user to select all options
      by checking the master checkbox located beside the field name.*/
@@ -119,6 +127,7 @@ export class NotamSidebarComponent {
     }
   }
 
+  // Function to gather all selected filters and submit them to the shared service
   submit() {
       const selectedFilters: any = {};
     this.filters.forEach(filter => {
@@ -146,7 +155,7 @@ export class NotamSidebarComponent {
   }
 
   ngOnDestroy(){
-    /* */
+    /*Cleanup method to update the map when the component is destroyed */
     this.wxmshared.updatemap('this.Airform.value');
   }
 }

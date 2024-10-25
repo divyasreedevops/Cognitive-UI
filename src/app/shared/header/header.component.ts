@@ -35,8 +35,8 @@ export class HeaderComponent {
   @Output() activeChange = new EventEmitter<string>(); // Emit active button change
   @Input() navInfo:any={};
   selectedOption: string = 'AIRAC 2402';  // Default selected option
-  dropdownOptions: any[] = [];
-  searchQuery = '';
+  dropdownOptions: any[] = []; // Holds the list of dropdown options, which will be populated from the service's response
+  searchQuery = ''; // Holds the search query input by the user for filtering dropdown options
  
   constructor(private service : SharedService,private pansopsService:PansopsService,private router:Router){
     this.pansopsService.getAiracInfo().subscribe(response=>{
@@ -61,10 +61,16 @@ export class HeaderComponent {
       this.router.navigate(['/videoclip']); 
     }, 100);
   }
+
+  // Toggles the state of the navbar (open or closed).
   toggleNavbar() {
     this.isHeaderOpen = !this.isHeaderOpen;
   }
 
+  /**
+ * Sends the selected dropdown option to the sidebar.
+ * This updates the shared service with the currently selected AIRAC option.
+ */
   sendDropdownOption(){
     this.service.updateSideBar(this.selectedOption);
   }
@@ -72,4 +78,3 @@ export class HeaderComponent {
   
  
 }
-// keyboard_arrow_down
