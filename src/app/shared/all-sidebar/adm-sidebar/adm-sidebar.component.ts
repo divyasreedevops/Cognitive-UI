@@ -774,13 +774,14 @@ export class AdmSidebarComponent {
   }
   
   toggleDropdown(): void {
-    console.log('clickkk...');
     this.isDropdownVisible = !this.isDropdownVisible;
     
       const formValues = this.Airform.value;
   
     if(!this.areArraysEqual(formValues['selectedProcedureName'], this.previousSelectedProcedure)){ 
       console.log('huhu ',formValues);
+      this.isAIXM = false;
+      this.AIXM.emit({E:event,res:this.procedureResponse});
       this.sharedService.updateFormValues(formValues);
       this.sharedService.setProcedureData(formValues['selectedProcedureName']);
       this.getProcedure();
@@ -799,6 +800,8 @@ export class AdmSidebarComponent {
       if (this.isProcedureName) {
         this.isProcedureName = false; 
         if(!this.areArraysEqual(this.selectedProcedureName, this.previousSelectedProcedure)){
+          this.isAIXM = false;
+        this.AIXM.emit({E:event,res:this.procedureResponse});
         this.getProcedure();
         this.previousSelectedProcedure = [...this.selectedProcedureName];
         const formValues = this.Airform.value;
@@ -815,6 +818,8 @@ export class AdmSidebarComponent {
           this.multipart1=[];
           this.multipart2=[];
           this.selectedOptions=[];
+          this.isAIXM = false;
+          this.AIXM.emit({E:event,res:this.procedureResponse});
           this.Airform.patchValue({
             selectedProcedureName: [],
           });
@@ -824,6 +829,7 @@ export class AdmSidebarComponent {
           this.multipart1=[];
           this.multipart2=[];
           this.selectedOptions=[];
+          this.selectedOptionstoshow=[];
           console.log(this.airacs)
           const airacValues:any[]=  this.airacs.filter((ele:any)=>ele.status!=="compare")||[];
           this.sharedService.updateloader(true);
@@ -912,6 +918,8 @@ toggledropdown(event: Event, dropmenu:any){
     this.selectedProcedureName = [];
     this.previousSelectedProcedure = [];
     this.selectedProcedureNameShow = [];
+    this.isAIXM = false;
+    this.AIXM.emit({E:event,res:this.procedureResponse});
     this.Airform.patchValue({
       selectedProcedureName: [],
     });
@@ -957,6 +965,8 @@ toggledropdown(event: Event, dropmenu:any){
       event.stopPropagation();
       this.isProcedureName = !this.isProcedureName;
       if(!this.areArraysEqual(this.selectedProcedureName, this.previousSelectedProcedure)){
+        this.isAIXM = false;
+        this.AIXM.emit({E:event,res:this.procedureResponse});
         this.getProcedure();
         this.previousSelectedProcedure = [...this.selectedProcedureName];
         const formValues = this.Airform.value;
@@ -1150,13 +1160,17 @@ onToggle(event:any){
     this.isAIXM = !this.isAIXM;
     this.AIXM.emit({E:event,res:this.procedureResponse});
 }
-checkIXAM(){
-  if(this.procedureNames.length!==0 || this.selectedOptions.length!==0){
-    this.showAIXM=true;
-  }else{
-    this.isAIXM=false;
-    this.showAIXM=false;
-    this.AIXM.emit({E:event,res:this.procedureResponse});
+checkIXAM() {
+  const shouldShowAIXM = this.isCompare
+    ? this.selectedOptionstoshow.length !== 0
+    : this.procedureNames.length !== 0 || this.selectedOptions.length !== 0;
+
+  if (shouldShowAIXM) {
+    this.showAIXM = true;
+  } else {
+    this.isAIXM = false;
+    this.showAIXM = false;
+    this.AIXM.emit({ E: event, res: this.procedureResponse });
   }
 }
 ngOnDestroy(){
