@@ -61,22 +61,22 @@ export class HeaderComponent {
   }
 
   ngOnInit(){
-    console.log('-=-=-=-=');
-    setTimeout(() => {
-      console.log('nav-=-=-',this.navInfo);
-        const foundIcon =  this.navInfo.navBtn.find((item:any)=> item.icon_name === this.activeButton);
-  console.log(foundIcon);
-  console.log(this.activeButton);
-    if(foundIcon){
-      this.selectedIcon=foundIcon.icon_url;
-      this.selectedItem=foundIcon.icon_name;
-    }
-    }, 500);
-   
-
+    this.selectedIcon='';
+    this.selectedItem='';
   }
 
+  ngAfterViewInit(){
 
+    this.service.navbar$.subscribe((selectedNav:any) => {
+      this.selectedIcon='';
+      this.selectedItem='';
+      const foundItem = this.navInfo.navBtn.find((item: any) => item.icon_name === selectedNav);
+      if (foundItem) {
+        this.selectedIcon = foundItem.icon_url;
+        this.selectedItem = foundItem.icon_name;
+      }
+    })
+  }
   // Method to emit the button clicked event
   setActive(button: string) {
     this.activeChange.emit(button);
@@ -100,10 +100,17 @@ export class HeaderComponent {
   }
 
   selectItem(item: any) {
-    this.selectedItem = item.icon_name; // Set the selected item
-    this.selectedIcon = item.icon_url;
-    this.setActive(item.icon_name);
-    this.isDropdownOpen = false; // Close the dropdown after selection
+    // Check if the selected item is the same as the current item
+  if (this.selectedItem === item.icon_name) {
+    this.isDropdownOpen = false; // Close the dropdown
+    return; // Exit the function if it's the same item
+  }
+
+  // Set the selected item
+  this.selectedItem = item.icon_name;
+  this.selectedIcon = item.icon_url;
+  this.setActive(item.icon_name);
+  this.isDropdownOpen = false;
   }
  
   @HostListener('document:click', ['$event'])
