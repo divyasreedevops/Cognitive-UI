@@ -103,41 +103,45 @@
 
 </form>
 <div class="select" *ngIf="isCompare" style="margin-top: 5px;">
-<!-- <label for="selectedProcedureName">Procedure Name</label> -->
-<div class="multihold" style="position: relative;">
-<input type="text" name="selectedOptions" id="selectedOptions" class="multi-select-container" readonly 
-[value]="selectedOptionstoshow.length > 0 ? selectedOptionstoshow.join(', ') : 'Select Procedure Name'" 
-(click)="toggleDropdown()">
+  <div class="multihold" style="position: relative;">
+  <div class="multi-select-container" (click)="toggleDropdown()">
+    <span *ngIf="selectedOptionstoshow.length > 0">
+      <span class="txt-red" *ngIf="selectedOptionstoshow[0]">{{ selectedOptionstoshow[0] }}</span>
+      <span class="txt-green" *ngIf="selectedOptionstoshow[1]">, {{ selectedOptionstoshow[1] }}</span>
+      <span *ngIf="selectedOptionstoshow.length > 2">, +{{ selectedOptionstoshow.length - 2 }} more</span>
+    </span>
+    <span *ngIf="selectedOptionstoshow.length === 0">Select Procedure Name</span>
+  </div>
 
-<div class="multisection" *ngIf="isDropdownVisible">
-  <!-- Part 1 Options -->
-   <div>
-  <div class="multipart" *ngFor="let item of multipart1; let i = index" (click)="toggleSelection(item.label, 'part1', i,item.value)">
-    <span>
-      <!-- <mat-icon>
-        {{ isSelected(item.label, 'part1', i) ? 'check_box' : 'check_box_outline_blank' }}
-      </mat-icon> -->
-      <span class="txt-green" [ngClass]="{'selectedmultiOption': isSelected(item.label, 'part1', i)}">{{ item.label }}</span>
-    </span>
+  <div class="multisection" *ngIf="isDropdownVisible">
+    <!-- Part 1 Options -->
+     <div>
+    <div class="multipart" *ngFor="let item of multipart1; let i = index" (click)="toggleSelection(item.label, 'part1', i,item.value)">
+      <span>
+        <!-- <mat-icon>
+          {{ isSelected(item.label, 'part1', i) ? 'check_box' : 'check_box_outline_blank' }}
+        </mat-icon> -->
+        <span class="txt-green" [ngClass]="{'selectedmultiOption': isSelected(item.label, 'part1', i)}">{{ item.label }}</span>
+      </span>
+    </div>
   </div>
-</div>
-  <!-- Part 2 Options -->
-   <div>
-  <div class="multipart" *ngFor="let item of multipart2; let i = index" (click)="toggleSelection(item.label, 'part2', i,item.value)">
-    <span>
-      <!-- <mat-icon>
-        {{ isSelected(item.label, 'part2', i) ? 'check_box' : 'check_box_outline_blank' }}
-      </mat-icon> -->
-      <span class="txt-red" [ngClass]="{'selectedmultiOption': isSelected(item.label, 'part2', i)}">{{ item.label }}</span>
-    </span>
+    <!-- Part 2 Options -->
+     <div>
+    <div class="multipart" *ngFor="let item of multipart2; let i = index" (click)="toggleSelection(item.label, 'part2', i,item.value)">
+      <span>
+        <!-- <mat-icon>
+          {{ isSelected(item.label, 'part2', i) ? 'check_box' : 'check_box_outline_blank' }}
+        </mat-icon> -->
+        <span class="txt-red" [ngClass]="{'selectedmultiOption': isSelected(item.label, 'part2', i)}">{{ item.label }}</span>
+      </span>
+    </div>
   </div>
-</div>
-</div>
-<mat-icon style="position: absolute;right: -3px;
-        top: 5px;
-        font-size: 21px;
-        font-weight: 555;">keyboard_arrow_down</mat-icon>
-</div>
+  </div>
+  <mat-icon style="position: absolute;right: -3px;
+          top: 5px;
+          font-size: 21px;
+          font-weight: 555;">keyboard_arrow_down</mat-icon>
+  </div>
 </div>
 
 

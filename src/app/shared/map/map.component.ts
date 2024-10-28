@@ -632,7 +632,7 @@ export class MapComponent implements OnInit {
 
     const overlayMaps = {};
 
-    L.control.layers(baseMaps, overlayMaps, { position: 'topleft' }).addTo(this.map);
+    L.control.layers(baseMaps, overlayMaps, { position: 'topright' }).addTo(this.map);
     // navigation.addTo(this.map);
     switch (this.mapId) {
       case 'map1':
