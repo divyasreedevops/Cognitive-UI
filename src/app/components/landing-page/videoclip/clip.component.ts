@@ -25,25 +25,25 @@ timeoutId:any; // Variable to store the timeout ID for navigation delay
            // Delay navigation to '/ADM' by 3 seconds
           this.timeoutId = setTimeout(() => {
             this.router.navigate(['/ADM']); 
-          }, 3000);
+          }, 2000);
           break;
         case 'NOTAM Management':
           // Delay navigation to '/NOTAM-Management' by 3 seconds
           this.timeoutId = setTimeout(() => {
             this.router.navigate(['/NOTAM-Management']);
-          }, 3000);
+          }, 2000);
           break;
           case 'WxM':
             // Delay navigation to '/weather' by 3 seconds
           this.timeoutId = setTimeout(() => {
             this.router.navigate(['/weather']);
-          }, 3000);
+          }, 2000);
           break;
           case 'APM':
             // Delay navigation to '/APM' by 3 seconds
           this.timeoutId = setTimeout(() => {
             this.router.navigate(['/APM']);
-          }, 3000);
+          }, 2000);
           break;
       }
     }
