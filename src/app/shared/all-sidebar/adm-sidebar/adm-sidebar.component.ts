@@ -320,8 +320,8 @@ export class AdmSidebarComponent {
     if(response){
       this.sharedService.updateloader(true);
       const transformedAirports = response.map((airport:any) => ({
-        value: airport.id,
-        label: airport.airport_icao
+        value: airport.airport_icao,
+        label:`${airport.airport_icao}-${airport.airport.airport_name}` 
     }));
     this.optionsAirport=transformedAirports;
     this.sharedService.updateloader(false);

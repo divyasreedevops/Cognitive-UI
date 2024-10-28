@@ -14,7 +14,7 @@
           <!-- <label for="selectedAirport">Airport</label> -->
           <select formControlName="selectedAirport" [(ngModel)]="selectedAirport" id="selectedAirport" (change)="onValueChange($event,'airport')">
             <option value="" disabled selected>Select an airport</option>
-            <option *ngFor="let option of optionsAirport" [value]="option.label">{{ option.label }}</option>
+            <option *ngFor="let option of optionsAirport" [value]="option.value">{{ option.label }}</option>
           </select>
           <mat-icon style="position: absolute;right: -3px;
         top: 5px;

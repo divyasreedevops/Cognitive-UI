@@ -126,7 +126,7 @@ export class TerminalComponent {
       if(response){
         const transformedAirports = response.map((airport:any) => ({
           value: airport.id,
-          label: airport.airport_icao
+        label: `${airport.airport_icao},${airport.airport.airport_name}`
       }));
       this.optionsAirport=transformedAirports;
       }

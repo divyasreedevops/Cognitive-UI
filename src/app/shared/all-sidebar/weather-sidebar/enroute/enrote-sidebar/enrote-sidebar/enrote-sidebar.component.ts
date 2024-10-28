@@ -134,8 +134,8 @@ export class EnroteSidebarComponent {
     this.sharedService.airport$.subscribe((response)=>{
       if(response){
         const transformedAirports = response.map((airport:any) => ({
-          value: airport.id,
-          label: airport.airport_icao
+       value: airport.id,
+        label: `${airport.airport_icao},${airport.airport.airport_name}`
       }));
       this.optionsAirport=transformedAirports;
       }
