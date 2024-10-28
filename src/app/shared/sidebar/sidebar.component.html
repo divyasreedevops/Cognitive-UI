@@ -1,5 +1,10 @@
 <div class="outer-hold">
     <div class="side-container" [ngClass]="{'collapsed': isCollapsed}">
+      <div class="logo" [hidden]="isCollapsed">
+        <img src="https://www.cognitivenavigation.com/wp-content/uploads/2024/05/file.png" class="custom-logo"
+            alt="Cognitive Navigation" decoding="async">
+        <span>Cognitive Navigation</span>
+      </div>
         <!-- <div class="tab-toggel" [ngClass]="{'displayEnd': !isMultiMapView || isCollapsed, 'displayBetween': isMultiMapView && !isCollapsed}">
             <div class="arrow-hold" *ngIf="!isCollapsed && isMultiMapView || (weatherSelectedTab==='PANS-OPS' || weatherSelectedTab==='ENR' || weatherSelectedTab==='AIRPORT')">
                 <mat-icon (click)="navigateToMultiMap()">west</mat-icon>
@@ -23,14 +28,14 @@
             <mat-icon class="maticon">dataset</mat-icon>
             <span>PANS-OPS</span>
         </div>
-        <div class="sub-option" [ngClass]="{'active': selectedTab==='ENR'}"  (click)="selectedTab='ENR'">
+        <!-- <div class="sub-option" [ngClass]="{'active': selectedTab==='ENR'}"  (click)="selectedTab='ENR'">
             <mat-icon class="maticon">dataset</mat-icon>
             <span>ENR COMPATIBILITY</span>
         </div>
         <div class="sub-option" [ngClass]="{'active': selectedTab==='AIRPORT'}"  (click)="selectedTab='AIRPORT'">
             <mat-icon class="maticon">dataset</mat-icon>
             <span>AIRPORT COMPATIBILITY</span>
-        </div>
+        </div> -->
     </ng-container>
     
 
@@ -221,15 +226,17 @@
   </div>
 
   <div class="tab tab-style" style="pointer-events: auto;" [hidden]="!isEnrouteTable">
-    <app-weather-table (isMinimize)="minimize($event,'wxm')" ></app-weather-table>
+    <app-weather-table (isMinimize)="minimize($event,'wxm')" [isMapView]="isEnrouteTable"></app-weather-table>
  </div>
   <div class="tab tab-style" style="pointer-events: auto;" [hidden]="!isairportTable">
-     <app-ats-table (isMinimize)="minimize($event,'ats')"></app-ats-table>
+     <app-ats-table (isMinimize)="minimize($event,'ats')" [isMapView]="isairportTable"></app-ats-table>
  </div>
 
  <div class="tab tab-style" style="pointer-events: auto;" *ngIf="isAPMTable">
   <app-apm-table></app-apm-table>
 </div>
 
+
+<!-- <app-weather-popup *ngIf="activeTab==='WxM'"></app-weather-popup> -->
 </div>
 <app-loader [show]="isshowloader"></app-loader>

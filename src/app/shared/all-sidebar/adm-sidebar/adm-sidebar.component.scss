@@ -103,7 +103,7 @@
         border-radius: 6px;
         border: 1px solid white;
         padding: 0px 18px 0px 13px;
-    
+        background-color: #EEF4FC;
     }
   
     .multi-select-container {
@@ -112,7 +112,8 @@
       padding: 10px;
       max-height: 150px;
       overflow-y: auto; 
-      background-color: #f8f9fa; 
+      // background-color: #f8f9fa; 
+      background-color: #EEF4FC;
       height: 2.1rem;
       width: 100%;
       border: none;
@@ -138,21 +139,26 @@
   .toggle-switch {
     position: relative;
     display: inline-block;
-    width: 40px;
-    height: 20px;
+    // width: 40px;
+    // height: 20px;
+    width: 28px;
+    height: 14px;
     background-color: white;
     border-radius: 10px;
     transition: background-color 0.3s;
     z-index: -1;
+    border: 2px solid black;
   }
   .toggle-switch::before {
     content: '';
     position: absolute;
-    width: 16px;
-    height: 16px;
+    // width: 16px;
+    // height: 16px;
+    width: 10px;
+    height: 10px;
     border-radius: 50%;
-    top: 2px;
-    left: 2px;
+    top: 0.2px;
+    // left: 2px;
     background-color: black;
     transition: transform 0.3s;
   }
@@ -163,7 +169,7 @@
     background-color: #2196F3;
   }
   input[type="checkbox"]:checked + .toggle-switch::before {
-    transform: translateX(20px);
+    transform: translateX(16px);
   }
   .toggle-text {
     margin-left: 10px;
@@ -173,14 +179,17 @@
   .toggle-outer{
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 20px;
     justify-content: center;
     align-items: flex-end;
-    padding-right: 22px;
+    // padding-right: 22px;
+    padding: 0px 5px;
     margin: 20px 0px 20px;
     .tog{
         display: flex;
         gap: 11px;
+        justify-content: space-between;
+        width: 100%;
       }
   
       label{
@@ -311,6 +320,7 @@
     position: relative;
     .multisection{
       position: absolute;
+      z-index: 1;
       // z-index: 100;
       background-color: white;
       width: 100%;
@@ -663,4 +673,42 @@
       background-color: #0056b3;
       color: white;
       border-radius: 3px;
+    }
+
+
+    .sub-option {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      // background-color: white;
+      background-color: #3E6CA0;
+      color: white;
+      padding: 10px;
+      font-size: 1rem;
+      line-height: 16px;
+      // font-weight: 501;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: opacity 0.9s ease-in-out;
+  
+      span {
+        // text-align: center;
+        width: 100%;
+         transition: width 0.9s ease-in-out;
+        
+        
+      }
+  
+      mat-icon{
+        // width: 50px;
+        margin-right: 5px;
+        font-size: 22px;
+      }
+    }
+
+    form{
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      margin-top: 11px;
     }

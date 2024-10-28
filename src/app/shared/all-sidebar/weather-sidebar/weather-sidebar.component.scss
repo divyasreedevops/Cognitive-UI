@@ -103,7 +103,7 @@
         border-radius: 6px;
         border: 1px solid white;
         padding: 0px 18px 0px 13px;
-    
+        background-color: #EEF4FC;
     }
   
     .multi-select-container {
@@ -704,19 +704,21 @@
   .options-background{
     background: white;
     // border: 1px solid;
-    padding: 10px;
+    // padding: 10px;
     border-radius: 6px;
   }
 
   .button{
     width: 100%;
-    height: 2rem;
+    /* height: 2.1rem; */
     outline: 0;
     border: 0;
     border-radius: 6px;
-    background-color: #201b70;
+    background-color: #3E6CA0;
     color: white;
     margin-top: 5px;
+    padding: 10px;
+    font-size: 1rem;
   }
 
   .buttomButtons{
@@ -733,4 +735,77 @@
     flex-direction:column;
     gap: 10px;
     height: 70vh;  
+}
+
+form{
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin-top: 11px;
+}
+
+.bottom{
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+
+  div{
+    font-size: 1rem;
+    color: #3E6CA0;
+    font-weight: 501;
+    cursor: pointer;
+  }
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: 50px;
+  margin-bottom: 10px;
+
+  img {
+      height: 100%;
+      width: 50px;
+  }
+
+  span {
+      // font-weight: bold;
+      margin-left: 10px;
+      font-size: large;
+      // white-space: nowrap;
+  }
+
+  @media (max-width: 768px) {
+      img {
+          height: 40px;
+          width: 40px;
+      }
+      span {
+          font-size: 14px;
+      }
+  }
+}
+
+.demo-option{
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  background-color: #3E6CA0;
+  color: white;
+  padding: 10px;
+  font-size: 1rem;
+  font-weight: 501;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: opacity 0.9s ease-in-out;
+  margin-bottom: 10px;
+  span {
+    text-align: center;
+    width: 100%;
+     transition: width 0.9s ease-in-out;
+  }
+  mat-icon{
+    width: 50px;
+  }  
 }

@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output} from '@angular/core';
+import { Component, EventEmitter, Input, Output,HostListener} from '@angular/core';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { SharedService } from 'src/app/service/shared.service';
 import { PansopsService } from 'src/app/service/Adm/Pansops/pansops.service';
@@ -32,11 +32,18 @@ export class HeaderComponent {
   @Input() icon: string = ''; // Default empty string
   // activeButton: string = ''; // Track which button is active ('adm' or 'wxm')
   @Input() activeButton: string = ''; // Receive the active button from parent
+  @Input() backgroundColor: string = '';
+  @Input() textColor: string = '';
   @Output() activeChange = new EventEmitter<string>(); // Emit active button change
   @Input() navInfo:any={};
   selectedOption: string = 'AIRAC 2402';  // Default selected option
-  dropdownOptions: any[] = []; // Holds the list of dropdown options, which will be populated from the service's response
-  searchQuery = ''; // Holds the search query input by the user for filtering dropdown options
+  dropdownOptions: any[] = [];
+  searchQuery = '';
+  
+
+  isDropdownOpen = false;
+  selectedItem: any = null; // The initially selected item, if any
+  selectedIcon = '';
  
   constructor(private service : SharedService,private pansopsService:PansopsService,private router:Router){
     this.pansopsService.getAiracInfo().subscribe(response=>{
@@ -53,6 +60,23 @@ export class HeaderComponent {
       })
   }
 
+  ngOnInit(){
+    this.selectedIcon='';
+    this.selectedItem='';
+  }
+
+  ngAfterViewInit(){
+
+    this.service.navbar$.subscribe((selectedNav:any) => {
+      this.selectedIcon='';
+      this.selectedItem='';
+      const foundItem = this.navInfo.navBtn.find((item: any) => item.icon_name === selectedNav);
+      if (foundItem) {
+        this.selectedIcon = foundItem.icon_url;
+        this.selectedItem = foundItem.icon_name;
+      }
+    })
+  }
   // Method to emit the button clicked event
   setActive(button: string) {
     this.activeChange.emit(button);
@@ -75,6 +99,33 @@ export class HeaderComponent {
     this.service.updateSideBar(this.selectedOption);
   }
 
-  
  
+
+  toggleDropdown() {
+    this.isDropdownOpen = !this.isDropdownOpen;
+  }
+
+  selectItem(item: any) {
+    // Check if the selected item is the same as the current item
+  if (this.selectedItem === item.icon_name) {
+    this.isDropdownOpen = false; // Close the dropdown
+    return; // Exit the function if it's the same item
+  }
+
+  // Set the selected item
+  this.selectedItem = item.icon_name;
+  this.selectedIcon = item.icon_url;
+  this.setActive(item.icon_name);
+  this.isDropdownOpen = false;
+  }
+ 
+  @HostListener('document:click', ['$event'])
+  handleOutsideClick(event: Event): void {
+    const clickedInside = (event.target as HTMLElement).closest('.nav-drop, .drop-options');
+  
+    if (!clickedInside && this.isDropdownOpen) {
+      this.isDropdownOpen = false;
+    }
+  }
 }
+

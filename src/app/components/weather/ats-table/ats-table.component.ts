@@ -1,4 +1,4 @@
-import { Component, EventEmitter, HostListener, Output } from '@angular/core';
+import { Component, EventEmitter, HostListener, Input, Output } from '@angular/core';
 import { SharedService } from 'src/app/service/Weather/shared.service';
 
 @Component({
@@ -12,6 +12,7 @@ export class AtsTableComponent {
   notemanNumber:any="";
   flag:any="";
   @Output() isMinimize:any = new EventEmitter<string>();
+  @Input() isMapView:boolean=true;
   metarData = [
     { icaoCode: 'VECC', status: 'Active', statusColor: 'green', validFrom: '', validTill: '', windDirection: '230', windSpeed: '08KT', windGust: '', visibility: '4000', rvr: '', rwyId: '', weather: 'Haze', clouds: '', temp: '29', dewPoint: '23', pressure: '', ceiling: '' },
     { icaoCode: 'VECC', status: 'Active', statusColor: 'yellow', validFrom: '', validTill: '', windDirection: '', windSpeed: '', windGust: '', visibility: '', rvr: '', rwyId: '', weather: '', clouds: '', temp: '', dewPoint: '', pressure: '', ceiling: '' },
@@ -46,7 +47,7 @@ export class AtsTableComponent {
   categoryData=[];
 
 tableMapping:any = {
-  selectedMETARs: {
+  METARs: {
     id: 'metar-table',
     title: 'METAR',
     data: this.metarData
@@ -109,6 +110,17 @@ tableMapping:any = {
 isPopupVisible: boolean[][] = [];
 selectedRowData: any = null; // To store the clicked row's data
 weatherData:any=[];
+tabOptions = [
+  { label: 'METARs', isSelected: false, key: 'METARs' },
+  { label: 'TAFs', isSelected: false, key: 'TAFs' },
+  { label: 'SIGMETs', isSelected: false, key: 'SIGMETs' },
+  { label: 'SPECI', isSelected: false, key: 'SPECI' },
+  { label: 'AIRMETs', isSelected: false, key: 'AIRMETs' },
+  { label: 'Turbulence', isSelected: false, key: 'Turbulence' },
+  { label: 'Wind Shear', isSelected: false, key: 'WindShear' },
+  { label: 'AD Warning', isSelected: false, key: 'ADWarning' },
+  { label: 'Potential Icing', isSelected: false, key: 'PotentialIcing' }
+];
 constructor(
   private sharedService:SharedService
 ){
@@ -225,5 +237,32 @@ onDocumentClick(event: MouseEvent) {
 
   close() {
     this.isMinimize.emit({ status: 0 });
+    this.isMapView=false;
+  }
+
+  toggleOption(option: any): void {
+    // Toggle the selection status of the option
+    option.isSelected = !option.isSelected;
+  
+    // Find the corresponding table configuration based on the label
+    const tableConfig = this.tableMapping[option.key];
+  
+    if (!tableConfig) return; // Skip if tableConfig is not available
+  
+    const tableIndex = this.tables.findIndex((table: any) => table.id === tableConfig.id);
+  
+    // Perform actions based on the selection status
+    if (option.isSelected && tableIndex === -1) {
+      // Add table if selected and not already in the list
+      this.tables.push(tableConfig);
+    } else if (!option.isSelected && tableIndex !== -1) {
+      // Remove table if not selected and it exists in the list
+      this.tables.splice(tableIndex, 1);
+    }
+  }
+
+  removeOption(option: any) {
+    // option.isSelected = false;
+    this.toggleOption(option);
   }
 }

@@ -1,0 +1,81 @@
+.menu-container {
+    position: relative;
+    z-index: 500;
+    display: flex;
+    top: 100px;
+    left: 20px;
+  }
+  
+  .hamburger {
+    cursor: pointer;
+    background-color: white; /* Same background color as the icons */
+    border-radius: 20%; /* Circular shape */
+    width: 50px;
+    height: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: black; /* Icon color */
+  }
+  
+  .popup-menu {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 150px;
+    // background-color: rgba(255, 255, 255, 0.2); /* Transparent background */
+    background-color: white;
+    border-radius: 10px;
+    display: none;
+    flex-direction: column;
+    padding: 10px;
+  }
+  
+  .popup-menu.active {
+    display: flex;
+    margin-left: 60px;
+
+  }
+  
+  .popup-menu ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .popup-menu ul li {
+    padding: 5px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    color: black;
+    font-size: small;
+  }
+  
+  .popup-menu ul li:hover {
+    // background-color: lightgray;
+    color: black;
+  }
+  
+  .popup-menu ul li:active {
+    // background-color: lightgray; /* Hover effect */
+    color: black;
+  }
+
+  .menu-icon {
+    background-color:white; /* Icon background color */
+    // border-radius: 20%; /* Circular shape */
+    padding: 5px;
+    margin-right: 10px;
+    width: 30px;
+    height: 30px;
+    color: black; /* Icon color */
+  }
+  
+  .listIcon {
+    font-size: 40px;
+    width: 40px;
+    height: 40px;
+  }
+  

@@ -49,6 +49,7 @@ import { LoaderComponent } from './shared/loader/loader.component';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ApmSidebarComponent } from './shared/all-sidebar/apm-sidebar/apm-sidebar.component';
 import { ApmTableComponent } from './components/apm/apm-table/apm-table.component';
+import { WeatherPopupComponent } from './shared/weather-popup/weather-popup.component';
 
 @NgModule({
     declarations: [
@@ -73,7 +74,8 @@ import { ApmTableComponent } from './components/apm/apm-table/apm-table.componen
         AtsTableComponent,
         LoaderComponent,
         ApmSidebarComponent,
-        ApmTableComponent
+        ApmTableComponent,
+        WeatherPopupComponent
     ],
   
     imports: [

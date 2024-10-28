@@ -1,21 +1,21 @@
+
+<div class="sub-option">
+  <mat-icon class="maticon">dataset</mat-icon>
+  <span>NOTAM Filters</span>
+</div>
 <div class="filter-container">
-    <div class="not-title">
-      <div class="headtitle">
-        <mat-icon>flight</mat-icon>
-        <span>NOTAM Filters</span>
-      </div>
-    </div>
-    <div *ngFor="let filter of filters" class="dropdown">
-      <div class="">
+    <div *ngFor="let filter of filters; let i=index" class="dropdown">
+      <div class="label-checkbox" *ngIf="i>3 && i!==6">
+        <div class="label">
         <label class="titleLable">{{ filter.name }}</label>
-        <!-- <mat-icon (click)="selectAllOption(filter)">
-          {{ filter.allOptionsChecked ? 'check_box' : 'check_box_outline_blank' }}
-        </mat-icon> -->
         <input (click)="selectAllOption(filter)" type="checkbox" [checked]="filter.allOptionsChecked" class="checkbox-show checkBoxSize">
+        </div>
       </div>
       <div class="input-Div" (click)="filter.isOpen = !filter.isOpen">
         <input *ngIf="filter.options" type="text" name="selectedOptions" id="selectedOptions" class="inputTag" readonly
-          [ngModel]="filter.fliterSelectedOptions.join(', ')">
+          
+          [value]="filter.fliterSelectedOptions.length > 0 ? filter.fliterSelectedOptions.join(', ') : filter.name" 
+          >
         <mat-icon *ngIf="filter.options"  class="drop-icon">
           {{ filter.isOpen ? 'expand_less' : 'expand_more' }}
         </mat-icon>
@@ -32,7 +32,8 @@
     </div>
     <div class="new-textbox">
       <!-- <label class="titleLable">Additional Information</label> -->
-      <textarea [(ngModel)]="additionalInfo" placeholder="Enter additional info" class="textarea-expand" rows="1"></textarea>
+      <!-- <textarea [(ngModel)]="additionalInfo" placeholder="Enter your ATS plan" class="textarea-expand" rows="1"></textarea> -->
+       <input type="text" class="inputTag" [(ngModel)]="additionalInfo" placeholder="Enter your ATS plan"> 
     </div>
     <div class="bufferDistance-textbox">
       <label class="titleLable">Buffer Distance</label>
@@ -42,4 +43,14 @@
     <div class="submitDiv">
       <button type="submit" class="submitButton" (click)="submit()">Submit</button>
     </div>
+    <div class="bottom">
+      <div>
+        View Analysis
+      </div>
+      <div>
+        Generate Report
+      </div>
+    </div>
   </div>
+
+ 

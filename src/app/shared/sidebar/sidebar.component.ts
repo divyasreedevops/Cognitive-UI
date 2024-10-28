@@ -498,6 +498,11 @@ export class SidebarComponent {
     localStorage.setItem("wxmTab",this.weatherSelectedTab);
     this.router.navigate(['weather','PANS-OPS']);
     this.isMultiMapView = true;
+
+    tab==='ENR'? this.isEnrouteTable=true : this.isEnrouteTable=false;
+    tab==='AIRPORT'? this.isairportTable=true : this.isairportTable=false;
+
+     
   }
 
   navigateToFullMap() {

@@ -1,16 +1,43 @@
-<div class="header" [@slideInOut]="isHeaderOpen ? 'in' : 'out'">
-    <div class="logo">
+<div class="header" [ngStyle]="{'background-color': backgroundColor, color: textColor}"  [@slideInOut]="isHeaderOpen ? 'in' : 'out'">
+    <div class="logo" *ngIf="!navInfo.isTabActive && !navInfo.isFilterActive">
         <img src="https://www.cognitivenavigation.com/wp-content/uploads/2024/05/file.png" class="custom-logo"
             alt="Cognitive Navigation" decoding="async">
         <span>Cognitive Navigation</span>
     </div>
 
-    <nav *ngIf="navInfo.isTabActive">
+    <!-- <nav *ngIf="navInfo.isTabActive">
         <ng-container *ngFor="let item of navInfo.navBtn">
             <app-subheader [isActive]="activeButton === item.icon_name" (click)="setActive(item.icon_name)"
                 [icon]="item.icon_url" [name]="item.icon_name"></app-subheader>
         </ng-container>
-    </nav>
+    </nav> -->
+
+    <!-- <div style="display: flex; align-items: center;"> -->
+        <!-- <div style="display: flex; align-items: center;">
+        <mat-icon style="color: #000000e3; cursor: pointer;">home</mat-icon>
+        <mat-icon style="color: gray;">chevron_right</mat-icon>
+        </div> -->
+
+        <div *ngIf="navInfo.isTabActive" style="position: relative;">
+            <span class="nav-drop" (click)="toggleDropdown()">
+                <img class="imgIconSize" [src]="selectedIcon" alt="" srcset="">
+                <span>{{selectedItem}}</span>
+                <mat-icon>chevron_right</mat-icon>
+            </span>
+    
+            <!-- drop-down-options -->
+             <div class="drop-options" *ngIf="isDropdownOpen">
+                <ng-container *ngFor="let item of navInfo.navBtn">
+                <span class="opt" (click)="selectItem(item)" [ngClass]="{'selectedOption':activeButton === item.icon_name}">
+                    <img class="imgIconSize" [src]="item.icon_url" alt="" srcset="">
+                    <span>{{item.icon_name}}</span>
+                </span>
+            </ng-container>
+             </div>
+        </div>
+
+    <!-- </div> -->
+  
 
     <div class="title">{{ navInfo.navTitle }}</div>
 

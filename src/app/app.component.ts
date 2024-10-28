@@ -15,6 +15,8 @@ export class AppComponent {
   activeButton: string = ''; // Track which button is active
   currentRoute: string = '';
   navInfo:any='';
+  backgroundColor: string = ''; // New property for background color
+  textColor: string = ''; // New property for text color
   constructor(public router: Router,private sharedService: SharedService) {
     this.router.events
       .pipe(filter((event: Event): event is NavigationEnd => event instanceof NavigationEnd)) // Narrow the type
@@ -22,6 +24,7 @@ export class AppComponent {
         this.currentRoute = event.urlAfterRedirects; // Set the current route
         localStorage.setItem('currentRoute' , this.currentRoute);
         this.updateHeaderContent();
+        this.updateBackgroundColor(); // Update background class based on the route
       });
   }
 
@@ -33,10 +36,9 @@ export class AppComponent {
     }
 
     this.sharedService.navbar$.subscribe((selectedNav:any) => {
-   
+      console.log('from home screen ',selectedNav);
       this.activeButton = selectedNav;
       localStorage.setItem('activeNav', selectedNav);
-    
   });
   }
   setActive(button: string) {
@@ -60,7 +62,40 @@ export class AppComponent {
       this.navInfo={
         isTabActive:false,
         isFilterActive:false,
-        navBtn:[],
+        navBtn:[
+          {
+            icon_url:'assets/icons/6.png',
+            icon_name:'ADM',
+          },
+          {
+            icon_url:'assets/icons/7.png',
+            icon_name:'WxM',
+          },
+          {
+            icon_url:'assets/icons/4.png',
+            icon_name:'APM',
+          },
+          {
+            icon_url:'assets/icons/5.png',
+            icon_name:'Airworthiness',
+          },
+          {
+            icon_url:'assets/icons/1.png',
+            icon_name:'FPM',
+          },
+          {
+            icon_url:'assets/icons/2.png',
+            icon_name:'NOTAM Management',
+          },
+          {
+            icon_url:'assets/icons/8.png',
+            icon_name:'Aircraft Tracking',
+          },
+          {
+            icon_url:'assets/icons/triangle.png',
+            icon_name:'Dashboard & Reports',
+          }
+        ],
         navTitle:'AIRLINE OPS MANAGER'
       };
     }
@@ -68,7 +103,40 @@ export class AppComponent {
       this.navInfo={
         isTabActive:false,
         isFilterActive:true,
-        navBtn:[],
+        navBtn:[
+          {
+            icon_url:'assets/icons/6.png',
+            icon_name:'ADM',
+          },
+          {
+            icon_url:'assets/icons/7.png',
+            icon_name:'WxM',
+          },
+          {
+            icon_url:'assets/icons/4.png',
+            icon_name:'APM',
+          },
+          {
+            icon_url:'assets/icons/5.png',
+            icon_name:'Airworthiness',
+          },
+          {
+            icon_url:'assets/icons/1.png',
+            icon_name:'FPM',
+          },
+          {
+            icon_url:'assets/icons/2.png',
+            icon_name:'NOTAM Management',
+          },
+          {
+            icon_url:'assets/icons/8.png',
+            icon_name:'Aircraft Tracking',
+          },
+          {
+            icon_url:'assets/icons/triangle.png',
+            icon_name:'Dashboard & Reports',
+          }
+        ],
         navTitle:''
       };
     }
@@ -120,5 +188,15 @@ export class AppComponent {
     console.log('------------------');
     console.log(this.currentRoute);
     console.log(this.navInfo);
+  }
+
+  updateBackgroundColor() {
+    if (this.currentRoute === '/opsmanager') {
+      this.backgroundColor = '#3E6CA0'; //  Add a background color for '/opsmanager'
+      this.textColor = 'white';
+    }else{
+      this.backgroundColor = '#EEF4FC' // Default background color
+      this.textColor = 'black';
+    }
   }
 }

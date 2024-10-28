@@ -100,44 +100,49 @@
 }
 
 .toggle-container {
-    display: inline-block;
-    position: relative;
-  }
-  .toggle-label {
-    display: flex;
-    align-items: center;
-    cursor: pointer;
-  }
-  .toggle-switch {
-    position: relative;
-    display: inline-block;
-    width: 40px;
-    height: 20px;
-    background-color: black;
-    border-radius: 10px;
-    transition: background-color 0.3s;
-    z-index: -1;
-  }
-  .toggle-switch::before {
-    content: '';
-    position: absolute;
-    width: 16px;
-    height: 16px;
-    border-radius: 50%;
-    top: 2px;
-    left: 2px;
-    background-color: white;
-    transition: transform 0.3s;
-  }
-  input[type="checkbox"] {
-    display: none;
-  }
-  input[type="checkbox"]:checked + .toggle-switch {
-    background-color: #2196F3;
-  }
-  input[type="checkbox"]:checked + .toggle-switch::before {
-    transform: translateX(20px);
-  }
+  display: inline-block;
+  position: relative;
+}
+.toggle-label {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+.toggle-switch {
+  position: relative;
+  display: inline-block;
+  // width: 40px;
+  // height: 20px;
+  width: 28px;
+  height: 14px;
+  background-color: white;
+  border-radius: 10px;
+  transition: background-color 0.3s;
+  z-index: -1;
+  border: 2px solid black;
+}
+.toggle-switch::before {
+  content: '';
+  position: absolute;
+  // width: 16px;
+  // height: 16px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  top: 0.2px;
+  // left: 2px;
+  background-color: black;
+  transition: transform 0.3s;
+}
+input[type="checkbox"] {
+  display: none;
+}
+input[type="checkbox"]:checked + .toggle-switch {
+  background-color: #2196F3;
+}
+input[type="checkbox"]:checked + .toggle-switch::before {
+  transform: translateX(16px);
+}
 
   .flag{
     transform: rotate(270deg);
@@ -273,4 +278,40 @@
     .weather-table th {
     background-color: #f2f2f2; /* Header background */
     // font-weight: bold; /* Header font weight */
+    }
+
+    .tab-options-container{
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 10px;
+      overflow-x: auto;
+      margin-bottom: 15px;
+
+      .options{
+        display: flex;
+        background-color: #EEF4FC;
+        align-items: center;
+        padding: 4px 10px;
+        border-radius: 20px;
+        color: #111111B2;
+        gap: 7px;
+        border: 1px solid #00000033;
+        cursor: pointer;
+
+        mat-icon{
+          font-size: 19px;
+          display: flex;
+          align-items: center;
+          cursor: pointer;
+        }
+      }
+
+      .options.selected {
+        background-color: #3E6CA0; /* Blue background for selected */
+        color: white;
+        padding: 4px 10px;
+        border-radius: 20px;
+        border: none;
+      }
     }
