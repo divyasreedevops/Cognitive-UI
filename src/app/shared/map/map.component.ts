@@ -783,32 +783,35 @@ featureCollection.features.push( { "type": "Feature", "properties": { "Name": ""
         }
             procedures.waypoints.map((ele:any,index:number)=>{
               var coordinates:number[];
+              if(ele.path_descriptor!=='HM'){
                 if(ele.path_descriptor==='VA' || ele.path_descriptor==='CA' || ele.path_descriptor==='FA')
-                {
-                  const prevCoordinates=featureCollection.features[featureCollection.features.length-1].geometry.coordinates;
-                  const distance=this.getDistance( parseInt(ele.altitude_ll),selectedRunwayDetails)
-                  coordinates  =  this.vinc( prevCoordinates[0],prevCoordinates[1],ele.course_angle,distance,false)
-                  featureCollection.features.push(
-                     { "type": "Feature", "properties": { "Name":  ele.waypoint_id,  "Speed": "", "Altitude": ele.altitude_ll }, "geometry": { "type": "Point", "coordinates":coordinates } }
-                  );
-                  // Safely get the last feature's name
-                const lastFeature = featureCollection.features[featureCollection.features.length - 1];
-                const startPoint = lastFeature && lastFeature.properties ? lastFeature.properties['Name']|| "" : "";
-                   lineJson.features.push({ "type": "Feature", "properties": { "Name":  ele.path_descriptor, "Distance":null, "Bearing": ele.course_angle.replace(/\s*\(.*?\)\s*/, ''), "StartPoint":startPoint,"EndPoint":  ele.waypoint.name}, "geometry": { "type": "MultiLineString", "coordinates": [ [ prevCoordinates, coordinates ] ] } },)
-                }else{
-                 if(featureCollection.features.length>0){
-                  const prevCoordinates=featureCollection.features[featureCollection.features.length-1].geometry.coordinates;
-                              // Safely get the last feature's name
-                const lastFeature = featureCollection.features[featureCollection.features.length - 1];
-                const startPoint = lastFeature && lastFeature.properties ? lastFeature.properties['Name']|| "" : "";
-                  lineJson.features.push({ "type": "Feature", "properties": { "Name":  ele.path_descriptor,"StartPoint":startPoint,"EndPoint":   ele.waypoint.name, "Distance":ele.dst_time?ele.dst_time:null, "Bearing": ele.course_angle.replace(/\s*\(.*?\)\s*/, '') }, "geometry":
-                     { "type": "MultiLineString", "coordinates": [ [ prevCoordinates, ele.waypoint.geometry.coordinates ] ] } },)
-                 }
-                  featureCollection.features.push(
-                    { "type": "Feature", "properties": { "Name":ele.waypoint.name, "Speed": "", "Altitude": ele.altitude_ll }, 
-                    "geometry": { "type": "Point", "coordinates": ele.waypoint.geometry.coordinates } }
-                 );
-                }
+                  {
+                    const prevCoordinates=featureCollection.features[featureCollection.features.length-1].geometry.coordinates;
+                    const distance=this.getDistance( parseInt(ele.altitude_ll),selectedRunwayDetails)
+                    coordinates  =  this.vinc( prevCoordinates[0],prevCoordinates[1],ele.course_angle,distance,false)
+                    featureCollection.features.push(
+                       { "type": "Feature", "properties": { "Name":  ele.waypoint_id, type:procedures.type, "Speed": "", "Altitude": ele.altitude_ll,"pathDiscriptor":  ele.path_descriptor, "Bearing": ele.course_angle.replace(/\s*\(.*?\)\s*/, ''),"data":JSON.stringify(ele)}, "geometry": { "type": "Point", "coordinates":coordinates } }
+                    );
+                    // Safely get the last feature's name
+                  const lastFeature = featureCollection.features[featureCollection.features.length - 1];
+                  const startPoint = lastFeature && lastFeature.properties ? lastFeature.properties['Name']|| "" : "";
+                     lineJson.features.push({ "type": "Feature", "properties": { "Name":  ele.path_descriptor,type:procedures.type,"pathDiscriptor":  ele.path_descriptor, "Distance":null,"data":JSON.stringify(ele), "Bearing": ele.course_angle.replace(/\s*\(.*?\)\s*/, ''), "StartPoint":startPoint,"EndPoint":  ele.waypoint.name}, "geometry": { "type": "MultiLineString", "coordinates": [ [ prevCoordinates, coordinates ] ] } },)
+                  }else{
+                   if(featureCollection.features.length>0){
+                    const prevCoordinates=featureCollection.features[featureCollection.features.length-1].geometry.coordinates;
+                                // Safely get the last feature's name
+                  const lastFeature = featureCollection.features[featureCollection.features.length - 1];
+                  const startPoint = lastFeature && lastFeature.properties ? lastFeature.properties['Name']|| "" : "";
+                    lineJson.features.push({ "type": "Feature", "properties": { "Name":  ele.path_descriptor,type:procedures.type,"data":JSON.stringify(ele),"pathDiscriptor":  ele.path_descriptor,"StartPoint":startPoint,"EndPoint":   ele.waypoint.name, "Distance":ele.dst_time?ele.dst_time:null, "Bearing": ele.course_angle.replace(/\s*\(.*?\)\s*/, '') }, "geometry":
+                       { "type": "MultiLineString", "coordinates": [ [ prevCoordinates, ele.waypoint.geometry.coordinates ] ] } },)
+                   }
+                    featureCollection.features.push(
+                      { "type": "Feature", "properties": { "Name":ele.waypoint.name, "Speed": "",type:procedures.type,"pathDiscriptor":  ele.path_descriptor,"data":JSON.stringify(ele), "Bearing": ele.course_angle.replace(/\s*\(.*?\)\s*/, ''), "Altitude": ele.altitude_ll }, 
+                      "geometry": { "type": "Point", "coordinates": ele.waypoint.geometry.coordinates } }
+                   );
+                  }
+              }
+             
             })
     return {pointJson:featureCollection,lineJson:lineJson};
   }
@@ -1185,23 +1188,72 @@ const flattenLatLngs = (latLngs: L.LatLng | L.LatLng[] | L.LatLng[][] | L.LatLng
 
 
  plotProcedures(ele:any,geoLayer:any,color='black'){
-
  const pointLineJsons =   this.createGeoJsonPointObject(ele);
  this.airportLayerGroup.addLayer(geoLayer);
  const stepIcon = L.icon({
    iconUrl: 'assets/AKTIM_7A/Fly-by.png',
    iconSize: [40, 40],
-   popupAnchor: [-3, -76],
+   popupAnchor: [0, -60],
  });
- let currentTooltip:any = null; // Initialize a variable to store the current tooltip
 
+ var holdIcon = L.icon({
+  iconUrl: 'assets/HoldIconsLTAy.png',
+  iconSize: [40, 40],
+  popupAnchor: [-3, -76],
+});
+ let currentTooltip:any = null; // Initialize a variable to store the current tooltip
  const geoJsonLayer = L.geoJSON(pointLineJsons.pointJson, {
   style: {
     color:  color, // Set line color
 },
    pointToLayer: (feature, latlng) => {
-     const marker = L.marker(latlng, { icon: stepIcon });
- 
+     var marker = L.marker(latlng, { icon: stepIcon });
+     let iconRotationAngle = parseFloat(feature.properties.Bearing  )|| 0;
+       if(feature.properties.pathDiscriptor==="HM"){
+          const data=  JSON.parse(feature.properties.data) ;
+           switch(feature.properties.type){
+            case "APCH":{
+              if(data.turn_dir==='R'){
+                holdIcon = L.icon({
+                  iconUrl: 'assets/HoldIcons/RTA.png',
+                  iconSize: [40, 40],
+                  popupAnchor: [0, -60],
+                });
+              }else{
+                holdIcon = L.icon({
+                  iconUrl: 'assets/HoldIcons/LTA.png',
+                  iconSize:[40, 40],
+                  popupAnchor: [0, -60],
+                });
+              }
+              break;
+            }
+               case "STAR":{
+                if(data.turn_dir==='R'){
+                  holdIcon = L.icon({
+                    iconUrl: 'assets/HoldIcons/RTS.png',
+                    iconSize: [60, 60],
+                    popupAnchor: [-3, -76],
+                  });
+                }else{
+                  holdIcon = L.icon({
+                    iconUrl: 'assets/HoldIcons/LTS.png',
+                    iconSize: [60, 60],
+                    popupAnchor: [0, -60],
+                  });
+                }
+                break;
+               }
+           }
+           marker = L.marker(latlng, { icon: holdIcon });
+       }else{
+        console.log(feature.properties)
+           marker = L.marker(latlng, { icon: stepIcon });
+       }
+
+       marker.addTo(this.map); // Replace `this.map` with your map variable if necessary
+
+       
      // Set up the permanent tooltip content
      let tooltipContent = '';
      if (feature.properties.Name) {
@@ -1275,6 +1327,7 @@ const flattenLatLngs = (latLngs: L.LatLng | L.LatLng[] | L.LatLng[][] | L.LatLng
  // const lineResponse = await fetch(lineFileName);
  const lineData :GeoJSON.FeatureCollection<GeoJSON.MultiLineString>= pointLineJsons.lineJson;
 
+ console.log(pointLineJsons,"pointLineJsonspointLineJsonspointLineJsonspointLineJsons")
 
    const lineFeatures = lineData.features; // Assuming lineData is your GeoJSON data
 
@@ -1291,7 +1344,7 @@ const flattenLatLngs = (latLngs: L.LatLng | L.LatLng[] | L.LatLng[][] | L.LatLng
 
                  const startPoint=feature.properties['StartPoint']
                  const endPoint=feature.properties['EndPoint']
-               
+                  console.log(feature.properties,"linejson")
                  // Create a tooltip content
                  const tooltipContent = `
                      <div>

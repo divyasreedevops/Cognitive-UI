@@ -105,7 +105,7 @@ export class NotamTableComponent implements OnInit {
         const filterMap = new Map(this.filtersData[field].map((filter:any) => [filter.code, filter.name]));
         const response = code
   ?.split('')                              
-  .map((code:any) => filterMap.get(code))     
+  .map((code:any) => "Pre-Flight Info Package")     
   .filter(Boolean)                       
   .join(',');    
        return response?response:""
@@ -159,7 +159,10 @@ export class NotamTableComponent implements OnInit {
           if (matchingFilter) {
             // Use either 'significance' or 'name'
             const label = matchingFilter.significance || matchingFilter.name;
+            return { id: optValue, label: `${label}` };
             return { id: optValue, label: `${optValue} (${label})` };
+
+
           } else {
             // If no match is found, id and label should be the same value
             return { id: optValue, label: `${optValue}` };
@@ -192,7 +195,6 @@ export class NotamTableComponent implements OnInit {
     { label: 'Status', isOpen: false, opt: ['active','inactive'],mappingName:"status", selectedOptions: [] as string[] },
     { label: 'Airport', isOpen: false, opt: ['Option 1', 'Option 2', 'Option 3'],mappingName:"airportFir", selectedOptions: [] as string[] },
     { label: 'FIR Regions', isOpen: false, opt: ['Option 1', 'Option 2', 'Option 3'], mappingName:"fir",selectedOptions: [] as string[] },
-    { label: 'Airspace/ENR', isOpen: false, opt: ['Option 1', 'Option 2', 'Option 3'],mappingName:"airspaceEnr", selectedOptions: [] as string[] },
     { label: 'Qualifier 1', isOpen: false, opt: ['Option 1', 'Option 2', 'Option 3'],mappingName:"qualifier1", selectedOptions: [] as string[] },
     { label: 'Qualifier 2', isOpen: false, opt: ['Option 1', 'Option 2', 'Option 3'],mappingName:"qualifier2", selectedOptions: [] as string[] },
     { label: 'Traffic', isOpen: false, opt: ['Option 1', 'Option 2', 'Option 3'], mappingName:"traffic",selectedOptions: [] as string[] },

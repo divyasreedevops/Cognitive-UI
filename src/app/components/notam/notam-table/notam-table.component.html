@@ -17,9 +17,9 @@
             </div>
 
             <div class="dflex" style="gap: 5px; font-weight: 501;">
-                <div class="dflex border" (click)="filterByFlag('normal')">
+                <!-- <div class="dflex border" (click)="filterByFlag('normal')">
                     <mat-icon class="flag green">play_arrow</mat-icon> Normal
-                </div>
+                </div> -->
                 <div class="dflex border" (click)="filterByFlag('warning')">
                     <mat-icon class="flag yellow">play_arrow</mat-icon> Warning
                 </div>
@@ -70,7 +70,6 @@
         <td>{{ entry.status }}</td>
         <td>{{ entry.airport }}</td>
         <td>{{ entry.fir }}</td>
-        <td>{{ entry.airSpace }}</td>
         <td>{{getNamesOfCodes(entry.qualifier1,'qualifier1')  }}</td>
         <td>{{getNamesOfCodes(entry.qualifier2,'qualifier2') }}</td>
         <td>{{getNamesOfCodes(entry.traffic,'traffic')  }}</td>
