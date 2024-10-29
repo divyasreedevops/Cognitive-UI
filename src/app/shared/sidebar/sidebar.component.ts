@@ -595,7 +595,7 @@ export class SidebarComponent {
           row.push(temp);
         }
         let tempObj = {
-          title: key,
+          title: resp[key].name,
           columns: [
             'Waypoint Identifier',
             'Path Descriptor',
