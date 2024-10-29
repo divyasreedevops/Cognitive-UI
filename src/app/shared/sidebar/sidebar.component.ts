@@ -537,6 +537,7 @@ export class SidebarComponent {
       this.isAIXM = true;
       this.procedureAixmTable(event.res);
       if (Object.keys(event.res).length === 2){
+        this.isCompare = true
         this.obj1 = this.flightData[0];
         this.obj2 = this.flightData[1];
         this.compareObj = this.compareComplexObjects(this.obj1, this.obj2);

@@ -232,3 +232,24 @@ input[type="checkbox"]:checked + .toggle-switch::before {
   display: flex;
   justify-content: flex-end;
 }
+
+.notam-table tbody tr:hover {
+  background-color: #e8f4ff; /* Light blue color for row highlight */
+}
+
+/* Highlight the header cell on hover */
+.notam-table thead th:hover {
+  background-color: blue; /* Light purple color for header highlight */
+  color: white;
+  cursor: pointer; /* Show pointer on hover for interactivity */
+  
+  .dropdown{
+    color: black;
+  }
+  
+}
+
+.highlight {
+  background-color: #aed3f6; /* or any color you prefer */
+  color: black;
+}

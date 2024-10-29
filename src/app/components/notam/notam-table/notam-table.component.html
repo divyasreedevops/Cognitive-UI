@@ -67,17 +67,17 @@
           <mat-icon class="flag" [ngClass]="{'red': entry.category === 'critical','green':entry.category === 'normal','yellow': entry.category === 'warning'}">play_arrow</mat-icon> <span>{{ entry.notam_id }}</span>  <mat-icon>keyboard_arrow_down</mat-icon> 
         </div>
         </td>
-        <td>{{ entry.status }}</td>
-        <td>{{ entry.airport }}</td>
-        <td>{{ entry.fir }}</td>
-        <td>{{getNamesOfCodes(entry.qualifier1,'qualifier1')  }}</td>
-        <td>{{getNamesOfCodes(entry.qualifier2,'qualifier2') }}</td>
-        <td>{{getNamesOfCodes(entry.traffic,'traffic')  }}</td>
-        <td>{{getNamesOfCodes(entry.purpose,'purpose') }}</td>
-        <td>{{getNamesOfCodes(entry.scope,'scope')  }}</td>
-        <td>{{getNamesOfCodes(entry.series,'series')  }}</td>
-        <td>{{getNamesOfCodes(entry.qualifier2,'qualifier2')  }}</td>
-        <td>{{ entry.permanent }}</td>
+        <td [ngClass]="{'highlight': headers[2]?.selectedOptions.length > 0}">{{ entry.status }}</td>
+        <td [ngClass]="{'highlight': headers[3]?.selectedOptions.length > 0}">{{ entry.airport }}</td>
+        <td [ngClass]="{'highlight': headers[4]?.selectedOptions.length > 0}">{{ entry.fir }}</td>
+        <td [ngClass]="{'highlight': headers[6]?.selectedOptions.length > 0}">{{getNamesOfCodes(entry.qualifier1,'qualifier1')  }}</td>
+        <td [ngClass]="{'highlight': headers[7]?.selectedOptions.length > 0}">{{getNamesOfCodes(entry.qualifier2,'qualifier2') }}</td>
+        <td [ngClass]="{'highlight': headers[8]?.selectedOptions.length > 0}">{{getNamesOfCodes(entry.traffic,'traffic')  }}</td>
+        <td [ngClass]="{'highlight': headers[9]?.selectedOptions.length > 0}">{{getNamesOfCodes(entry.purpose,'purpose') }}</td>
+        <td [ngClass]="{'highlight': headers[10]?.selectedOptions.length > 0}">{{getNamesOfCodes(entry.scope,'scope')  }}</td>
+        <td [ngClass]="{'highlight': headers[11]?.selectedOptions.length > 0}">{{getNamesOfCodes(entry.series,'series')  }}</td>
+        <td [ngClass]="{'highlight': headers[12]?.selectedOptions.length > 0}">{{getNamesOfCodes(entry.qualifier2,'qualifier2')  }}</td>
+        <td [ngClass]="{'highlight': headers[13]?.selectedOptions.length > 0}">{{ entry.permanent }}</td>
       </tr>
     </tbody>
     

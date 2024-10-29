@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, HostListener, OnInit, Output } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { CommonModule } from '@angular/common';
 import { NotamService } from 'src/app/service/Notam/notam.service';
@@ -233,6 +233,14 @@ export class NotamTableComponent implements OnInit {
     }
          this.p=1;
        this.  constructPayload()
+  }
+
+  @HostListener('document:click', ['$event'])
+  onClickOutside(event: MouseEvent) {
+    const clickedInside = (event.target as HTMLElement).closest('.dropdown, th') !== null;
+    if (!clickedInside) {
+      this.headers.forEach((header: { isOpen: boolean; }) => header.isOpen = false);
+    }
   }
 
   
