@@ -260,7 +260,6 @@ export class MapComponent implements OnInit {
       if (this.lineGeoJsonLayer) {
         this.map.removeLayer(this.lineGeoJsonLayer);
       }
-      console.log('completed.;.;.;');
     })
 
   
@@ -273,10 +272,8 @@ export class MapComponent implements OnInit {
  addCircles(circles: any): void {
   this.circleData = this.circleData.concat(circles[0]);
   const currentDate = moment();
-  console.log('currentDate', currentDate)
   circles[0].forEach((circle: { lat: any; lon: any; radius: any; notam: any; category: any; start_date: any; end_date: any }) => {
       if (circle.lat === null || circle.lon === null || circle.radius === null) {
-          console.warn('Skipping circle due to null values:', circle);
           return; // Skip this iteration if any value is null
       }
       const latitude = this.convertDMSToDD(circle.lat);
@@ -929,7 +926,6 @@ switch (this.multipleProcedure[ele].type) {
                   activeAirac.id===this.multipleProcedure[ele].airac_id?
                   this.plotProcedures(this.multipleProcedure[ele],geoLayer,"green"):this.plotProcedures(this.multipleProcedure[ele],geoLayer,"red")
                 }else{
-                  console.log(this.multipleProcedure[ele].type,"this.multipleProcedure[ele].type")
                   this.plotProcedures(this.multipleProcedure[ele],geoLayer,color)
                 }
               }
@@ -948,7 +944,6 @@ switch (this.multipleProcedure[ele].type) {
 
 
 plotAtsProcedures(atsdata:any){
-console.log('atsdata ',atsdata);
 this.airportLayerGroup.clearLayers();
   var  featureCollection: GeoJSON.FeatureCollection<GeoJSON.Point>= {
     "type": "FeatureCollection",
@@ -1083,7 +1078,6 @@ this.airportLayerGroup.clearLayers();
    // Add the layer to your map
    geoJsonLayer.addTo(this.map);
    const lineFeatures = lineJson.features; // Assuming lineData is your GeoJSON data
-console.log(lineFeatures,"linefeatures")
    this.lineGeoJsonLayer = L.geoJSON(lineJson,
      {
        style: {
@@ -1196,6 +1190,12 @@ const flattenLatLngs = (latLngs: L.LatLng | L.LatLng[] | L.LatLng[][] | L.LatLng
    popupAnchor: [0, -60],
  });
 
+ const flyOverIcon= L.icon({
+  iconUrl: 'assets/AKTIM_7A/Fly-over.png',
+  iconSize: [40, 40],
+  popupAnchor: [0, -60],
+});
+
  var holdIcon = L.icon({
   iconUrl: 'assets/HoldIconsLTAy.png',
   iconSize: [40, 40],
@@ -1209,6 +1209,7 @@ const flattenLatLngs = (latLngs: L.LatLng | L.LatLng[] | L.LatLng[][] | L.LatLng
    pointToLayer: (feature, latlng) => {
      var marker = L.marker(latlng, { icon: stepIcon });
      let iconRotationAngle = parseFloat(feature.properties.Bearing  )|| 0;
+    
        if(feature.properties.pathDiscriptor==="HM"){
           const data=  JSON.parse(feature.properties.data) ;
            switch(feature.properties.type){
@@ -1247,8 +1248,11 @@ const flattenLatLngs = (latLngs: L.LatLng | L.LatLng[] | L.LatLng[][] | L.LatLng
            }
            marker = L.marker(latlng, { icon: holdIcon });
        }else{
-        console.log(feature.properties)
-           marker = L.marker(latlng, { icon: stepIcon });
+          if(feature.properties.data){
+            const data=  JSON.parse(feature.properties.data) ;
+          }else{
+            marker = L.marker(latlng, { icon: stepIcon });
+          }
        }
 
        marker.addTo(this.map); // Replace `this.map` with your map variable if necessary
@@ -1327,8 +1331,6 @@ const flattenLatLngs = (latLngs: L.LatLng | L.LatLng[] | L.LatLng[][] | L.LatLng
  // const lineResponse = await fetch(lineFileName);
  const lineData :GeoJSON.FeatureCollection<GeoJSON.MultiLineString>= pointLineJsons.lineJson;
 
- console.log(pointLineJsons,"pointLineJsonspointLineJsonspointLineJsonspointLineJsons")
-
    const lineFeatures = lineData.features; // Assuming lineData is your GeoJSON data
 
    this.lineGeoJsonLayer = L.geoJSON(lineData, {
@@ -1344,7 +1346,6 @@ const flattenLatLngs = (latLngs: L.LatLng | L.LatLng[] | L.LatLng[][] | L.LatLng
 
                  const startPoint=feature.properties['StartPoint']
                  const endPoint=feature.properties['EndPoint']
-                  console.log(feature.properties,"linejson")
                  // Create a tooltip content
                  const tooltipContent = `
                      <div>
@@ -1491,7 +1492,6 @@ const flattenLatLngs = (latLngs: L.LatLng | L.LatLng[] | L.LatLng[][] | L.LatLng
       });
       if(selectedAirport?.length){
         const airportCoordinates=   this.airPorts.find((ele:any)=>ele.airport_icao===selectedAirport).airport.geometry.coordinates;
-        console.log(airportCoordinates,"airportCoordinatesairportCoordinates")        ;
         this.airportLayerGroup.clearLayers(); // Remove all markers when no airport is selected
          const marker = L.marker([airportCoordinates[1], airportCoordinates[0]], { icon: customIcon }).addTo(this.airportLayerGroup);
         //  // Set the map view to the marker's position
@@ -1533,7 +1533,6 @@ const flattenLatLngs = (latLngs: L.LatLng | L.LatLng[] | L.LatLng[][] | L.LatLng
         })
         .openPopup();
         if (this.temp?.length) {
-          console.log('inside IF condition')
           marker.closePopup();
           this.temp = []
         }
